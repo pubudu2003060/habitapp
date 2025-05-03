@@ -10,7 +10,7 @@ function TabBar({ state, descriptors, navigation }: { state: any; descriptors: R
     const { colors } = useTheme();
     const { buildHref } = useLinkBuilder();
 
-  
+
     const getIcon = (routeName: any, isFocused: any) => {
         let iconName;
 
@@ -37,7 +37,7 @@ function TabBar({ state, descriptors, navigation }: { state: any; descriptors: R
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
             <View style={[styles.tabBar, { backgroundColor: colors.card }]}>
-                {state.routes.map((route:any, index: number) => {
+                {state.routes.map((route: any, index: number) => {
                     const { options } = descriptors[route.key];
                     const label =
                         options.tabBarLabel !== undefined
@@ -82,7 +82,6 @@ function TabBar({ state, descriptors, navigation }: { state: any; descriptors: R
                                 style={styles.addButtonContainer}
                             >
                                 <View style={[styles.addButton, { backgroundColor: colors.primary }]}>
-                                   
                                 </View>
                             </PlatformPressable>
                         );
