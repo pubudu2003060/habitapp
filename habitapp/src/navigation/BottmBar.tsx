@@ -18,10 +18,10 @@ export default function MyTabs() {
                 tabBar={(props) => <TabBar {...props} />}
             >
                 <Tab.Screen name="Home" component={Home} />
-                <Tab.Screen name="Profile" component={Profile} />
+                <Tab.Screen name="Explore" component={Explore} />
                 <Tab.Screen name="Add" component={Add} />
                 <Tab.Screen name="Stat" component={Stat} />
-                <Tab.Screen name="Explore" component={Explore} />
+                <Tab.Screen name="Profile" component={Profile} />
             </Tab.Navigator>
         </NavigationContainer>
 

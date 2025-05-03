@@ -3,7 +3,7 @@ import { View, Platform, StyleSheet } from 'react-native';
 import { useLinkBuilder, useTheme } from '@react-navigation/native';
 import { Text, PlatformPressable } from '@react-navigation/elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 function TabBar({ state, descriptors, navigation }: { state: any; descriptors: Record<string, any>; navigation: any }) {
     const { colors } = useTheme();
@@ -57,6 +57,7 @@ function TabBar({ state, descriptors, navigation }: { state: any; descriptors: R
                                 style={styles.addButtonContainer}
                             >
                                 <View style={[styles.addButton, { backgroundColor: colors.primary }]}>
+                                    <Icon name="plus" size={30} color="#000" />
                                 </View>
                             </PlatformPressable>
                         );
