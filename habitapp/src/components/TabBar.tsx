@@ -5,34 +5,9 @@ import { Text, PlatformPressable } from '@react-navigation/elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
-
 function TabBar({ state, descriptors, navigation }: { state: any; descriptors: Record<string, any>; navigation: any }) {
     const { colors } = useTheme();
     const { buildHref } = useLinkBuilder();
-
-
-    const getIcon = (routeName: any, isFocused: any) => {
-        let iconName;
-
-        switch (routeName) {
-            case 'Home':
-                iconName = isFocused ? 'home' : 'home-outline';
-                break;
-            case 'Explore':
-                iconName = isFocused ? 'compass' : 'compass-outline';
-                break;
-            case 'Stats':
-                iconName = isFocused ? 'stats-chart' : 'stats-chart-outline';
-                break;
-            case 'Profile':
-                iconName = isFocused ? 'person' : 'person-outline';
-                break;
-            default:
-                iconName = 'ellipsis-horizontal';
-        }
-
-        return iconName;
-    };
 
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
