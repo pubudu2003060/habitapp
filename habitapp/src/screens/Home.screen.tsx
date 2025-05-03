@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Home = () => {
   return (
-   <Text>home<Icon name="rocket" size={30} color="#000" />
+   <Text>home<Icon name="rocket" size={300} color="#000" />
 </Text>
   )
 }
