@@ -3,7 +3,7 @@ import MyTabs from './src/navigation/BottmBar'
 
 const App = () => {
   return (
-    <MyTabs></MyTabs>
+      <MyTabs></MyTabs>
   )
 }
 
