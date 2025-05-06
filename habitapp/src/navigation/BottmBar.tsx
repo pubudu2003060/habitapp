@@ -12,21 +12,18 @@ import { ThemeProvider } from '../theme/ThemeProvider';
 
 const Tab = createBottomTabNavigator();
 
-export default function MyTabs() {
-    return (
-        <ThemeProvider>
-            <NavigationContainer>
-                <Tab.Navigator
+export default function Tabs() {
 
-                    tabBar={(props) => <TabBar {...props} />}
-                >
-                    <Tab.Screen name="Home" component={Home} />
-                    <Tab.Screen name="Explore" component={Explore} />
-                    <Tab.Screen name="Add" component={Add} />
-                    <Tab.Screen name="Stat" component={Stat} />
-                    <Tab.Screen name="Profile" component={Profile} />
-                </Tab.Navigator>
-            </NavigationContainer>
-        </ThemeProvider>
+    return (
+        <Tab.Navigator
+
+            tabBar={(props) => <TabBar {...props} />}
+        >
+            <Tab.Screen name="Home" component={Home} />
+            <Tab.Screen name="Explore" component={Explore} />
+            <Tab.Screen name="Add" component={Add} />
+            <Tab.Screen name="Stat" component={Stat} />
+            <Tab.Screen name="Profile" component={Profile} />
+        </Tab.Navigator>
     );
 }

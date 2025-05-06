@@ -24,8 +24,8 @@ export type userType = {
 }
 
 export type userStoreType = {
-    user: userType[],
-    addUser: () => void,
+    user: userType | null,
+    setUser: (user:userType) => void,
     removeUser: (id: number) => void,
     editUser: (id: number) => void
 }
