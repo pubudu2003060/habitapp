@@ -36,9 +36,16 @@ export type signInInputType = {
     password: string
 }
 
+export type signUpInputType = {
+    name:String
+    email: string;
+    password: string
+}
+
 export type usersStoreType = {
     users: userType[];
     adduser: (user: userType) => void;
-    removeUser: (id: number) => void
-    editUser: (user: userType) => void
+    removeUser: (id: number) => void;
+    editUser: (user: userType) => void;
+    isInUsers:( user: userType) => boolean
 }

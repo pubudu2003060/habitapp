@@ -32,11 +32,19 @@ const useUsersStore = create<usersStoreType>((set) => ({
         });
 
         try {
-            const users = useuserStore.getState();
+            const users = useUsersStore.getState().users;
             await AsyncStorage.setItem("@users", JSON.stringify(users));
         } catch (error) {
             console.error("Failed to save users to AsyncStorage:", error);
         }
+    },
+    isInUsers: (inUser: userType) => {
+        const users = useUsersStore.getState().users;
+        const userFound = users.find((user) => user.email === inUser.email)
+        if (userFound === undefined) {
+            return false
+        }
+        return true
     }
 }))
 
