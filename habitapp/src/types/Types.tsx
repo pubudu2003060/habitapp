@@ -8,12 +8,12 @@ export type defaultThemeType = {
 }
 
 export type themeType = {
-    primary: String,
-    accent: String,
-    highlight: String,
-    neutral: String,
-    background: String,
-    text: String,
+    primary: String;
+    accent: String;
+    highlight: String;
+    neutral: String;
+    background: String;
+    text: String
 };
 
 export type userType = {
@@ -24,14 +24,21 @@ export type userType = {
 }
 
 export type userStoreType = {
-    user: userType | null,
-    setUser:  (user: userType) => void,
-    loadUser: () => void,
-    removeUser: () => void,
+    user: userType | null;
+    setUser: (user: userType) => void;
+    loadUser: () => void;
+    removeUser: () => void;
     editUser: (user: userType) => void
 }
 
 export type signInInputType = {
     email: string;
     password: string
+}
+
+export type usersStoreType = {
+    users: userType[];
+    adduser: (user: userType) => void;
+    removeUser: (id: number) => void
+    editUser: (user: userType) => void
 }
