@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Platform, StyleSheet } from 'react-native';
-import { useLinkBuilder, useTheme } from '@react-navigation/native';
+import { useLinkBuilder, useTheme,DarkTheme } from '@react-navigation/native';
 import { Text, PlatformPressable } from '@react-navigation/elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { ThemeContext } from '../../theme/ThemeProvider';
 
 function TabBar({ state, descriptors, navigation }: { state: any; descriptors: Record<string, any>; navigation: any }) {
-    const { colors } = useTheme();
+    
     const { buildHref } = useLinkBuilder();
+    const { colors } = useContext(ThemeContext);
 
     return (
         <SafeAreaView edges={['bottom']} style={styles.container}>
-            <View style={[styles.tabBar, { backgroundColor: colors.card }]}>
+            <View style={[styles.tabBar, { backgroundColor: colors.background }]}>
                 {state.routes.map((route: any, index: number) => {
                     const { options } = descriptors[route.key];
                     const label =
@@ -42,7 +44,7 @@ function TabBar({ state, descriptors, navigation }: { state: any; descriptors: R
                         });
                     };
 
-                    // Add button should be in the middle (depends on your tabs count)
+
                     if (route.name === 'Add') {
                         return (
                             <PlatformPressable
