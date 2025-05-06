@@ -3,9 +3,8 @@ export type reactNodeChildrenType = {
 }
 
 export type defaultThemeType = {
-    isDark: boolean;
     colors: themeType;
-    setScheme: (scheme:string) => void;
+    setScheme: (scheme: string) => void;
 }
 
 export type themeType = {
@@ -16,3 +15,17 @@ export type themeType = {
     background: String,
     text: String,
 };
+
+export type userType = {
+    id: number
+    name: String;
+    email: String;
+    password: String;
+}
+
+export type userStoreType = {
+    user: userType[],
+    addUser: () => void,
+    removeUser: (id: number) => void,
+    editUser: (id: number) => void
+}

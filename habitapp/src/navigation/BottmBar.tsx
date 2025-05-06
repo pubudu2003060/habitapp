@@ -17,6 +17,7 @@ export default function MyTabs() {
         <ThemeProvider>
             <NavigationContainer>
                 <Tab.Navigator
+
                     tabBar={(props) => <TabBar {...props} />}
                 >
                     <Tab.Screen name="Home" component={Home} />
