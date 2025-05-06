@@ -25,7 +25,12 @@ export type userType = {
 
 export type userStoreType = {
     user: userType | null,
-    setUser: (user:userType) => void,
+    setUser: (user: userType) => void,
     removeUser: (id: number) => void,
     editUser: (id: number) => void
+}
+
+export type signInInputType = {
+    email: string;
+    password: string
 }

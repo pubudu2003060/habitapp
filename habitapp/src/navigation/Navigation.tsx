@@ -13,14 +13,13 @@ const Navigation = () => {
     const setUser = useuserStore(state => state.setUser)
 
     useEffect(() => {
-        const loadUsers = async () => {
+        const loadUser = async () => {
             const userString = await AsyncStorage.getItem("@users")
             const userFromAsync: userType = userString ? JSON.parse(userString) : null
             setUser(userFromAsync)
         }
-        loadUsers()
-    }, [])
-
+        loadUser()
+    }, [user])
 
     return (
         <ThemeProvider>
