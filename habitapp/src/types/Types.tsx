@@ -37,7 +37,7 @@ export type signInInputType = {
 }
 
 export type signUpInputType = {
-    name:String
+    name:string
     email: string;
     password: string
 }
@@ -47,5 +47,5 @@ export type usersStoreType = {
     adduser: (user: userType) => void;
     removeUser: (id: number) => void;
     editUser: (user: userType) => void;
-    isInUsers:( user: userType) => boolean
+    isInUsers:( email:string) => userType | undefined
 }

@@ -1,53 +1,44 @@
 import { create } from "zustand";
 import { usersStoreType, userType } from "../types/Types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useuserStore } from "./UserStore";
 
-const useUsersStore = create<usersStoreType>((set) => ({
+
+const useUsersStore = create<usersStoreType>((set, get) => ({
     users: [],
+
     adduser: async (newUser: userType) => {
-        await AsyncStorage.setItem("@users", JSON.stringify(newUser))
-        set((state) => ({
-            users: [...state.users], newUser
-        }))
+        const currentUsers = get().users;
+        const updatedUsers = [...currentUsers, newUser];
+
+        await AsyncStorage.setItem("@users", JSON.stringify(updatedUsers));
+
+        set({ users: updatedUsers });
     },
+
     removeUser: async (id: number) => {
-        let newList: userType[] = []
-        set((state) => {
-            newList = state.users.filter((user) => user.id !== id)
-            return {
-                users: newList
-            }
-        });
-        await AsyncStorage.setItem("@users", JSON.stringify(
-            newList
-        ));
+        const currentUsers = get().users;
+        const newList = currentUsers.filter((user) => user.id !== id);
+
+        await AsyncStorage.setItem("@users", JSON.stringify(newList));
+
+        set({ users: newList });
     },
+
     editUser: async (editUser: userType) => {
-        set((state) => {
-            const updatedUsers = state.users.map((user) =>
-                user.id === editUser.id ? editUser : user
-            );
-            return { users: updatedUsers };
-        });
+        const currentUsers = get().users;
+        const updatedUsers = currentUsers.map((user) =>
+            user.id === editUser.id ? editUser : user
+        );
 
-        try {
-            const users = useUsersStore.getState().users;
-            await AsyncStorage.setItem("@users", JSON.stringify(users));
-        } catch (error) {
-            console.error("Failed to save users to AsyncStorage:", error);
-        }
+        await AsyncStorage.setItem("@users", JSON.stringify(updatedUsers));
+
+        set({ users: updatedUsers });
     },
-    isInUsers: (inUser: userType) => {
-        const users = useUsersStore.getState().users;
-        const userFound = users.find((user) => user.email === inUser.email)
-        if (userFound === undefined) {
-            return false
-        }
-        return true
+
+    isInUsers: (email: string) => {
+        const users = get().users;
+        return users.find((user) => user.email === email);
     }
-}))
+}));
 
-
-
-export default useUsersStore
+export default useUsersStore;

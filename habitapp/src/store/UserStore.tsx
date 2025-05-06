@@ -1,41 +1,35 @@
-import { create } from 'zustand'
-import { userStoreType, userType } from '../types/Types'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import useUsersStore from './UsersStore'
+import { create } from 'zustand';
+import { userStoreType, userType } from '../types/Types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import useUsersStore from './UsersStore';
 
-export const useuserStore = create<userStoreType>((set) => {
+export const useuserStore = create<userStoreType>((set, get) => ({
+  user: null,
 
-  const adduser = useUsersStore(state => state.adduser)
-  const editUsers = useUsersStore(state => state.editUser)
+  setUser: async (newUser: userType) => {
+    await AsyncStorage.setItem("@user", JSON.stringify(newUser));
 
-  return {
-    user: null,
-    setUser: async (newUser: userType) => {
-      await AsyncStorage.setItem("@user", JSON.stringify(newUser))
-      set((state: userStoreType) => ({
-        user: newUser
-      }))
-      adduser(newUser)
-    },
-    loadUser: async () => {
-      let signedUser = await AsyncStorage.getItem("@user")
-      set((state: userStoreType) => ({
-        user: signedUser ? JSON.parse(signedUser) : null
-      }))
-    },
-    removeUser: async () => {
-      await AsyncStorage.removeItem('@user')
-      set((state: userStoreType) => ({
-        user: null
-      }))
-    },
-    editUser: async (editUser: userType) => {
-      editUsers(editUser)
-      set((state: userStoreType) => ({
-        user: editUser
-      }))
-      await AsyncStorage.setItem("@user", JSON.stringify(editUser))
-    }
+    set({ user: newUser });
+
+    const adduser = useUsersStore.getState().adduser;
+    adduser(newUser);
+  },
+
+  loadUser: async () => {
+    const signedUser = await AsyncStorage.getItem("@user");
+    set({ user: signedUser ? JSON.parse(signedUser) : null });
+  },
+
+  removeUser: async () => {
+    await AsyncStorage.removeItem("@user");
+    set({ user: null });
+  },
+
+  editUser: async (editUser: userType) => {
+    const editUsers = useUsersStore.getState().editUser;
+    editUsers(editUser);
+
+    set({ user: editUser });
+    await AsyncStorage.setItem("@user", JSON.stringify(editUser));
   }
-})
-
+}));

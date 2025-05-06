@@ -1,54 +1,53 @@
-import React, { useState } from 'react'
-import { Alert, Button, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { signInInputType, signUpInputType, userType } from '../types/Types'
-import { useuserStore } from '../store/UserStore'
-import useUsersStore from '../store/UsersStore'
+import React, { useState } from 'react';
+import { Alert, Button, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { signUpInputType, userType } from '../types/Types';
+import { useuserStore } from '../store/UserStore';
+import useUsersStore from '../store/UsersStore';
 
 const SignUp = ({ navigation }: any) => {
-
     const [signInInput, setSignInInput] = useState<signUpInputType>({
-        name:"",
+        name: "",
         email: "",
         password: ""
-    })
+    });
 
-    const setUser = useuserStore(state => state.setUser)
-    const isInUsers = useUsersStore(state => state.isInUsers)
+    const setUser = useuserStore(state => state.setUser);
+    const isInUsers = useUsersStore(state => state.isInUsers);
+    const users = useUsersStore(state => state.users); 
 
     const signUp = () => {
-        if (signInInput.email.trim() === "" || signInInput.password.trim() === "" || signInInput.name.trim() === "") {
-            Alert.alert(
-                "Please add email and password and name",
-                "without email and password and name you cant signup",
-                [
-                    {
-                        text: "ok",
-                        onPress: () => console.log("Sign up confirmed")
-                    }
-                ]
-            )
-        } else {
-            const newuser: userType = {
-                id: 0,
-                email: signInInput.email,
-                password: signInInput.password,
-                name: signInInput.name
-            }
-            const isUserIn = isInUsers(newuser)
-            if (!isUserIn) {
-                setUser(newuser)
-            }
+        const { name, email, password } = signInInput;
+
+        if (!name.trim() || !email.trim() || !password.trim()) {
+            return Alert.alert("Missing fields", "Please fill in all fields");
         }
 
+        const isUserIn = isInUsers(email);
 
-    }
+        if (isUserIn !== undefined) {
+            return Alert.alert("User already exists", "Please log in instead.");
+        }
+
+        const newUser: userType = {
+            id: users.length + 1, 
+            name,
+            email,
+            password
+        };
+
+        setUser(newUser);
+
+        Alert.alert("Success", "Account created!", [
+            { text: "OK", onPress: () => navigation.navigate("Home") } 
+        ]);
+    };
 
     return (
         <SafeAreaView>
             <View>
-                <Text>SignUp</Text>
-                <Text>welcome to HabitApp</Text>
+                <Text>Sign Up</Text>
+                <Text>Welcome to HabitApp</Text>
                 <View>
                     <TextInput
                         value={signInInput.name}
@@ -63,14 +62,20 @@ const SignUp = ({ navigation }: any) => {
                     <TextInput
                         value={signInInput.password}
                         placeholder="Enter Password"
+                        secureTextEntry
                         onChangeText={(text) => setSignInInput(prev => ({ ...prev, password: text }))}
                     />
                 </View>
-                <Text>I already have an </Text><TouchableOpacity onPress={() => { navigation.goBack() }}><Text>account</Text></TouchableOpacity>
-                <Button title='Sign Up' onPress={signUp}></Button>
+                <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>
+                    <Text>Already have an account? </Text>
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                        <Text style={{ color: "blue" }}>Login</Text>
+                    </TouchableOpacity>
+                </View>
+                <Button title='Sign Up' onPress={signUp} />
             </View>
         </SafeAreaView>
-    )
-}
+    );
+};
 
-export default SignUp
+export default SignUp;
