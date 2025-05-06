@@ -1,6 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import React from 'react'
-import { create } from 'zustand'
 import SignIn from '../screens/SignIn.screen'
 import Signup from '../screens/Signup.screen'
 

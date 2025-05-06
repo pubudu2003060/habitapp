@@ -1,14 +1,27 @@
-import React, { useEffect, useState } from 'react'
-import { Button, Text, TextInput, View } from 'react-native'
+import React, { useState } from 'react'
+import { Button, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { signInInputType } from '../types/Types'
+import { signInInputType, userType } from '../types/Types'
+import { useuserStore } from '../store/UserStore'
 
-const SignIn = ({}) => {
+const SignIn = ({ navigation }: any) => {
 
     const [signInInput, setSignInInput] = useState<signInInputType>({
         email: "",
         password: ""
     })
+
+    const setUser = useuserStore(state => state.setUser)
+
+    const signIn = () => {
+        const newuser:userType = {
+            id:0,
+            email:signInInput.email,
+            password:signInInput.password,
+            name:""
+        }
+        setUser(newuser)
+    }
 
     return (
         <SafeAreaView>
@@ -27,8 +40,8 @@ const SignIn = ({}) => {
                         onChangeText={(text) => setSignInInput(prev => ({ ...prev, password: text }))}
                     />
                 </View>
-                <Text>I already have an account</Text>
-                <Button title='Sign In' onPress={() => {}}></Button>
+                <Text>I donot have an </Text><TouchableOpacity onPress={() => { navigation.navigate("SignUp")}}><Text>account</Text></TouchableOpacity>
+                <Button title='Sign In' onPress={signIn}></Button>
             </View>
         </SafeAreaView>
     )
