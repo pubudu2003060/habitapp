@@ -6,18 +6,19 @@ import { useuserStore } from '../store/UserStore';
 import useUsersStore from '../store/UsersStore';
 
 const SignUp = ({ navigation }: any) => {
-    const [signInInput, setSignInInput] = useState<signUpInputType>({
+    const [signUpInput, setSignUpInput] = useState<signUpInputType>({
         name: "",
         email: "",
         password: ""
     });
 
     const setUser = useuserStore(state => state.setUser);
+    const adduser = useUsersStore(state => state.adduser)
     const isInUsers = useUsersStore(state => state.isInUsers);
-    const users = useUsersStore(state => state.users); 
+    const users = useUsersStore(state => state.users);
 
     const signUp = () => {
-        const { name, email, password } = signInInput;
+        const { name, email, password } = signUpInput;
 
         if (!name.trim() || !email.trim() || !password.trim()) {
             return Alert.alert("Missing fields", "Please fill in all fields");
@@ -30,16 +31,17 @@ const SignUp = ({ navigation }: any) => {
         }
 
         const newUser: userType = {
-            id: users.length + 1, 
+            id: users.length + 1,
             name,
             email,
             password
         };
 
         setUser(newUser);
+        adduser(newUser)
 
         Alert.alert("Success", "Account created!", [
-            { text: "OK", onPress: () => navigation.navigate("Home") } 
+            { text: "OK", onPress: () => navigation.navigate("Home") }
         ]);
     };
 
@@ -50,20 +52,20 @@ const SignUp = ({ navigation }: any) => {
                 <Text>Welcome to HabitApp</Text>
                 <View>
                     <TextInput
-                        value={signInInput.name}
+                        value={signUpInput.name}
                         placeholder="Enter Name"
-                        onChangeText={(text) => setSignInInput(prev => ({ ...prev, name: text }))}
+                        onChangeText={(text) => setSignUpInput(prev => ({ ...prev, name: text }))}
                     />
                     <TextInput
-                        value={signInInput.email}
+                        value={signUpInput.email}
                         placeholder="Enter Email"
-                        onChangeText={(text) => setSignInInput(prev => ({ ...prev, email: text }))}
+                        onChangeText={(text) => setSignUpInput(prev => ({ ...prev, email: text }))}
                     />
                     <TextInput
-                        value={signInInput.password}
+                        value={signUpInput.password}
                         placeholder="Enter Password"
                         secureTextEntry
-                        onChangeText={(text) => setSignInInput(prev => ({ ...prev, password: text }))}
+                        onChangeText={(text) => setSignUpInput(prev => ({ ...prev, password: text }))}
                     />
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", marginTop: 10 }}>

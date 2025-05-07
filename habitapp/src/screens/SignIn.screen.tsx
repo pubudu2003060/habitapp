@@ -26,7 +26,7 @@ const SignIn = ({ navigation }: any) => {
 
         const existingUser = isInUsers(email);
 
-        if (!existingUser) {
+        if (existingUser === undefined) {
             return Alert.alert("Account not found", "No user registered with this email.");
         }
 

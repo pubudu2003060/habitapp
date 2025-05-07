@@ -47,5 +47,6 @@ export type usersStoreType = {
     adduser: (user: userType) => void;
     removeUser: (id: number) => void;
     editUser: (user: userType) => void;
-    isInUsers:( email:string) => userType | undefined
+    isInUsers:( email:string) => userType | undefined;
+    loadUsers:() => void;
 }
