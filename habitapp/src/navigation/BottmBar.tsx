@@ -16,8 +16,10 @@ export default function Tabs() {
 
     return (
         <Tab.Navigator
-
             tabBar={(props) => <TabBar {...props} />}
+            screenOptions={{
+                headerShown: false,
+            }}
         >
             <Tab.Screen name="Home" component={Home} />
             <Tab.Screen name="Explore" component={Explore} />

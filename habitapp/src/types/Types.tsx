@@ -37,7 +37,7 @@ export type signInInputType = {
 }
 
 export type signUpInputType = {
-    name:string
+    name: string
     email: string;
     password: string
 }
@@ -47,6 +47,35 @@ export type usersStoreType = {
     adduser: (user: userType) => void;
     removeUser: (id: number) => void;
     editUser: (user: userType) => void;
-    isInUsers:( email:string) => userType | undefined;
-    loadUsers:() => void;
+    isInUsers: (email: string) => userType | undefined;
+    loadUsers: () => void;
 }
+
+export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
+
+
+export type habitType = {
+    name: string;
+    description: string;
+    repeat:
+    { type: 'daily'; days: DayOfWeek[] } |
+    { type: 'weekly' } |
+    { type: 'monthly' };
+    endDate: Date | null;
+    goal:
+    { type: 'units'; amount: number } |
+    {
+        type: 'timer'; timePeriod: {
+            hours: number;
+            minutes: number;
+        }
+    } |
+    null;
+    reminder: {
+        time: {
+            hours: number;
+            minutes: number;
+        }
+    } |
+    null;
+} 
