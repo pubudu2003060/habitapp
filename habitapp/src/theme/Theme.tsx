@@ -17,8 +17,8 @@ export const lightTheme: themeType = {
 };
 
 export const darkTheme: themeType = {
-    Background: "#121212",
-    Card: "#1E1E1E",
+    Background: "#1E1E1E",
+    Card: "#121212",
     PrimaryText: "#FAFAFA",
     SecondoryText: "#BDBDBD",
     Border: "#333333",

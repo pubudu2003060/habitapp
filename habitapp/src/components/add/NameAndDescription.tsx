@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, TextInput, View, Text, Animated } from 'react-native';
 import { habitType } from '../../types/Types';
 import useColorStore from '../../store/ColorStore';
@@ -13,7 +13,6 @@ const NameAndDescription = ({ habit, setHabit }: { habit: habitType, setHabit: R
         <View style={[styles.container, { backgroundColor: currentTheme.Card }]}>
 
             <View style={styles.inputContainer}>
-
                 <TextInput
                     style={[
                         styles.input,
@@ -27,15 +26,11 @@ const NameAndDescription = ({ habit, setHabit }: { habit: habitType, setHabit: R
                     value={habit.name}
                     onChangeText={(text) => setHabit(h => ({ ...h, name: text }))}
                     placeholderTextColor={currentTheme.SecondoryText}
-                    onFocus={() => { }}
-                    onBlur={() => { }}
                     maxLength={40}
                 />
-
             </View>
 
             <View style={styles.inputContainer}>
-
                 <TextInput
                     style={[
                         styles.input,
@@ -52,11 +47,8 @@ const NameAndDescription = ({ habit, setHabit }: { habit: habitType, setHabit: R
                     placeholderTextColor={currentTheme.SecondoryText}
                     multiline
                     numberOfLines={4}
-                    onFocus={() => { }}
-                    onBlur={() => { }}
                     maxLength={200}
                 />
-
             </View>
         </View>
     );
@@ -74,23 +66,11 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
         elevation: 4,
     },
-    sectionTitle: {
-        fontSize: 22,
-        fontWeight: '700',
-        marginBottom: 16,
-        textAlign: 'center',
-    },
     inputContainer: {
         marginBottom: 16,
     },
-    label: {
-        fontSize: 16,
-        fontWeight: '600',
-        marginBottom: 8,
-        marginLeft: 4,
-    },
     input: {
-        borderWidth: 1.5,
+        borderWidth: 1,
         borderRadius: 12,
         padding: 14,
         fontSize: 16,
@@ -100,12 +80,6 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top',
         paddingTop: 14,
     },
-    charCount: {
-        fontSize: 12,
-        textAlign: 'right',
-        marginTop: 4,
-        marginRight: 4,
-    }
 });
 
 export default NameAndDescription;
