@@ -71,11 +71,5 @@ export type habitType = {
         }
     } |
     null;
-    reminder: {
-        time: {
-            hours: number;
-            minutes: number;
-        }
-    } |
-    null;
+    reminder: Date;
 } 
