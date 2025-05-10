@@ -6,8 +6,6 @@ import useColorStore from '../../store/ColorStore';
 const NameAndDescription = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<React.SetStateAction<habitType>> }) => {
 
     const currentTheme = useColorStore(state => state.currentTheme);
-    const primaryColors = useColorStore(state => state.primaryColors);
-
 
     return (
         <View style={[styles.container, { backgroundColor: currentTheme.Card }]}>

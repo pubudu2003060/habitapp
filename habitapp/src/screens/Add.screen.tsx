@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { ScrollView } from 'react-native'
+import { ScrollView, Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { habitType } from '../types/Types';
 import NameAndDescription from '../components/add/NameAndDescription';
@@ -27,6 +27,7 @@ const Add = () => {
   return (
     <SafeAreaView style={{backgroundColor:currentTheme.Background}}>
       <ScrollView>
+        <Text>{JSON.stringify(habit, null, 2)}</Text>
         <HeaderBar title="Create Habit"></HeaderBar>
         <NameAndDescription habit={habit} setHabit={setHabit} />
         <Repeat habit={habit} setHabit={setHabit} />
