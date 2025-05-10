@@ -21,13 +21,12 @@ const Add = () => {
       repeat: { type: "daily", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] },
       endDate: null,
       goal: null,
-      reminder: new Date(0, 0, 0, 8, 30)
+      reminder: new Date(0, 0, 0, 0, 0)
     })
 
   return (
     <SafeAreaView style={{backgroundColor:currentTheme.Background}}>
       <ScrollView>
-        <Text>{JSON.stringify(habit, null, 2)}</Text>
         <HeaderBar title="Create Habit"></HeaderBar>
         <NameAndDescription habit={habit} setHabit={setHabit} />
         <Repeat habit={habit} setHabit={setHabit} />

@@ -5,15 +5,18 @@ import { colorStoreType } from "../types/Types";
 const useColorStore = create<colorStoreType>((set) => ({
     primaryColors: primary,
     currentTheme: lightTheme,
+    isDark:false,
     setTheme: (theme) => {
         if (theme == 'dark') {
             set(() => ({
-                currentTheme: darkTheme
+                currentTheme: darkTheme,
+                isDark:true
             }))
         }
         else {
             set(() => ({
-                currentTheme: lightTheme
+                currentTheme: lightTheme,
+                isDark:false
             }))
         }
     }
