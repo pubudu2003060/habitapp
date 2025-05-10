@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Text, View } from 'react-native'
 import CheckBox from 'react-native-check-box'
 import DatePicker from 'react-native-date-picker'
-import { habitType } from '../../../types/Types'
+import { habitType } from '../../types/Types'
 
 const EndDate = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<React.SetStateAction<habitType>> }) => {
 

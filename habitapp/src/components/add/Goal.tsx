@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Text, TextInput, View } from 'react-native'
 import CheckBox from 'react-native-check-box'
-import { habitType } from '../../../types/Types'
+import { habitType } from '../../types/Types'
 
 const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<React.SetStateAction<habitType>> }) => {
 

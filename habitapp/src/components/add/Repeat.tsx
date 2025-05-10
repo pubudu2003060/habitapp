@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Text, View } from 'react-native'
-import { DayOfWeek, habitType } from '../../../types/Types'
+import { DayOfWeek, habitType } from '../../types/Types'
 
 const Repeat = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<React.SetStateAction<habitType>> }) => {
 

@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
-import { Button, ScrollView, Text, TextInput, View } from 'react-native'
+import { ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { DayOfWeek, habitType } from '../types/Types';
-import CheckBox from 'react-native-check-box'
-import DatePicker from 'react-native-date-picker';
-import NameAndDescription from '../components/navigation/add/NameAndDescription';
-import Repeat from '../components/navigation/add/Repeat';
-import EndDate from '../components/navigation/add/EndDate';
-import Goal from '../components/navigation/add/Goal';
-import Reminder from '../components/navigation/add/Reminder';
+import { habitType } from '../types/Types';
+import NameAndDescription from '../components/add/NameAndDescription';
+import Repeat from '../components/add/Repeat';
+import EndDate from '../components/add/EndDate';
+import Goal from '../components/add/Goal';
+import Reminder from '../components/add/Reminder';
+import HeaderBar from '../components/header/HeaderBar';
+import useColorStore from '../store/ColorStore';
 
-const Add = () => {
+const Add = () => { 
+
+  const currentTheme = useColorStore(state => state.currentTheme);
 
   const [habit, setHabit] = useState<habitType>(
     {
@@ -23,9 +25,9 @@ const Add = () => {
     })
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor:currentTheme.Background}}>
       <ScrollView>
-        <Text>Create Habit</Text>
+        <HeaderBar title="Create Habit"></HeaderBar>
         <NameAndDescription habit={habit} setHabit={setHabit} />
         <Repeat habit={habit} setHabit={setHabit} />
         <EndDate habit={habit} setHabit={setHabit} />

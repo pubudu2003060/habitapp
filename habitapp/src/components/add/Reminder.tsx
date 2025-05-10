@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import { habitType } from '../../../types/Types';
+import { habitType } from '../../types/Types';
 
 const Reminder = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<React.SetStateAction<habitType>> }) => {
     return (

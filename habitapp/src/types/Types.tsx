@@ -8,19 +8,25 @@ export type defaultThemeType = {
 }
 
 export type themeType = {
-    Background: string,
-    Card: string,
-    PrimaryText: string,
-    SecondoryText: string,
-    Border: string,
-    ButtonText: string,
+    Background: string;
+    Card: string;
+    PrimaryText: string;
+    SecondoryText: string;
+    Border: string;
+    ButtonText: string;
 };
 
 export type primaryType = {
-    Primary: string,
-    Accent: string,
-    Error: string,
-    Info: string,
+    Primary: string;
+    Accent: string;
+    Error: string;
+    Info: string;
+}
+
+export type colorStoreType = {
+    primaryColors: primaryType;
+    currentTheme: themeType;
+    setTheme: (theme: 'light' | 'dark') => void;
 }
 
 export type userType = {

@@ -7,8 +7,6 @@ import TabBar from '../components/navigation/TabBar';
 import Add from '../screens/Add.screen';
 import Stat from '../screens/Stat.screen';
 import Explore from '../screens/Explore.screen';
-import { ThemeProvider } from '../theme/ThemeProvider';
-
 
 const Tab = createBottomTabNavigator();
 
