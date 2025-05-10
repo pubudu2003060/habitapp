@@ -8,13 +8,20 @@ export type defaultThemeType = {
 }
 
 export type themeType = {
-    primary: String;
-    accent: String;
-    highlight: String;
-    neutral: String;
-    background: String;
-    text: String
+    Background: string,
+    Card: string,
+    PrimaryText: string,
+    SecondoryText: string,
+    Border: string,
+    ButtonText: string,
 };
+
+export type primaryType = {
+    Primary: string,
+    Accent: string,
+    Error: string,
+    Info: string,
+}
 
 export type userType = {
     id: number

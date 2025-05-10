@@ -1,19 +1,27 @@
-import { themeType } from "../types/Types";
+import { primaryType, themeType } from "../types/Types";
 
-export const lightTheme:themeType = {
-    primary: '#1A365D',    
-    accent: '#7CC6A4',    
-    highlight: '#F9A03F',  
-    neutral: '#627081',   
-    background: '#FFFFFF', 
-    text: '#121820',       
+export const primary: primaryType = {
+    Primary: "4CAF50",
+    Accent: "#FF9800",
+    Error: "#F44336",
+    Info: "#2196F3",
+}
+
+export const lightTheme: themeType = {
+    Background: "#FFFFFF",
+    Card: "#F5F5F5",
+    PrimaryText: "#212121",
+    SecondoryText: "#757575",
+    Border: "#E0E0E0",
+    ButtonText: "#FFFFFF",
 };
 
-export const darkTheme:themeType = {
-    primary: '#596F8D',    
-    accent: '#2A9D8F',     
-    highlight: '#E9C46A',  
-    neutral: '#3D4A5C',    
-    background: '#121820', 
-    text: '#F5F5F5',       
+export const darkTheme: themeType = {
+    Background: "#121212",
+    Card: "#1E1E1E",
+    PrimaryText: "#FAFAFA",
+    SecondoryText: "#BDBDBD",
+    Border: "#333333",
+    ButtonText: "#FAFAFA",
 };
+
