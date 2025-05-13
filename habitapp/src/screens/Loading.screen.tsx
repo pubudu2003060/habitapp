@@ -6,9 +6,11 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 const Loading = ({ navigation }: any) => {
 
   useFocusEffect(() => {
-    setInterval(() => {
-      navigation.navigate("SignIn")
-    }, 3000)
+   const timeout = setTimeout(() => {
+        navigation.navigate("SignIn")
+      }, 3000)
+
+      return () => clearTimeout(timeout)
   })
 
   return (

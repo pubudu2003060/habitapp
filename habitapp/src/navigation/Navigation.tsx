@@ -9,9 +9,7 @@ const Navigation = () => {
     const loadUser = useuserStore(state => state.loadUser);
 
     useEffect(() => {
-        if (user !== null) {
-            loadUser();
-        }
+        loadUser();
     }, []);
 
     return (

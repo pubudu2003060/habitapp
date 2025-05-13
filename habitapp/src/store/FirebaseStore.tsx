@@ -1,17 +1,17 @@
 import { userType } from "../types/Types"
 import firestore, { Filter } from '@react-native-firebase/firestore';
 
-const isuserInFireStore = async (newUser: userType) => {
+const isuserInFireStore = async (email: String) => {
     try {
         const existinguser = await firestore()
             .collection('users')
-            .where(Filter('email', '==', newUser.email))
+            .where(Filter('email', '==', email))
             .get()
-        return !existinguser.empty
+           
+        return existinguser
     } catch (error) {
         console.log("user sign up data read error" + error)
     }
-
 }
 
 const addUserToFireStore = async (newUser: userType) => {

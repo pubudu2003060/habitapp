@@ -32,9 +32,9 @@ const SignUp = ({ navigation }: any) => {
             password
         };
 
-        const isUsesrin = await isuserInFireStore(newUser)
+        const isUsesrin = await isuserInFireStore(newUser.email)
 
-        if (isUsesrin) {
+        if (!isUsesrin?.empty) {
             return Alert.alert("User already exists", "Please log in instead.");
         }
 

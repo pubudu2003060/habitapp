@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { signInInputType, userType } from '../types/Types'
 import { useuserStore } from '../store/UserStore'
 import useColorStore from '../store/ColorStore'
+import { isuserInFireStore } from '../store/FirebaseStore'
 
 const SignIn = ({ navigation }: any) => {
     const currentTheme = useColorStore(state => state.currentTheme);
@@ -16,7 +17,7 @@ const SignIn = ({ navigation }: any) => {
 
     const setUser = useuserStore(state => state.setUser);
 
-    const signIn = () => {
+    const signIn = async () => {
         const { email, password } = signInInput;
 
         if (!email.trim() || !password.trim()) {
@@ -26,22 +27,23 @@ const SignIn = ({ navigation }: any) => {
             );
         }
 
-        const existingUser:userType = {
-            id: 0,
-            name: "",
-            email: "",
-            password: ""
-        }
+        const isUsesrin = await isuserInFireStore(signInInput.email)
 
-        if (existingUser === undefined) {
+        if (isUsesrin?.empty) {
             return Alert.alert("Account not found", "No user registered with this email.");
         }
 
-        if (existingUser.password !== password) {
-            return Alert.alert("Incorrect password", "Please check your password and try again.");
-        }
+        let ispasswordIn = false
 
-        setUser(existingUser);
+        isUsesrin?.forEach(documentSnapShot => {
+            const data = documentSnapShot.data() as userType;
+            if (data.password === signInInput.password) {
+                setUser(data);
+            }else{
+                return Alert.alert("Incorrect password", "Please check your password and try again.");
+            }
+        })
+
     };
 
     return (
@@ -51,13 +53,13 @@ const SignIn = ({ navigation }: any) => {
                     <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Sign In</Text>
                     <Text style={[styles.subtitle, { color: currentTheme.SecondoryText }]}>Welcome back to HabitApp</Text>
                 </View>
-                
+
                 <View style={styles.formContainer}>
                     <TextInput
-                        style={[styles.input, { 
-                            borderColor: currentTheme.Border, 
+                        style={[styles.input, {
+                            borderColor: currentTheme.Border,
                             backgroundColor: currentTheme.Card,
-                            color: currentTheme.PrimaryText 
+                            color: currentTheme.PrimaryText
                         }]}
                         value={signInInput.email}
                         placeholder="Enter Email"
@@ -66,10 +68,10 @@ const SignIn = ({ navigation }: any) => {
                         onChangeText={(text) => setSignInInput(prev => ({ ...prev, email: text }))}
                     />
                     <TextInput
-                        style={[styles.input, { 
-                            borderColor: currentTheme.Border, 
+                        style={[styles.input, {
+                            borderColor: currentTheme.Border,
                             backgroundColor: currentTheme.Card,
-                            color: currentTheme.PrimaryText 
+                            color: currentTheme.PrimaryText
                         }]}
                         value={signInInput.password}
                         placeholder="Enter Password"
@@ -78,16 +80,16 @@ const SignIn = ({ navigation }: any) => {
                         onChangeText={(text) => setSignInInput(prev => ({ ...prev, password: text }))}
                     />
                 </View>
-                
+
                 <View style={styles.signUpTextContainer}>
                     <Text style={{ color: currentTheme.SecondoryText }}>Don't have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
                         <Text style={{ color: primaryColors.Primary, fontWeight: '600' }}>Sign up</Text>
                     </TouchableOpacity>
                 </View>
-                
+
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={[styles.signInButton, { backgroundColor: primaryColors.Primary }]}
                         onPress={signIn}
                     >
