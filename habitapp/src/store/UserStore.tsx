@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { userStoreType, userType } from '../types/Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const useuserStore = create<userStoreType>((set, get) => ({
+export const useUserStore = create<userStoreType>((set, get) => ({
   user: null,
   setUser: async (newUser: userType) => {
     await AsyncStorage.setItem("@user", JSON.stringify(newUser));

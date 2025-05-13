@@ -26,7 +26,7 @@ export type primaryType = {
 export type colorStoreType = {
     primaryColors: primaryType;
     currentTheme: themeType;
-    isDark:boolean,
+    isDark: boolean,
     setTheme: (theme: 'light' | 'dark') => void;
 }
 
@@ -69,6 +69,8 @@ export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Frida
 
 
 export type habitType = {
+    id: number,
+    userId: number
     name: string;
     description: string;
     repeat:
@@ -86,4 +88,13 @@ export type habitType = {
     } |
     null;
     reminder: Date;
-} 
+}
+
+export type habitStoreType = {
+    habits: habitType[];
+    addHabit: (habit: habitType) => void;
+    loadHabits:() => void;
+    removeHabit: () => void;
+    edithabit: (habit: habitType) => void;
+    removeAll: () => void;
+}

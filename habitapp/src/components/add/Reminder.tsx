@@ -12,13 +12,13 @@ const Reminder = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispa
     return (
         <View style={[styles.container, { backgroundColor: currentTheme.Card }]}>
             <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Reminder</Text>
-            
+
             <View style={styles.timeDisplayContainer}>
                 <Text style={[styles.timeText, { color: primaryColors.Primary }]}>
-                    {habit.reminder.getHours().toString().padStart(2, '0')}:{habit.reminder.getMinutes().toString().padStart(2, '0')}
+                    {habit.reminder.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </Text>
             </View>
-            
+
             <View style={styles.pickerContainer}>
                 <DatePicker
                     mode='time'
@@ -26,10 +26,10 @@ const Reminder = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispa
                     date={habit.reminder}
                     onDateChange={(date) => {
                         setHabit(h => {
-                            const hours = date.getHours();
-                            const minutes = date.getMinutes();
-                            const newReminder = new Date(0, 0, 0, hours, minutes);
-                            return { ...h, reminder: newReminder };
+                            const updated = new Date(h.reminder);
+                            updated.setHours(date.getHours());
+                            updated.setMinutes(date.getMinutes());
+                            return { ...h, reminder: updated };
                         });
                     }}
                 />

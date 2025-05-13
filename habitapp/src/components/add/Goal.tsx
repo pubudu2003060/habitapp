@@ -8,7 +8,6 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
     const currentTheme = useColorStore(state => state.currentTheme);
     const primaryColors = useColorStore(state => state.primaryColors);
 
-    const [goal, setGoal] = useState<boolean>(false)
     const [activeSection, setActiveSection] = useState<string>("units");
 
     return (
@@ -16,16 +15,23 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
             <View style={styles.checkboxContainer}>
                 <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Set Goal</Text>
                 <CheckBox
-                    onClick={() => { setGoal(!goal) }}
-                    isChecked={goal}
+                    onClick={() => {
+                        if (habit.goal) {
+                            setHabit(h => ({ ...h, goal: null }));
+                        } else {
+                            setHabit(h => ({ ...h, goal: { type: "units", amount: 0 } }));
+                            setActiveSection("units");
+                        }
+                    }}
+                    isChecked={habit.goal ? true : false}
                     checkBoxColor={primaryColors.Primary}
                     style={styles.checkbox}
                 />
             </View>
 
             <View
-                pointerEvents={!goal ? 'none' : 'auto'}
-                style={[styles.buttonGroup, { opacity: goal ? 1 : 0.5 }]}
+                pointerEvents={!habit.goal ? 'none' : 'auto'}
+                style={[styles.buttonGroup, { opacity: habit.goal ? 1 : 0.5 }]}
             >
                 <TouchableOpacity
                     style={[styles.curvedButton, {
@@ -52,9 +58,9 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                 </TouchableOpacity>
             </View>
 
-            <View style={[styles.inputContainer, { opacity: goal ? 1 : 0.5 }]}>
+            <View style={[styles.inputContainer, { opacity: habit.goal ? 1 : 0.5 }]}>
                 {activeSection === "units" && (
-                    <View pointerEvents={!goal ? 'none' : 'auto'} style={styles.unitsContainer}>
+                    <View pointerEvents={!habit.goal ? 'none' : 'auto'} style={styles.unitsContainer}>
                         <Text style={[styles.inputLabel, { color: currentTheme.SecondoryText }]}>Units</Text>
                         <TextInput
                             style={[styles.input, {
@@ -72,7 +78,7 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                 )}
 
                 {activeSection === "timer" && (
-                    <View pointerEvents={!goal ? 'none' : 'auto'} style={styles.timerContainer}>
+                    <View pointerEvents={!habit.goal ? 'none' : 'auto'} style={styles.timerContainer}>
                         <View style={styles.timerInputGroup}>
                             <Text style={[styles.inputLabel, { color: currentTheme.SecondoryText }]}>Hours</Text>
                             <TextInput

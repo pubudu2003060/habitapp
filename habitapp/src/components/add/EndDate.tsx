@@ -8,10 +8,8 @@ import useColorStore from '../../store/ColorStore'
 const EndDate = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<React.SetStateAction<habitType>> }) => {
     const currentTheme = useColorStore(state => state.currentTheme);
     const primaryColors = useColorStore(state => state.primaryColors);
-     const isDark = useColorStore(state => state.isDark);
+    const isDark = useColorStore(state => state.isDark);
 
-
-    const [date, setDate] = useState(new Date())
     const [open, setOpen] = useState<boolean>(false)
     const [endDate, setEndDate] = useState<boolean>(false)
 
@@ -20,7 +18,16 @@ const EndDate = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispat
             <View style={styles.checkboxContainer}>
                 <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Set to End Date</Text>
                 <CheckBox
-                    onClick={() => { setEndDate(!endDate) }}
+                    onClick={() => {
+                        setEndDate(!endDate)
+                        if (endDate) {
+                            setHabit(h => ({ ...h, endDate: null }));
+                        } else {
+                            if (!habit.endDate) {
+                                setHabit(h => ({ ...h, endDate: new Date() }));
+                            }
+                        }
+                    }}
                     isChecked={endDate}
                     checkBoxColor={primaryColors.Primary}
                     style={styles.checkbox}
@@ -44,7 +51,7 @@ const EndDate = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispat
                     mode="date"
                     theme={isDark ? "dark" : "light"}
                     open={open}
-                    date={date}
+                    date={habit.endDate !== null ? habit.endDate : new Date()}
                     onConfirm={(date) => {
                         setOpen(false)
                         setHabit(h => ({ ...h, endDate: date }))
@@ -102,7 +109,6 @@ const styles = StyleSheet.create({
         borderRadius: 30,
     },
     buttonText: {
-        color: '#fff',
         fontSize: 14,
         fontWeight: '600',
     }

@@ -35,7 +35,7 @@ const Repeat = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatc
                         style={[
                             styles.customButton,
                             {
-                                backgroundColor: habit.repeat.type === type ? primaryColors.Primary : currentTheme.SecondoryText
+                                backgroundColor: habit.repeat.type === type ? primaryColors.Primary : primaryColors.Error
                             }
                         ]}
                         onPress={() => {
@@ -46,7 +46,7 @@ const Repeat = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatc
                             }
                         }}
                     >
-                        <Text style={styles.buttonText}>{type.charAt(0).toUpperCase() + type.slice(1)}</Text>
+                        <Text style={[styles.buttonText,{color:currentTheme.SecondoryText}]}>{type.charAt(0).toUpperCase() + type.slice(1)}</Text>
                     </TouchableOpacity>
                 ))}
             </View>

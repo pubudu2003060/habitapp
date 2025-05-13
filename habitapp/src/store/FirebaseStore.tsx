@@ -1,4 +1,4 @@
-import { userType } from "../types/Types"
+import { habitType, userType } from "../types/Types"
 import firestore, { Filter } from '@react-native-firebase/firestore';
 
 const isuserInFireStore = async (email: String) => {
@@ -25,7 +25,19 @@ const addUserToFireStore = async (newUser: userType) => {
     } catch (error) {
         console.log("user sign up data add error" + error)
     }
+}
 
+export const addHabittoFireStore = async (habit: habitType) => {
+     try {
+        await firestore()
+            .collection('habits')
+            .add(habit)
+            .then(() => {
+                console.log('User added!');
+            });
+    } catch (error) {
+        console.log("user sign up data add error" + error)
+    }
 }
 
 export { isuserInFireStore, addUserToFireStore }

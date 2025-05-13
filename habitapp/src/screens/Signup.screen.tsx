@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Alert, Button, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signUpInputType, userType } from '../types/Types';
-import { useuserStore } from '../store/UserStore';
+import { useUserStore } from '../store/UserStore';
 import useColorStore from '../store/ColorStore';
 import { addUserToFireStore, isuserInFireStore } from '../store/FirebaseStore';
 
@@ -16,7 +16,7 @@ const SignUp = ({ navigation }: any) => {
         password: ""
     });
 
-    const setUser = useuserStore(state => state.setUser);
+    const setUser = useUserStore(state => state.setUser);
 
     const signUp = async () => {
         const { name, email, password } = signUpInput;

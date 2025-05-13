@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { useuserStore } from '../store/UserStore';
+import { useUserStore } from '../store/UserStore';
 import Stack from './Stack';
 import Tabs from './BottmBar';
 
 const Navigation = () => {
-    const user = useuserStore(state => state.user);
-    const loadUser = useuserStore(state => state.loadUser);
+    const user = useUserStore(state => state.user);
+    const loadUser = useUserStore(state => state.loadUser);
 
     useEffect(() => {
         loadUser();

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { signInInputType, userType } from '../types/Types'
-import { useuserStore } from '../store/UserStore'
+import { useUserStore } from '../store/UserStore'
 import useColorStore from '../store/ColorStore'
 import { isuserInFireStore } from '../store/FirebaseStore'
 
@@ -15,7 +15,7 @@ const SignIn = ({ navigation }: any) => {
         password: ""
     });
 
-    const setUser = useuserStore(state => state.setUser);
+    const setUser = useUserStore(state => state.setUser);
 
     const signIn = async () => {
         const { email, password } = signInInput;
