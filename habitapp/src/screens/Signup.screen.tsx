@@ -3,8 +3,8 @@ import { Alert, Button, Text, TextInput, TouchableOpacity, View, StyleSheet } fr
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signUpInputType, userType } from '../types/Types';
 import { useuserStore } from '../store/UserStore';
-import useUsersStore from '../store/UsersStore';
 import useColorStore from '../store/ColorStore';
+import { addUserToFireStore, isuserInFireStore } from '../store/FirebaseStore';
 
 const SignUp = ({ navigation }: any) => {
     const currentTheme = useColorStore(state => state.currentTheme);
@@ -17,32 +17,29 @@ const SignUp = ({ navigation }: any) => {
     });
 
     const setUser = useuserStore(state => state.setUser);
-    const adduser = useUsersStore(state => state.adduser);
-    const isInUsers = useUsersStore(state => state.isInUsers);
-    const users = useUsersStore(state => state.users);
 
-    const signUp = () => {
+    const signUp = async () => {
         const { name, email, password } = signUpInput;
 
         if (!name.trim() || !email.trim() || !password.trim()) {
             return Alert.alert("Missing fields", "Please fill in all fields");
         }
 
-        const isUserIn = isInUsers(email);
-
-        if (isUserIn !== undefined) {
-            return Alert.alert("User already exists", "Please log in instead.");
-        }
-
         const newUser: userType = {
-            id: users.length + 1,
+            id: Date.now(),
             name,
             email,
             password
         };
 
+        const isUsesrin = await isuserInFireStore(newUser)
+
+        if (isUsesrin) {
+            return Alert.alert("User already exists", "Please log in instead.");
+        }
+
         setUser(newUser);
-        adduser(newUser);
+        addUserToFireStore(newUser)
 
         Alert.alert("Success", "Account created!", [
             { text: "OK", onPress: () => navigation.navigate("Home") }
@@ -95,7 +92,7 @@ const SignUp = ({ navigation }: any) => {
                 </View>
                 <View style={styles.loginTextContainer}>
                     <Text style={{ color: currentTheme.SecondoryText }}>Already have an account? </Text>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity onPress={() => { navigation.goBack() }}>
                         <Text style={{ color: primaryColors.Primary, fontWeight: '600' }}>Login</Text>
                     </TouchableOpacity>
                 </View>

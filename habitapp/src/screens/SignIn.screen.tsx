@@ -3,7 +3,6 @@ import { Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } fr
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { signInInputType, userType } from '../types/Types'
 import { useuserStore } from '../store/UserStore'
-import useUsersStore from '../store/UsersStore'
 import useColorStore from '../store/ColorStore'
 
 const SignIn = ({ navigation }: any) => {
@@ -16,7 +15,6 @@ const SignIn = ({ navigation }: any) => {
     });
 
     const setUser = useuserStore(state => state.setUser);
-    const isInUsers = useUsersStore(state => state.isInUsers);
 
     const signIn = () => {
         const { email, password } = signInInput;
@@ -28,7 +26,12 @@ const SignIn = ({ navigation }: any) => {
             );
         }
 
-        const existingUser = isInUsers(email);
+        const existingUser:userType = {
+            id: 0,
+            name: "",
+            email: "",
+            password: ""
+        }
 
         if (existingUser === undefined) {
             return Alert.alert("Account not found", "No user registered with this email.");
