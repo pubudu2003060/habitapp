@@ -46,7 +46,7 @@ const Repeat = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatc
                             }
                         }}
                     >
-                        <Text style={[styles.buttonText,{color:currentTheme.SecondoryText}]}>{type.charAt(0).toUpperCase() + type.slice(1)}</Text>
+                        <Text style={[styles.buttonText,{color:currentTheme.ButtonText}]}>{type.charAt(0).toUpperCase() + type.slice(1)}</Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -62,7 +62,7 @@ const Repeat = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatc
                             style={[
                                 styles.dayWrapper,
                                 {
-                                    backgroundColor: isSelected ? primaryColors.Primary : "gray",
+                                    backgroundColor: isSelected ? primaryColors.Primary : primaryColors.Error,
                                     opacity: disabled ? 0.4 : 1,
                                 }
                             ]}

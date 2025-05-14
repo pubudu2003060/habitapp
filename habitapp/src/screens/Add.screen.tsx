@@ -38,6 +38,9 @@ const Add = () => {
     if(habit.name.trim() == "" || habit.description.trim() == ""){
       return Alert.alert("Add name and Description!")
     }
+    if(habit.repeat.type === "daily" && habit.repeat.days.length === 0){
+      return Alert.alert("Add Days to Repeat!")
+    }
     addHabit(habit)
     addHabittoFireStore(habit)
     setHabit({

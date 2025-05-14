@@ -29,7 +29,7 @@ const EndDate = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispat
                         }
                     }}
                     isChecked={endDate}
-                    checkBoxColor={primaryColors.Primary}
+                    checkBoxColor={endDate ?primaryColors.Primary : primaryColors.Error}
                     style={styles.checkbox}
                 />
             </View>
@@ -49,6 +49,7 @@ const EndDate = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispat
                 <DatePicker
                     modal
                     mode="date"
+                    minimumDate={new Date()}
                     theme={isDark ? "dark" : "light"}
                     open={open}
                     date={habit.endDate !== null ? habit.endDate : new Date()}

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { userStoreType, userType } from '../types/Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useHabitStore } from './HabitsStore';
 
 export const useUserStore = create<userStoreType>((set, get) => ({
   user: null,
@@ -13,6 +14,8 @@ export const useUserStore = create<userStoreType>((set, get) => ({
     set({ user: signedUser ? JSON.parse(signedUser) : null });
   },
   removeUser: async () => {
+    const removeHabits = useHabitStore.getState().removeAll
+    removeHabits()
     await AsyncStorage.removeItem("@user");
     set({ user: null });
   },

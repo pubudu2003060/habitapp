@@ -9,12 +9,23 @@ export const useHabitStore = create<habitStoreType>((set) => ({
             habits: [...state.habits], habit
         }))
         const newHabitList = useHabitStore.getState()
-        await AsyncStorage.setItem("@user", JSON.stringify(newHabitList));
+        await AsyncStorage.setItem("@habits", JSON.stringify(newHabitList));
     },
-    loadHabits:() => {
-        
+    loadHabits: async () => {
+        const habits = await AsyncStorage.getItem("@habits");
+        const habitsString = habits ? JSON.parse(habits) : [];
+        set(() => ({
+            habits: habitsString
+        }));
     },
-    removeHabit: () => { },
+    removeHabit: async () => {
+
+    },
     edithabit: (habit: habitType) => { },
-    removeAll: () => { }
+    removeAll: async () => {
+        await AsyncStorage.removeItem("@habits");
+        set((state) => ({
+            habits: []
+        }))
+    }
 }))
