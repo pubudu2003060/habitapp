@@ -20,18 +20,29 @@ const SignIn = ({ navigation }: any) => {
         try {
             const { email, password } = signInInput;
 
-        if (!email.trim() || !password.trim()) {
-            return Alert.alert(
-                "Missing Fields",
-                "Please enter both email and password."
-            );
+            if (!email.trim() || !password.trim()) {
+                return Alert.alert(
+                    "Missing Fields",
+                    "Please enter both email and password."
+                );
+            }
+            await signInwithFirestore(signInInput)
+        } catch (error: any) {
+            if (error.code === 'auth/user-not-found') {
+                Alert.alert("SignIn Error", 'No user found with this email');
+            }
+            else if (error.code === 'auth/invalid-email') {
+                Alert.alert("SignIn Error", 'Enter a valid Email');
+            }
+            else if (error.code === 'auth/invalid-credential') {
+                Alert.alert("SignIn Error", 'Enter correct Email and Password');
+            }
+            else {
+                Alert.alert("SignUp Error", error.message || "Something went wrong.");
+            }
+
         }
 
-        signInwithFirestore(signInInput)
-        } catch (error) {
-             Alert.alert("SignIn Error", String(error));
-        }
-        
     };
 
     return (

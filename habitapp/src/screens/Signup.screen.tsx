@@ -23,12 +23,20 @@ const SignUp = ({ navigation }: any) => {
             if (!name.trim() || !email.trim() || !password.trim()) {
                 return Alert.alert("Missing fields", "Please fill in all fields");
             }
-            signUpwithFireStore(signUpInput)
-            Alert.alert("Success", "Account created!", [
-                { text: "OK", onPress: () => navigation.navigate("Home") }
-            ]);
-        } catch (error) {
-            Alert.alert("SignUp Error", String(error));
+            await signUpwithFireStore(signUpInput)
+        } catch (error: any) {
+            if (error.code === 'auth/email-already-in-use') {
+                Alert.alert("SignUp Error", "This email is already in use.");
+            } else if (error.code === 'auth/weak-password') {
+                Alert.alert("SignUp Error", "Password should be at least 6 characters.");
+            }
+            else if (error.code === 'auth/invalid-email') {
+                Alert.alert("SignUp Error", 'Enter a valid Email');
+            }
+            else {
+                Alert.alert("SignUp Error", error.message || "Something went wrong.");
+            }
+
         }
     };
 
