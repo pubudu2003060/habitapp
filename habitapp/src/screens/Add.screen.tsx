@@ -41,6 +41,7 @@ const Add = () => {
       return Alert.alert("Add Days to Repeat!")
     }
     addHabit(habit)
+    return Alert.alert("Habit added Succesfully!")
     setHabit({
       id: Date.now(),
       userId: user?.id || 0,
@@ -51,7 +52,6 @@ const Add = () => {
       goal: null,
       reminder: new Date(0, 0, 0)
     })
-    return Alert.alert("Habit added Succesfully!")
   }
 
   return (
