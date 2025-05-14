@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Alert, Button, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signUpInputType, userType } from '../types/Types';
-import { useUserStore } from '../store/UserStore';
 import useColorStore from '../store/ColorStore';
-import { addUserToFireStore, isuserInFireStore } from '../store/FirebaseStore';
+import { useUserStore } from '../store/UserStore';
 
 const SignUp = ({ navigation }: any) => {
     const currentTheme = useColorStore(state => state.currentTheme);
@@ -16,34 +15,21 @@ const SignUp = ({ navigation }: any) => {
         password: ""
     });
 
-    const setUser = useUserStore(state => state.setUser);
+    const signUpwithFireStore = useUserStore(state => state.signUpUser)
 
     const signUp = async () => {
-        const { name, email, password } = signUpInput;
-
-        if (!name.trim() || !email.trim() || !password.trim()) {
-            return Alert.alert("Missing fields", "Please fill in all fields");
+        try {
+            const { name, email, password } = signUpInput;
+            if (!name.trim() || !email.trim() || !password.trim()) {
+                return Alert.alert("Missing fields", "Please fill in all fields");
+            }
+            signUpwithFireStore(signUpInput)
+            Alert.alert("Success", "Account created!", [
+                { text: "OK", onPress: () => navigation.navigate("Home") }
+            ]);
+        } catch (error) {
+            Alert.alert("SignUp Error", String(error));
         }
-
-        const newUser: userType = {
-            id: Date.now(),
-            name,
-            email,
-            password
-        };
-
-        const isUsesrin = await isuserInFireStore(newUser.email)
-
-        if (!isUsesrin?.empty) {
-            return Alert.alert("User already exists", "Please log in instead.");
-        }
-
-        setUser(newUser);
-        addUserToFireStore(newUser)
-
-        Alert.alert("Success", "Account created!", [
-            { text: "OK", onPress: () => navigation.navigate("Home") }
-        ]);
     };
 
     return (

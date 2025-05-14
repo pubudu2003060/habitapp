@@ -39,8 +39,8 @@ export type userType = {
 
 export type userStoreType = {
     user: userType | null;
-    signInUser: (user: userType) => Promise<void>;
-    signUpUser: (user: userType) => Promise<void>;
+    signInUser: (user: signInInputType) => Promise<void>;
+    signUpUser: (user: signUpInputType) => Promise<void>;
     loadUser: () => Promise<void>;
     signOut: () => Promise<void>;
     editUser: (user: userType) => Promise<void>
@@ -71,7 +71,7 @@ export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Frida
 
 export type habitType = {
     id: number,
-    userId: number
+    userId: string
     name: string;
     description: string;
     repeat:

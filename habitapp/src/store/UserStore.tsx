@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { signUpInputType, userStoreType, userType } from '../types/Types';
+import { signInInputType, signUpInputType, userStoreType, userType } from '../types/Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useHabitStore } from './HabitsStore';
 import auth from '@react-native-firebase/auth';
@@ -7,7 +7,7 @@ import firestore, { Filter } from '@react-native-firebase/firestore';
 
 export const useUserStore = create<userStoreType>((set, get) => ({
   user: null,
-  signInUser: async (user: signUpInputType) => {
+  signInUser: async (user: signInInputType) => {
     try {
       const userCredentials = await auth().signInWithEmailAndPassword(user.email, user.password)
       const uid = userCredentials.user.uid
@@ -19,9 +19,10 @@ export const useUserStore = create<userStoreType>((set, get) => ({
       }))
     } catch (error) {
       console.error('Sign In Error:', error);
+      throw error
     }
   },
-  signUpUser: async (user: userType) => {
+  signUpUser: async (user: signUpInputType) => {
     try {
       const userCredentials = await auth().createUserWithEmailAndPassword(user.email, user.password)
       const uid = userCredentials.user.uid
@@ -38,6 +39,7 @@ export const useUserStore = create<userStoreType>((set, get) => ({
       await firestore().collection('users').doc(uid).set(newUser)
     } catch (error) {
       console.error('Sign Up Error:', error);
+      throw error
     }
   },
   loadUser: async () => {

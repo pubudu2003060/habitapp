@@ -4,7 +4,6 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { signInInputType, userType } from '../types/Types'
 import { useUserStore } from '../store/UserStore'
 import useColorStore from '../store/ColorStore'
-import { isuserInFireStore } from '../store/FirebaseStore'
 
 const SignIn = ({ navigation }: any) => {
     const currentTheme = useColorStore(state => state.currentTheme);
@@ -15,10 +14,11 @@ const SignIn = ({ navigation }: any) => {
         password: ""
     });
 
-    const setUser = useUserStore(state => state.setUser);
+    const signInwithFirestore = useUserStore(state => state.signInUser)
 
     const signIn = async () => {
-        const { email, password } = signInInput;
+        try {
+            const { email, password } = signInInput;
 
         if (!email.trim() || !password.trim()) {
             return Alert.alert(
@@ -27,23 +27,11 @@ const SignIn = ({ navigation }: any) => {
             );
         }
 
-        const isUsesrin = await isuserInFireStore(signInInput.email)
-
-        if (isUsesrin?.empty) {
-            return Alert.alert("Account not found", "No user registered with this email.");
+        signInwithFirestore(signInInput)
+        } catch (error) {
+             Alert.alert("SignIn Error", String(error));
         }
-
-        let ispasswordIn = false
-
-        isUsesrin?.forEach(documentSnapShot => {
-            const data = documentSnapShot.data() as userType;
-            if (data.password === signInInput.password) {
-                setUser(data);
-            }else{
-                return Alert.alert("Incorrect password", "Please check your password and try again.");
-            }
-        })
-
+        
     };
 
     return (

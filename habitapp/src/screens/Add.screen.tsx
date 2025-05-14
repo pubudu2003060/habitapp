@@ -24,7 +24,7 @@ const Add = () => {
   const [habit, setHabit] = useState<habitType>(
     {
       id: Date.now(),
-      userId: user?.id || 0,
+      userId: user?.id || "",
       name: "",
       description: "",
       repeat: { type: "daily", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] },
@@ -44,7 +44,7 @@ const Add = () => {
     return Alert.alert("Habit added Succesfully!")
     setHabit({
       id: Date.now(),
-      userId: user?.id || 0,
+      userId: user?.id || "",
       name: "",
       description: "",
       repeat: { type: "daily", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] },
