@@ -42,7 +42,7 @@ const EndDate = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispat
                     style={[styles.buttonWrapper, { backgroundColor: primaryColors.Primary }]}
                     onPress={() => setOpen(true)}
                 >
-                    <Text style={styles.buttonText}>
+                    <Text style={[styles.buttonText,{color:currentTheme.ButtonText}]}>
                         {habit.endDate ? habit.endDate.toDateString() : "Select End Date"}
                     </Text>
                 </TouchableOpacity>

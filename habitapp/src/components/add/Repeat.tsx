@@ -69,7 +69,7 @@ const Repeat = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatc
                             onPress={() => { if (!disabled) togalDay(fullDay); }}
                             disabled={disabled}
                         >
-                            <Text style={styles.dayText}>{day}</Text>
+                            <Text style={[styles.dayText,{color:currentTheme.ButtonText}]}>{day}</Text>
                         </TouchableOpacity>
                     )
                 })}
@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonText: {
-        color: 'white',
         fontWeight: '600',
     },
     daysContainer: {
@@ -123,7 +122,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     dayText: {
-        color: 'white',
         fontWeight: '600',
     }
 });

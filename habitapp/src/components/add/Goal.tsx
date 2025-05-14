@@ -18,13 +18,14 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                     onClick={() => {
                         if (habit.goal) {
                             setHabit(h => ({ ...h, goal: null }));
+                            setActiveSection("units");
                         } else {
                             setHabit(h => ({ ...h, goal: { type: "units", amount: 0 } }));
                             setActiveSection("units");
                         }
                     }}
                     isChecked={habit.goal ? true : false}
-                    checkBoxColor={primaryColors.Primary}
+                    checkBoxColor={habit.goal ? primaryColors.Primary : primaryColors.Error}
                     style={styles.checkbox}
                 />
             </View>
@@ -35,26 +36,26 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
             >
                 <TouchableOpacity
                     style={[styles.curvedButton, {
-                        backgroundColor: activeSection === "units" ? primaryColors.Primary : currentTheme.SecondoryText
+                        backgroundColor: activeSection === "units" ? primaryColors.Primary : primaryColors.Error
                     }]}
                     onPress={() => {
                         setActiveSection("units")
                         setHabit(h => ({ ...h, goal: { type: "units", amount: 0 } }))
                     }}
                 >
-                    <Text style={styles.buttonText}>Units</Text>
+                    <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Units</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={[styles.curvedButton, {
-                        backgroundColor: activeSection === "timer" ? primaryColors.Primary : currentTheme.SecondoryText
+                        backgroundColor: activeSection === "timer" ? primaryColors.Primary : primaryColors.Error
                     }]}
                     onPress={() => {
                         setActiveSection("timer")
                         setHabit(h => ({ ...h, goal: { type: "timer", timePeriod: { hours: 0, minutes: 0 } } }))
                     }}
                 >
-                    <Text style={styles.buttonText}>Timer</Text>
+                    <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Timer</Text>
                 </TouchableOpacity>
             </View>
 
@@ -72,7 +73,10 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                             placeholderTextColor={currentTheme.SecondoryText}
                             keyboardType="numeric"
                             value={habit.goal?.type === 'units' ? habit.goal.amount.toString() : ""}
-                            onChangeText={(text) => setHabit(h => ({ ...h, goal: { type: "units", amount: Number(text) } }))}
+                            onChangeText={(text) => {
+                                if (Number(text) <= 34)
+                                    setHabit(h => ({ ...h, goal: { type: "units", amount: Number(text) } }))
+                            }}
                         />
                     </View>
                 )}
@@ -91,16 +95,19 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                                 placeholderTextColor={currentTheme.SecondoryText}
                                 keyboardType="numeric"
                                 value={habit.goal?.type === 'timer' ? habit.goal.timePeriod.hours.toString() : "0"}
-                                onChangeText={(text) => setHabit(h => ({
-                                    ...h,
-                                    goal: {
-                                        type: 'timer',
-                                        timePeriod: {
-                                            hours: Number(text),
-                                            minutes: h.goal?.type === 'timer' ? h.goal.timePeriod.minutes : 0
-                                        }
-                                    }
-                                }))}
+                                onChangeText={(text) => {
+                                    if (Number(text) <= 23)
+                                        setHabit(h => ({
+                                            ...h,
+                                            goal: {
+                                                type: 'timer',
+                                                timePeriod: {
+                                                    hours: Number(text),
+                                                    minutes: h.goal?.type === 'timer' ? h.goal.timePeriod.minutes : 0
+                                                }
+                                            }
+                                        }))
+                                }}
                             />
                         </View>
 
@@ -116,16 +123,19 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                                 placeholderTextColor={currentTheme.SecondoryText}
                                 keyboardType="numeric"
                                 value={habit.goal?.type === 'timer' ? habit.goal.timePeriod.minutes.toString() : "0"}
-                                onChangeText={(text) => setHabit(h => ({
-                                    ...h,
-                                    goal: {
-                                        type: 'timer',
-                                        timePeriod: {
-                                            hours: h.goal?.type === 'timer' ? h.goal.timePeriod.hours : 0,
-                                            minutes: Number(text)
-                                        }
-                                    }
-                                }))}
+                                onChangeText={(text) => {
+                                    if (Number(text) <= 60)
+                                        setHabit(h => ({
+                                            ...h,
+                                            goal: {
+                                                type: 'timer',
+                                                timePeriod: {
+                                                    hours: h.goal?.type === 'timer' ? h.goal.timePeriod.hours : 0,
+                                                    minutes: Number(text)
+                                                }
+                                            }
+                                        }))
+                                }}
                             />
                         </View>
                     </View>
@@ -174,7 +184,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     buttonText: {
-        color: 'white',
         fontWeight: '600',
     },
     inputContainer: {
