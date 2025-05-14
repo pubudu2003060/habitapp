@@ -27,30 +27,4 @@ const addUserToFireStore = async (newUser: userType) => {
     }
 }
 
-export const addHabittoFireStore = async (habit: habitType) => {
-    try {
-        await firestore()
-            .collection('habits')
-            .add(habit)
-            .then(() => {
-                console.log('User added!');
-            });
-    } catch (error) {
-        console.log("user sign up data add error" + error)
-    }
-}
-
-export const loadHabitsfromFireStore = async (user: userType) => {
-    try {
-        const habits = await firestore()
-            .collection('habits')
-            .where(Filter("userId", "==", user.id))
-            .get()
-
-        return habits;
-    } catch (error) {
-        console.log("user sign up data add error" + error)
-    }
-}
-
 export { isuserInFireStore, addUserToFireStore }

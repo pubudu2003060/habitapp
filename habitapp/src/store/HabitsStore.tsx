@@ -1,38 +1,67 @@
 import { create } from "zustand";
 import { habitStoreType, habitType } from "../types/Types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import firestore, { Filter } from '@react-native-firebase/firestore';
 
 export const useHabitStore = create<habitStoreType>((set) => ({
     habits: [],
     addHabit: async (habit: habitType) => {
-        set((state) => ({
-            habits: [...state.habits, habit]
-        }))
-        const newHabitList = useHabitStore.getState().habits
-        await AsyncStorage.setItem("@habits", JSON.stringify(newHabitList));
+        try {
+            const habits = useHabitStore.getState().habits
+            const newHabits = [...habits, habit]
+            set(() => ({
+                habits: newHabits
+            }))
+            await AsyncStorage.setItem("@habits", JSON.stringify(newHabits));
+            await firestore()
+                .collection('habits')
+                .doc(habit.id.toString())
+                .set(habit)
+                .then(() => {
+                    console.log('User added!');
+                });
+        } catch (error) {
+            console.log("habit data add error" + error)
+        }
     },
-    loadHabits: async () => {
-        const habits = await AsyncStorage.getItem("@habits");
-        const habitsString = habits ? JSON.parse(habits) : [];
-        set(() => ({
-            habits: habitsString
-        }));
+    loadHabits: async (userID) => {
+        try {
+            const cashHabits = await AsyncStorage.getItem("@habits");
+            const habitsString = cashHabits ? JSON.parse(cashHabits) : [];
+            set(() => ({
+                habits: habitsString
+            }));
+            const snapshot = await firestore()
+                .collection('habits')
+                .where(Filter("userId", "==", userID))
+                .get()
+            const remoteHabits = snapshot.docs.map(doc => doc.data() as habitType)
+            set(() => ({
+                habits: remoteHabits
+            }))
+            await AsyncStorage.setItem("@habits", JSON.stringify(remoteHabits));
+        } catch (error) {
+            console.error('Error loading habits:', error);
+        }
+
     },
-    removeHabit: async (id: number) => {
+    removeHabit: async (userId: number) => {
+        const habits = useHabitStore.getState().habits
+        const filtered = [...habits].filter(h => h.userId !== userId)
         set((state) => ({
-            habits: state.habits.filter((habit) => habit.id !== id)
+            habits: filtered
         }))
-        const newHabitList = useHabitStore.getState().habits;
-        await AsyncStorage.setItem("@habits", JSON.stringify(newHabitList));
+        await AsyncStorage.setItem("@habits", JSON.stringify(filtered));
+        await firestore().collection('habits').doc(userId.toString()).delete()
     },
     editHabit: async (updatedHabit: habitType) => {
+        const habits = useHabitStore.getState().habits
+        const updated = habits.map(h => h.id === updatedHabit.id ? updatedHabit : h);
         set((state) => ({
-            habits: state.habits.map(habit =>
-                habit.id === updatedHabit.id ? updatedHabit : habit
-            )
+            habits: updated
         }))
-        const newHabitList = useHabitStore.getState().habits;
-        await AsyncStorage.setItem("@habits", JSON.stringify(newHabitList));
+        await AsyncStorage.setItem("@habits", JSON.stringify(updated));
+        await firestore().collection('habits').doc(updatedHabit.id.toString()).update(updatedHabit)
     },
     removeAll: async () => {
         await AsyncStorage.removeItem("@habits");

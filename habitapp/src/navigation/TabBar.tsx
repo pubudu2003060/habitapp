@@ -4,7 +4,7 @@ import { useLinkBuilder } from '@react-navigation/native';
 import { PlatformPressable } from '@react-navigation/elements';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import useColorStore from '../../store/ColorStore';
+import useColorStore from '../store/ColorStore';
 
 function TabBar({ state, descriptors, navigation }: { state: any; descriptors: Record<string, any>; navigation: any }) {
     const { buildHref } = useLinkBuilder();
@@ -46,7 +46,7 @@ function TabBar({ state, descriptors, navigation }: { state: any; descriptors: R
                         });
                     };
 
-                   
+
                     if (route.name === 'Add') {
                         return (
                             <PlatformPressable
@@ -60,8 +60,8 @@ function TabBar({ state, descriptors, navigation }: { state: any; descriptors: R
                                 onLongPress={onLongPress}
                                 style={styles.addButtonContainer}
                             >
-                                <View style={[styles.addButton, { backgroundColor: primaryColors.Primary, shadowColor: currentTheme.Border }]}>
-                                    <Icon name={iconName} size={24} color={currentTheme.ButtonText} />
+                                <View style={[styles.addButton, { backgroundColor: primaryColors.Info, shadowColor: currentTheme.Border }]}>
+                                    <Icon name={iconName} size={24} color={currentTheme.PrimaryText} />
                                 </View>
                             </PlatformPressable>
                         );
@@ -82,7 +82,7 @@ function TabBar({ state, descriptors, navigation }: { state: any; descriptors: R
                             <Icon
                                 name={iconName}
                                 size={24}
-                                color={isFocused ? primaryColors.Primary : currentTheme.SecondoryText}
+                                color={isFocused ? primaryColors.Info : currentTheme.PrimaryText}
                             />
                         </PlatformPressable>
                     );

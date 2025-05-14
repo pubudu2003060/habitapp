@@ -11,7 +11,6 @@ import HeaderBar from '../components/header/HeaderBar';
 import useColorStore from '../store/ColorStore';
 import { useUserStore } from '../store/UserStore';
 import { useHabitStore } from '../store/HabitsStore';
-import { addHabittoFireStore } from '../store/FirebaseStore';
 
 const Add = () => {
 
@@ -35,16 +34,15 @@ const Add = () => {
     })
 
   const add = () => {
-    if(habit.name.trim() == "" || habit.description.trim() == ""){
+    if (habit.name.trim() == "" || habit.description.trim() == "") {
       return Alert.alert("Add name and Description!")
     }
-    if(habit.repeat.type === "daily" && habit.repeat.days.length === 0){
+    if (habit.repeat.type === "daily" && habit.repeat.days.length === 0) {
       return Alert.alert("Add Days to Repeat!")
     }
     addHabit(habit)
-    addHabittoFireStore(habit)
     setHabit({
-        id: Date.now(),
+      id: Date.now(),
       userId: user?.id || 0,
       name: "",
       description: "",
@@ -53,7 +51,7 @@ const Add = () => {
       goal: null,
       reminder: new Date(0, 0, 0)
     })
-     return Alert.alert("Habit added Succesfully!")
+    return Alert.alert("Habit added Succesfully!")
   }
 
   return (
@@ -76,7 +74,7 @@ const Add = () => {
 
             onPress={() => { add() }}
           >
-            <Text style={[styles.buttonText,{color:currentTheme.ButtonText}]}>add</Text>
+            <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Add Habit</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -88,7 +86,7 @@ const styles = StyleSheet.create({
   customButton: {
     flex: 1,
     marginHorizontal: 16,
-    marginVertical: 12,
+    marginVertical: 20,
     paddingVertical: 10,
     borderRadius: 20,
     alignItems: 'center',

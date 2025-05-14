@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home.screen';
 import Profile from '../screens/Profile.screen';
-import TabBar from '../components/navigation/TabBar';
+import TabBar from './TabBar';
 import Add from '../screens/Add.screen';
 import Stat from '../screens/Stat.screen';
 import Explore from '../screens/Explore.screen';
