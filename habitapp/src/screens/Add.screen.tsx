@@ -53,6 +53,7 @@ const Add = () => {
       goal: null,
       reminder: new Date(0, 0, 0)
     })
+     return Alert.alert("Habit added Succesfully!")
   }
 
   return (
@@ -75,7 +76,7 @@ const Add = () => {
 
             onPress={() => { add() }}
           >
-            <Text style={styles.buttonText}>add</Text>
+            <Text style={[styles.buttonText,{color:currentTheme.ButtonText}]}>add</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -93,7 +94,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: 'white',
     fontWeight: '600',
   }
 })

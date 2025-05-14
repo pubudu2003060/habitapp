@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Text } from 'react-native'
+import { Button, FlatList, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useUserStore } from '../store/UserStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,7 +23,36 @@ const Home = () => {
       <Text>home</Text>
       <Button title="logout" onPress={remove}></Button>
       <Text>{user ? JSON.stringify(user) : 'No user logged in'}</Text>
-       <Text>{JSON.stringify(habits)}</Text>
+      <FlatList
+        data={habits}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View>
+            <Text>{item.id}</Text>
+            <Text>{item.userId}</Text>
+            <Text>{item.name}</Text>
+            <Text>{item.description}</Text>
+            <Text>{item.endDate ? item.endDate.toISOString() : 'No end date'}</Text>
+            <Text>
+              {item.goal
+                ? item.goal.type === 'units'
+                  ? `Units: ${item.goal.amount}`
+                  : `Timer: ${item.goal.timePeriod.hours}h ${item.goal.timePeriod.minutes}m`
+                : 'No goal'}
+            </Text>
+            <Text>{item.reminder ? item.reminder.toISOString() : 'No reminder'}</Text>
+            <Text>
+              {item.repeat.type === 'daily'
+                ? `Daily: ${item.repeat.days.join(', ')}`
+                : item.repeat.type === 'weekly'
+                ? 'Weekly'
+                : 'Monthly'}
+            </Text>
+          </View>
+        )}
+        ListEmptyComponent={<Text style={{ textAlign: 'center', marginTop: 20 }}>No habits found</Text>}
+
+      />
     </SafeAreaView>
   )
 }

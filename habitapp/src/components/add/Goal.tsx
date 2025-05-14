@@ -20,7 +20,7 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                             setHabit(h => ({ ...h, goal: null }));
                             setActiveSection("units");
                         } else {
-                            setHabit(h => ({ ...h, goal: { type: "units", amount: 0 } }));
+                            setHabit(h => ({ ...h, goal: { type: "units", amount: 1 } }));
                             setActiveSection("units");
                         }
                     }}
@@ -40,7 +40,7 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                     }]}
                     onPress={() => {
                         setActiveSection("units")
-                        setHabit(h => ({ ...h, goal: { type: "units", amount: 0 } }))
+                        setHabit(h => ({ ...h, goal: { type: "units", amount: 1 } }))
                     }}
                 >
                     <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Units</Text>
@@ -52,7 +52,7 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                     }]}
                     onPress={() => {
                         setActiveSection("timer")
-                        setHabit(h => ({ ...h, goal: { type: "timer", timePeriod: { hours: 0, minutes: 0 } } }))
+                        setHabit(h => ({ ...h, goal: { type: "timer", timePeriod: { hours: 0, minutes: 5 } } }))
                     }}
                 >
                     <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Timer</Text>
