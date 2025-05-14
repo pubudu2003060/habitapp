@@ -41,7 +41,7 @@ const Add = () => {
       return Alert.alert("Add Days to Repeat!")
     }
     addHabit(habit)
-    return Alert.alert("Habit added Succesfully!")
+    Alert.alert("Habit added Succesfully!")
     setHabit({
       id: Date.now(),
       userId: user?.id || "",

@@ -9,13 +9,15 @@ import { useFocusEffect } from '@react-navigation/native';
 
 const Home = () => {
 
-  const remove = useUserStore(state => state.removeUser)
+  const remove = useUserStore(state => state.signOut)
   const user = useUserStore(state => state.user)
   const loadHabits = useHabitStore(state => state.loadHabits)
   const habits = useHabitStore(state => state.habits)
 
   useEffect(() => {
-    loadHabits();
+    if (user) {
+      loadHabits(user.id);
+    }
   }, [])
 
 
@@ -34,7 +36,7 @@ const Home = () => {
             <Text>{item.userId}</Text>
             <Text>{item.name}</Text>
             <Text>{item.description}</Text>
-            <Text>{item.endDate ? item.endDate.toISOString() : 'No end date'}</Text>
+            <Text>{item.endDate ? item.endDate.toString() : 'No end date'}</Text>
             <Text>
               {item.goal
                 ? item.goal.type === 'units'

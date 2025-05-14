@@ -47,7 +47,7 @@ export const useHabitStore = create<habitStoreType>((set) => ({
     },
     removeHabit: async (userId: number) => {
         const habits = useHabitStore.getState().habits
-        const filtered = [...habits].filter(h => h.userId !== userId)
+        const filtered = [...habits].filter(h => h.userId !== String(userId))
         set((state) => ({
             habits: filtered
         }))

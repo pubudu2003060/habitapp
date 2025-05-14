@@ -94,7 +94,7 @@ export type habitType = {
 export type habitStoreType = {
     habits: habitType[];
     addHabit: (habit: habitType) => Promise<void>;
-    loadHabits: (userID: number) => Promise<void>;
+    loadHabits: (userID: string) => Promise<void>;
     removeHabit: (id: number) => Promise<void>;
     editHabit: (habit: habitType) => Promise<void>;
     removeAll: () => Promise<void>;
