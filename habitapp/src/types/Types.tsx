@@ -31,18 +31,19 @@ export type colorStoreType = {
 }
 
 export type userType = {
-    id: number
-    name: String;
-    email: String;
-    password: String;
+    id: string;
+    name: string;
+    email: string;
+    password: string;
 }
 
 export type userStoreType = {
     user: userType | null;
-    setUser: (user: userType) => void;
-    loadUser: () => void;
-    removeUser: () => void;
-    editUser: (user: userType) => void
+    signInUser: (user: userType) => Promise<void>;
+    signUpUser: (user: userType) => Promise<void>;
+    loadUser: () => Promise<void>;
+    signOut: () => Promise<void>;
+    editUser: (user: userType) => Promise<void>
 }
 
 export type signInInputType = {
@@ -93,8 +94,8 @@ export type habitType = {
 export type habitStoreType = {
     habits: habitType[];
     addHabit: (habit: habitType) => Promise<void>;
-    loadHabits:(userID:number) => Promise<void>;
-    removeHabit: (id:number) => Promise<void>;
+    loadHabits: (userID: number) => Promise<void>;
+    removeHabit: (id: number) => Promise<void>;
     editHabit: (habit: habitType) => Promise<void>;
     removeAll: () => Promise<void>;
 }
