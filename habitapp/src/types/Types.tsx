@@ -94,7 +94,7 @@ export type habitStoreType = {
     habits: habitType[];
     addHabit: (habit: habitType) => void;
     loadHabits:() => void;
-    removeHabit: () => void;
-    edithabit: (habit: habitType) => void;
+    removeHabit: (id:number) => void;
+    editHabit: (habit: habitType) => void;
     removeAll: () => void;
 }

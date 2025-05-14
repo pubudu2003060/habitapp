@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, FlatList, Text, View } from 'react-native'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useUserStore } from '../store/UserStore';
@@ -14,9 +14,10 @@ const Home = () => {
   const loadHabits = useHabitStore(state => state.loadHabits)
   const habits = useHabitStore(state => state.habits)
 
-  useFocusEffect(() => {
-    loadHabits()
-  })
+  useEffect(() => {
+    loadHabits();
+  }, [])
+
 
   return (
     <SafeAreaView>
@@ -28,6 +29,7 @@ const Home = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View>
+            <Text>-------------------------</Text>
             <Text>{item.id}</Text>
             <Text>{item.userId}</Text>
             <Text>{item.name}</Text>
@@ -40,13 +42,13 @@ const Home = () => {
                   : `Timer: ${item.goal.timePeriod.hours}h ${item.goal.timePeriod.minutes}m`
                 : 'No goal'}
             </Text>
-            <Text>{item.reminder ? item.reminder.toISOString() : 'No reminder'}</Text>
+            <Text>{item.reminder ? item.reminder.toString() : 'No reminder'}</Text>
             <Text>
               {item.repeat.type === 'daily'
                 ? `Daily: ${item.repeat.days.join(', ')}`
                 : item.repeat.type === 'weekly'
-                ? 'Weekly'
-                : 'Monthly'}
+                  ? 'Weekly'
+                  : 'Monthly'}
             </Text>
           </View>
         )}

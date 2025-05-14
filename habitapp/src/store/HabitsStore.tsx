@@ -6,9 +6,9 @@ export const useHabitStore = create<habitStoreType>((set) => ({
     habits: [],
     addHabit: async (habit: habitType) => {
         set((state) => ({
-            habits: [...state.habits], habit
+            habits: [...state.habits, habit]
         }))
-        const newHabitList = useHabitStore.getState()
+        const newHabitList = useHabitStore.getState().habits
         await AsyncStorage.setItem("@habits", JSON.stringify(newHabitList));
     },
     loadHabits: async () => {
@@ -18,10 +18,22 @@ export const useHabitStore = create<habitStoreType>((set) => ({
             habits: habitsString
         }));
     },
-    removeHabit: async () => {
-
+    removeHabit: async (id: number) => {
+        set((state) => ({
+            habits: state.habits.filter((habit) => habit.id !== id)
+        }))
+        const newHabitList = useHabitStore.getState().habits;
+        await AsyncStorage.setItem("@habits", JSON.stringify(newHabitList));
     },
-    edithabit: (habit: habitType) => { },
+    editHabit: async (updatedHabit: habitType) => {
+        set((state) => ({
+            habits: state.habits.map(habit =>
+                habit.id === updatedHabit.id ? updatedHabit : habit
+            )
+        }))
+        const newHabitList = useHabitStore.getState().habits;
+        await AsyncStorage.setItem("@habits", JSON.stringify(newHabitList));
+    },
     removeAll: async () => {
         await AsyncStorage.removeItem("@habits");
         set((state) => ({
