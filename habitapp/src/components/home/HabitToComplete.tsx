@@ -16,15 +16,7 @@ const getTodayHabits = (habits:habitType[]) => {
 
 const HabitToComplete = () => {
 
-    const user = useUserStore(state => state.user)
-    const loadHabits = useHabitStore(state => state.loadHabits)
     const habits = useHabitStore(state => state.habits)
-
-    useEffect(() => {
-        if (user) {
-            loadHabits(user.id);
-        }
-    }, [])
 
     const todayHabits = getTodayHabits(habits);
 

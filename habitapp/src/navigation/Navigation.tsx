@@ -12,10 +12,13 @@ const Navigation = () => {
 
     useEffect(() => {
         loadUser();
+    }, []);
+
+    useEffect(() => {
         if (user) {
             loadHabits(user.id);
         }
-    }, []);
+    }, [user]);
 
     return (
         <NavigationContainer>
