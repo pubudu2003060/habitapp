@@ -14,6 +14,8 @@ const Home = () => {
   const loadHabits = useHabitStore(state => state.loadHabits)
   const habits = useHabitStore(state => state.habits)
 
+  const [displayedDay,setDisplayedDay] = useState(new Date())
+
   useEffect(() => {
     if (user) {
       loadHabits(user.id);
@@ -23,7 +25,7 @@ const Home = () => {
   return (
     <SafeAreaView style={{ backgroundColor: currentTheme.Background }}>
       <ScrollView>
-        <ShortStatus />
+        <ShortStatus displayedDay={displayedDay} setDisplayedDay={setDisplayedDay}/>
         <FlatList
           data={habits}
           keyExtractor={(item) => item.id.toString()}

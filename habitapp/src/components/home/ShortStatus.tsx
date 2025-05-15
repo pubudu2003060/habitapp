@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, StyleSheet } from 'react-native'
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { useUserStore } from '../../store/UserStore'
 import PagerView from 'react-native-pager-view';
 import { addDays, eachDayOfInterval, eachWeekOfInterval, format, subDays } from 'date-fns';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import useColorStore from '../../store/ColorStore';
 
-const ShortStatus = () => {
+const ShortStatus = ({ displayedDay, setDisplayedDay }: { displayedDay: Date, setDisplayedDay: React.Dispatch<React.SetStateAction<Date>> }) => {
   const user = useUserStore(state => state.user)
   const [today] = useState(new Date())
   const currentTheme = useColorStore(state => state.currentTheme);
@@ -51,18 +51,19 @@ const ShortStatus = () => {
               <View key={i} style={styles.daysRow}>
                 {week.map((day, index) => {
                   const txt = format(day, 'EEEEE')
-                  const isToday = day.getDate() === today.getDate() &&
-                    day.getMonth() === today.getMonth() &&
-                    day.getFullYear() === today.getFullYear();
+                  const isToday = day.getDate() === displayedDay.getDate() &&
+                    day.getMonth() === displayedDay.getMonth() &&
+                    day.getFullYear() === displayedDay.getFullYear();
 
                   return (
-                    <View
-                      key={index}
+                    <TouchableOpacity key={index}
                       style={[
                         styles.dayContainer,
                         isToday && { backgroundColor: primaryColors.Primary, borderRadius: 20 }
                       ]}
-                    >
+                      
+                      onPress={()=>{setDisplayedDay(day)}}
+                      >
                       <Text style={[
                         styles.dayText,
                         { color: isToday ? currentTheme.ButtonText : currentTheme.PrimaryText }
@@ -75,7 +76,7 @@ const ShortStatus = () => {
                       ]}>
                         {day.getDate()}
                       </Text>
-                    </View>
+                    </TouchableOpacity>
                   )
                 })}
               </View>
