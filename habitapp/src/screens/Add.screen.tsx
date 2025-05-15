@@ -55,7 +55,7 @@ const Add = () => {
   }
 
   return (
-    <SafeAreaView style={{ backgroundColor: currentTheme.Background }}>
+    <SafeAreaView style={{backgroundColor: currentTheme.Background }}>
       <ScrollView>
         <HeaderBar title="Create Habit"></HeaderBar>
         <NameAndDescription habit={habit} setHabit={setHabit} />
@@ -63,7 +63,7 @@ const Add = () => {
         <EndDate habit={habit} setHabit={setHabit} />
         <Goal habit={habit} setHabit={setHabit} />
         <Reminder habit={habit} setHabit={setHabit} />
-        <View>
+        <View style={{marginBottom:100}}>
           <TouchableOpacity
             style={[
               styles.customButton,

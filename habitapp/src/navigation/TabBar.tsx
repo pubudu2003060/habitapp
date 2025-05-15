@@ -68,7 +68,6 @@ function TabBar({ state, descriptors, navigation }: { state: any; descriptors: R
                         });
                     };
 
-
                     if (route.name === 'Add') {
                         return (
                             <PlatformPressable

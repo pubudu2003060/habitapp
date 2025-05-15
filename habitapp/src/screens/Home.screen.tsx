@@ -1,62 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import { FlatList, ScrollView, Text, View } from 'react-native'
-import { useUserStore } from '../store/UserStore';
+import React, { useState } from 'react'
+import { ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useHabitStore } from '../store/HabitsStore';
 import ShortStatus from '../components/home/ShortStatus';
 import useColorStore from '../store/ColorStore';
+import HabitToComplete from '../components/home/HabitToComplete';
 
 const Home = () => {
 
   const currentTheme = useColorStore(state => state.currentTheme);
 
-  const user = useUserStore(state => state.user)
-  const loadHabits = useHabitStore(state => state.loadHabits)
-  const habits = useHabitStore(state => state.habits)
-
-  const [displayedDay,setDisplayedDay] = useState(new Date())
-
-  useEffect(() => {
-    if (user) {
-      loadHabits(user.id);
-    }
-  }, [])
+  const [displayedDay, setDisplayedDay] = useState(new Date())
 
   return (
     <SafeAreaView style={{ backgroundColor: currentTheme.Background }}>
       <ScrollView>
-        <ShortStatus displayedDay={displayedDay} setDisplayedDay={setDisplayedDay}/>
-        <FlatList
-          data={habits}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <View>
-              <Text>-------------------------</Text>
-              <Text>{item.id}</Text>
-              <Text>{item.userId}</Text>
-              <Text>{item.name}</Text>
-              <Text>{item.description}</Text>
-              <Text>{item.endDate ? item.endDate.toString() : 'No end date'}</Text>
-              <Text>
-                {item.goal
-                  ? item.goal.type === 'units'
-                    ? `Units: ${item.goal.amount}`
-                    : `Timer: ${item.goal.timePeriod.hours}h ${item.goal.timePeriod.minutes}m`
-                  : 'No goal'}
-              </Text>
-              <Text>{item.reminder ? item.reminder.toString() : 'No reminder'}</Text>
-              <Text>
-                {item.repeat.type === 'daily'
-                  ? `Daily: ${item.repeat.days.join(', ')}`
-                  : item.repeat.type === 'weekly'
-                    ? 'Weekly'
-                    : 'Monthly'}
-              </Text>
-            </View>
-          )}
-          ListEmptyComponent={<Text style={{ textAlign: 'center', marginTop: 20 }}>No habits found</Text>}
-
-        />
+        <ShortStatus displayedDay={displayedDay} setDisplayedDay={setDisplayedDay} />
+        <HabitToComplete />
       </ScrollView>
     </SafeAreaView>
   )
