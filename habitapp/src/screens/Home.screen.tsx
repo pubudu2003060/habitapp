@@ -1,15 +1,12 @@
-import React, { useEffect } from 'react'
-import { Button, FlatList, Text, View } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React, { useEffect, useState } from 'react'
+import { FlatList, Text, View } from 'react-native'
 import { useUserStore } from '../store/UserStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useHabitStore } from '../store/HabitsStore';
-import { useFocusEffect } from '@react-navigation/native';
-
+import ShortStatus from '../components/home/ShortStatus';
 
 const Home = () => {
 
-  const remove = useUserStore(state => state.signOut)
   const user = useUserStore(state => state.user)
   const loadHabits = useHabitStore(state => state.loadHabits)
   const habits = useHabitStore(state => state.habits)
@@ -20,12 +17,11 @@ const Home = () => {
     }
   }, [])
 
+  const [today] = useState(new Date())
 
   return (
     <SafeAreaView>
-      <Text>home</Text>
-      <Button title="logout" onPress={remove}></Button>
-      <Text>{user ? JSON.stringify(user) : 'No user logged in'}</Text>
+      <ShortStatus />
       <FlatList
         data={habits}
         keyExtractor={(item) => item.id.toString()}
