@@ -41,45 +41,43 @@ const ShortStatus = () => {
             year: 'numeric',
           })}
         </Text>
-        <Text style={[styles.welcomeText, { color: currentTheme.PrimaryText }]}>Hi, {user?.name}</Text>
+        <Text style={[styles.welcomeText, { color: primaryColors.Info }]}>Hi, {user?.name}</Text>
       </View>
 
-      <PagerView style={styles.pagerView} initialPage={0}>
+      <PagerView style={styles.pagerView} initialPage={2} >
         {
           dates.map((week, i) => {
             return (
-              <View key={i} style={styles.weekContainer}>
-                <View style={styles.daysRow}>
-                  {week.map((day, index) => {
-                    const txt = format(day, 'EEEEE')
-                    const isToday = day.getDate() === today.getDate() && 
-                                   day.getMonth() === today.getMonth() &&
-                                   day.getFullYear() === today.getFullYear();
-                    
-                    return (
-                      <View 
-                        key={index} 
-                        style={[
-                          styles.dayContainer, 
-                          isToday && { backgroundColor: primaryColors.Primary, borderRadius: 20 }
-                        ]}
-                      >
-                        <Text style={[
-                          styles.dayText, 
-                          { color: isToday ? currentTheme.ButtonText : currentTheme.PrimaryText }
-                        ]}>
-                          {txt}
-                        </Text>
-                        <Text style={[
-                          styles.dateNumber, 
-                          { color: isToday ? currentTheme.ButtonText : currentTheme.PrimaryText }
-                        ]}>
-                          {day.getDate()}
-                        </Text>
-                      </View>
-                    )
-                  })}
-                </View>
+              <View key={i} style={styles.daysRow}>
+                {week.map((day, index) => {
+                  const txt = format(day, 'EEEEE')
+                  const isToday = day.getDate() === today.getDate() &&
+                    day.getMonth() === today.getMonth() &&
+                    day.getFullYear() === today.getFullYear();
+
+                  return (
+                    <View
+                      key={index}
+                      style={[
+                        styles.dayContainer,
+                        isToday && { backgroundColor: primaryColors.Primary, borderRadius: 20 }
+                      ]}
+                    >
+                      <Text style={[
+                        styles.dayText,
+                        { color: isToday ? currentTheme.ButtonText : currentTheme.PrimaryText }
+                      ]}>
+                        {txt}
+                      </Text>
+                      <Text style={[
+                        styles.dateNumber,
+                        { color: isToday ? currentTheme.ButtonText : currentTheme.PrimaryText }
+                      ]}>
+                        {day.getDate()}
+                      </Text>
+                    </View>
+                  )
+                })}
               </View>
             )
           })
@@ -95,11 +93,11 @@ const ShortStatus = () => {
           tintColor={primaryColors.Primary}
           onAnimationComplete={() => console.log('onAnimationComplete')}
           backgroundColor={currentTheme.Border} />
-          <View style={styles.statsTextContainer}>
-            <Text style={[styles.statsTitle, { color: currentTheme.PrimaryText }]}>Daily Habits</Text>
-            <Text style={[styles.statsSubtitle, { color: primaryColors.Accent }]}>Almost there! Goals in reach!</Text>
-            <Text style={[styles.statsProgress, { color: currentTheme.SecondoryText }]}>3/7 of habit complete</Text>
-          </View>
+        <View style={styles.statsTextContainer}>
+          <Text style={[styles.statsTitle, { color: currentTheme.PrimaryText }]}>Daily Habits</Text>
+          <Text style={[styles.statsSubtitle, { color: primaryColors.Accent }]}>Almost there! Goals in reach!</Text>
+          <Text style={[styles.statsProgress, { color: currentTheme.SecondoryText }]}>3/7 of habit complete</Text>
+        </View>
       </View>
 
     </View>
@@ -108,8 +106,9 @@ const ShortStatus = () => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 500,
-    padding: 16,
+    marginHorizontal: 16,
+    marginVertical: 12,
+    height: 350,
   },
   headerContainer: {
     marginBottom: 16,
@@ -119,21 +118,16 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   welcomeText: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: '700',
     marginBottom: 16,
   },
   pagerView: {
     flex: 1,
-    marginBottom: 16,
-  },
-  weekContainer: {
-    paddingVertical: 12,
   },
   daysRow: {
-    flexDirection: "row", 
-    justifyContent: "space-around", 
-    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   dayContainer: {
     width: 40,

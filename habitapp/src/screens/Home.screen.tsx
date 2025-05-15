@@ -9,7 +9,6 @@ import useColorStore from '../store/ColorStore';
 const Home = () => {
 
   const currentTheme = useColorStore(state => state.currentTheme);
-  const primaryColors = useColorStore(state => state.primaryColors);
 
   const user = useUserStore(state => state.user)
   const loadHabits = useHabitStore(state => state.loadHabits)
@@ -20,8 +19,6 @@ const Home = () => {
       loadHabits(user.id);
     }
   }, [])
-
-  const [today] = useState(new Date())
 
   return (
     <SafeAreaView style={{ backgroundColor: currentTheme.Background }}>
