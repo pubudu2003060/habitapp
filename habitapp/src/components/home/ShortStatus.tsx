@@ -2,18 +2,21 @@ import React, { useState, useEffect } from 'react'
 import { Text, View, StyleSheet } from 'react-native'
 import { useUserStore } from '../../store/UserStore'
 import PagerView from 'react-native-pager-view';
-import { addDays, eachDayOfInterval, format, subDays } from 'date-fns';
+import { addDays, eachDayOfInterval, eachWeekOfInterval, format, subDays } from 'date-fns';
 
 const ShortStatus = () => {
   const user = useUserStore(state => state.user)
   const [today] = useState(new Date())
 
 
-  const dates = eachDayOfInterval(
+  const dates = eachWeekOfInterval(
     {
       start: subDays(new Date(), 14),
       end: addDays(new Date(), 14)
     },
+    {
+      weekStartsOn:1
+    }
   ).reduce((acc: Date[][], cur) => {
     const alldays = eachDayOfInterval({
       start: cur,
