@@ -21,7 +21,6 @@ const Home = () => {
     );
   };
 
-
   return (
     <SafeAreaView style={{ backgroundColor: currentTheme.Background }}>
       <ScrollView>

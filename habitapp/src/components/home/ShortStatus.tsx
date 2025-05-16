@@ -14,8 +14,8 @@ const ShortStatus = ({ displayedDay, setDisplayedDay }: { displayedDay: Date, se
 
   const dates = eachWeekOfInterval(
     {
-      start: subDays(new Date(), 7),
-      end: addDays(new Date(), 7)
+      start: subDays(new Date(), 21),
+      end: new Date()
     },
     {
       weekStartsOn: 1
