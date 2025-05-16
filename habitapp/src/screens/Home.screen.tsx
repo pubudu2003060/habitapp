@@ -15,7 +15,7 @@ const Home = () => {
     <SafeAreaView style={{ backgroundColor: currentTheme.Background }}>
       <ScrollView>
         <ShortStatus displayedDay={displayedDay} setDisplayedDay={setDisplayedDay} />
-        <HabitToComplete />
+        <HabitToComplete  displayedDay={displayedDay}/>
       </ScrollView>
     </SafeAreaView>
   )

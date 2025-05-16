@@ -89,6 +89,7 @@ export type habitType = {
     } |
     null;
     reminder: Date;
+    status:'current'|'finished'|'deleted'
 }
 
 export type habitStoreType = {

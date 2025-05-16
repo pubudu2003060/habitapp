@@ -57,7 +57,7 @@ const SignUp = ({ navigation }: any) => {
                         value={signUpInput.name}
                         placeholder="Enter Name"
                         placeholderTextColor={currentTheme.SecondoryText}
-                        onChangeText={(text) => setSignUpInput(prev => ({ ...prev, name: text }))}
+                        onChangeText={(text) => setSignUpInput(prev => ({ ...prev, name: text.trim() }))}
                     />
                     <TextInput
                         style={[styles.input, {
@@ -69,7 +69,7 @@ const SignUp = ({ navigation }: any) => {
                         placeholder="Enter Email"
                         placeholderTextColor={currentTheme.SecondoryText}
                         autoCapitalize="none"
-                        onChangeText={(text) => setSignUpInput(prev => ({ ...prev, email: text }))}
+                        onChangeText={(text) => setSignUpInput(prev => ({ ...prev, email: text.trim() }))}
                     />
                     <TextInput
                         style={[styles.input, {
@@ -81,7 +81,7 @@ const SignUp = ({ navigation }: any) => {
                         placeholder="Enter Password"
                         placeholderTextColor={currentTheme.SecondoryText}
                         secureTextEntry
-                        onChangeText={(text) => setSignUpInput(prev => ({ ...prev, password: text }))}
+                        onChangeText={(text) => setSignUpInput(prev => ({ ...prev, password: text.trim() }))}
                     />
                 </View>
                 <View style={styles.loginTextContainer}>

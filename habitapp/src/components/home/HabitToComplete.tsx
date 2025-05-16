@@ -1,48 +1,47 @@
-import React, { useEffect } from 'react'
-import { View, Text, FlatList } from 'react-native'
-import { useUserStore } from '../../store/UserStore'
+import React, { useEffect, useState } from 'react'
+import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 import { useHabitStore } from '../../store/HabitsStore'
 import { habitType } from '../../types/Types'
 
-const getTodayHabits = (habits:habitType[]) => {
-    const today = new Date().getDay(); 
+const HabitToComplete = ({ displayedDay }: { displayedDay: Date }) => {
+  const habits = useHabitStore(state => state.habits)
+  const periodTypes = ['daily', 'weekly', 'monthly']
+  const [timePeriod, setTimePeriod] = useState('daily')
+  const [todayHabits, setTodayHabits] = useState<habitType[]>([])
 
-    return habits.filter((habit:habitType) => {
-        if (habit.repeat.type === 'daily') return true;
-        if (habit.repeat.type === 'weekly') return true;
-        return false;
-    });
-}
+  const getTodayHabits = (habits: habitType[], timePeriod: string) => {
+    const filteredHabits = habits.filter((habit) => habit.repeat.type === timePeriod)
+    setTodayHabits(filteredHabits)
+  }
 
-const HabitToComplete = () => {
+  useEffect(() => {
+    getTodayHabits(habits, timePeriod)
+  }, [habits, timePeriod, displayedDay])
 
-    const habits = useHabitStore(state => state.habits)
+  return (
+    <View style={{ padding: 20 }}>
+      <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Habits to Complete</Text>
 
-    const todayHabits = getTodayHabits(habits);
+      <View>
+        {periodTypes.map((period, i) => (
+          <TouchableOpacity key={i} onPress={() => setTimePeriod(period)}>
+            <Text>{period}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
-    if (todayHabits.length === 0) {
-        return (
-            <View style={{ padding: 20 }}>
-                <Text>No habits to complete today 🚀</Text>
-            </View>
-        );
-    }
-
-    return (
-        <View style={{ padding: 20 }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Today's Habits</Text>
-            <FlatList
-                data={todayHabits}
-                keyExtractor={(item,i) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={{ marginBottom: 10 }}>
-                        <Text style={{ fontSize: 16 }}>{item.name}</Text>
-                        <Text style={{ fontSize: 16 }}>{item.repeat.type}</Text>
-                    </View>
-                )}
-            />
-        </View>
-    )
+      <FlatList
+        data={todayHabits}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={{ marginBottom: 10 }}>
+            <Text style={{ fontSize: 16 }}>{item.name}</Text>
+            <Text style={{ fontSize: 16 }}>{item.repeat.type}</Text>
+          </View>
+        )}
+      />
+    </View>
+  )
 }
 
 export default HabitToComplete

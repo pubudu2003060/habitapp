@@ -64,7 +64,7 @@ const SignIn = ({ navigation }: any) => {
                         placeholder="Enter Email"
                         placeholderTextColor={currentTheme.SecondoryText}
                         autoCapitalize="none"
-                        onChangeText={(text) => setSignInInput(prev => ({ ...prev, email: text }))}
+                        onChangeText={(text) => setSignInInput(prev => ({ ...prev, email: text.trim() }))}
                     />
                     <TextInput
                         style={[styles.input, {
@@ -76,7 +76,7 @@ const SignIn = ({ navigation }: any) => {
                         placeholder="Enter Password"
                         placeholderTextColor={currentTheme.SecondoryText}
                         secureTextEntry
-                        onChangeText={(text) => setSignInInput(prev => ({ ...prev, password: text }))}
+                        onChangeText={(text) => setSignInInput(prev => ({ ...prev, password: text.trim() }))}
                     />
                 </View>
 

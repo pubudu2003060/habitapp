@@ -30,7 +30,8 @@ const Add = () => {
       repeat: { type: "daily", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] },
       endDate: null,
       goal: null,
-      reminder: new Date(0, 0, 0)
+      reminder: new Date(0, 0, 0),
+      status:"current"
     })
 
   const add = () => {
@@ -50,7 +51,8 @@ const Add = () => {
       repeat: { type: "daily", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] },
       endDate: null,
       goal: null,
-      reminder: new Date(0, 0, 0)
+      reminder: new Date(0, 0, 0),
+       status:"current"
     })
   }
 
