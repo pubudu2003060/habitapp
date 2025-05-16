@@ -29,8 +29,7 @@ export const useUserStore = create<userStoreType>((set, get) => ({
       const newUser: userType = {
         id: uid,
         name: user.name,
-        email: user.email,
-        password: user.password,
+        email: user.email
       }
       await AsyncStorage.setItem('@user', JSON.stringify(newUser));
       set(() => ({

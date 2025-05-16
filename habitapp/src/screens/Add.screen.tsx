@@ -31,7 +31,8 @@ const Add = () => {
       endDate: null,
       goal: null,
       reminder: new Date(0, 0, 0),
-      status:"current"
+      status: "current",
+      setDate: new Date()
     })
 
   const add = () => {
@@ -52,12 +53,13 @@ const Add = () => {
       endDate: null,
       goal: null,
       reminder: new Date(0, 0, 0),
-       status:"current"
+      status: "current",
+      setDate: new Date()
     })
   }
 
   return (
-    <SafeAreaView style={{backgroundColor: currentTheme.Background }}>
+    <SafeAreaView style={{ backgroundColor: currentTheme.Background }}>
       <ScrollView>
         <HeaderBar title="Create Habit"></HeaderBar>
         <NameAndDescription habit={habit} setHabit={setHabit} />
@@ -65,7 +67,7 @@ const Add = () => {
         <EndDate habit={habit} setHabit={setHabit} />
         <Goal habit={habit} setHabit={setHabit} />
         <Reminder habit={habit} setHabit={setHabit} />
-        <View style={{marginBottom:100}}>
+        <View style={{ marginBottom: 100 }}>
           <TouchableOpacity
             style={[
               styles.customButton,

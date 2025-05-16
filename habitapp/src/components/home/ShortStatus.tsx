@@ -44,7 +44,7 @@ const ShortStatus = ({ displayedDay, setDisplayedDay }: { displayedDay: Date, se
         <Text style={[styles.welcomeText, { color: primaryColors.Info }]}>Hi, {user?.name}</Text>
       </View>
 
-      <PagerView style={styles.pagerView} initialPage={2} >
+      <PagerView style={styles.pagerView} initialPage={3} >
         {
           dates.map((week, i) => {
             return (

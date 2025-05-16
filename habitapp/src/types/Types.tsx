@@ -34,7 +34,6 @@ export type userType = {
     id: string;
     name: string;
     email: string;
-    password: string;
 }
 
 export type userStoreType = {
@@ -68,7 +67,6 @@ export type usersStoreType = {
 
 export type DayOfWeek = 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
 
-
 export type habitType = {
     id: number,
     userId: string
@@ -89,7 +87,8 @@ export type habitType = {
     } |
     null;
     reminder: Date;
-    status:'current'|'finished'|'deleted'
+    setDate: Date
+    status: 'current' | 'finished' | 'deleted';
 }
 
 export type habitStoreType = {
@@ -100,3 +99,19 @@ export type habitStoreType = {
     editHabit: (habit: habitType) => Promise<void>;
     removeAll: () => Promise<void>;
 }
+
+export type habittToCompleteType = {
+    id: number;
+    onDate: Date;
+    goal:
+    { type: 'units'; completedAmount: number } |
+    {
+        type: 'timer'; completedTimePeriod: {
+            hours: number;
+            minutes: number;
+        }
+    } |
+    null;
+}
+
+
