@@ -61,9 +61,9 @@ const ShortStatus = ({ displayedDay, setDisplayedDay }: { displayedDay: Date, se
                         styles.dayContainer,
                         isToday && { backgroundColor: primaryColors.Primary, borderRadius: 20 }
                       ]}
-                      
-                      onPress={()=>{setDisplayedDay(day)}}
-                      >
+
+                      onPress={() => { setDisplayedDay(day) }}
+                    >
                       <Text style={[
                         styles.dayText,
                         { color: isToday ? currentTheme.ButtonText : currentTheme.PrimaryText }
@@ -93,7 +93,13 @@ const ShortStatus = ({ displayedDay, setDisplayedDay }: { displayedDay: Date, se
           rotation={0}
           tintColor={primaryColors.Primary}
           onAnimationComplete={() => console.log('onAnimationComplete')}
-          backgroundColor={currentTheme.Border} />
+          backgroundColor={currentTheme.Border} >
+          {(fill: any) => (
+            <Text style={[styles.progressText, { color: currentTheme.PrimaryText }]}>
+              {Math.round(fill)}%
+            </Text>
+          )}
+        </AnimatedCircularProgress>
         <View style={styles.statsTextContainer}>
           <Text style={[styles.statsTitle, { color: currentTheme.PrimaryText }]}>Daily Habits</Text>
           <Text style={[styles.statsSubtitle, { color: primaryColors.Accent }]}>Almost there! Goals in reach!</Text>
@@ -173,7 +179,11 @@ const styles = StyleSheet.create({
   },
   statsProgress: {
     fontSize: 14,
-  }
+  },
+   progressText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
 });
 
 export default ShortStatus

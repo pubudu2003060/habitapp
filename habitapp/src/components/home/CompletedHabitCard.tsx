@@ -4,7 +4,7 @@ import { habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 
-const HabitCard = ({ habit, displayedDay }: { habit: habitType, displayedDay: Date }) => {
+const CompletedHabitCard = ({ habit, displayedDay }: { habit: habitType, displayedDay: Date }) => {
 
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)
@@ -55,7 +55,7 @@ const HabitCard = ({ habit, displayedDay }: { habit: habitType, displayedDay: Da
                         tintColor={primaryColors.Primary}
                         backgroundColor={currentTheme.Border}
                     >
-                        {(fill: any) => (                          
+                        {(fill: any) => (
                             <Text style={[styles.progressText, { color: currentTheme.PrimaryText }]}>
                                 {Math.round(fill)}%
                             </Text>
@@ -77,13 +77,6 @@ const HabitCard = ({ habit, displayedDay }: { habit: habitType, displayedDay: Da
             </View>
 
             <View style={styles.actionsContainer}>
-                <TouchableOpacity
-                    style={[styles.actionButton, { backgroundColor: primaryColors.Primary }]}
-                    onPress={() => {/* Mark as complete functionality */ }}
-                >
-                    <Text style={[styles.actionText, { color: currentTheme.ButtonText }]}>Complete</Text>
-                </TouchableOpacity>
-
                 {habit.goal?.type === 'units' && (
                     <View style={styles.unitContainer}>
                         <Text style={[styles.unitText, { color: currentTheme.PrimaryText }]}>
@@ -175,4 +168,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default HabitCard
+export default CompletedHabitCard

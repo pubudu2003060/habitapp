@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
 import { useHabitStore } from '../../store/HabitsStore'
 import { habitType } from '../../types/Types'
-import HabitCard from './HabitCard'
 import useColorStore from '../../store/ColorStore'
+import CompletedHabitCard from './CompletedHabitCard'
 
-const HabitToComplete = ({ displayedDay }: { displayedDay: Date }) => {
+const CompletedHabit = ({ displayedDay }: { displayedDay: Date }) => {
     const habits = useHabitStore(state => state.habits)
-    const periodTypes = ['daily', 'weekly', 'monthly']
     const [timePeriod, setTimePeriod] = useState('daily')
     const [todayHabits, setTodayHabits] = useState<habitType[]>([])
 
@@ -25,34 +24,14 @@ const HabitToComplete = ({ displayedDay }: { displayedDay: Date }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Habits to Complete</Text>
-
-            <View style={styles.tabContainer}>
-                {periodTypes.map((period, i) => (
-                    <TouchableOpacity
-                        key={i}
-                        onPress={() => setTimePeriod(period)}
-                        style={[
-                            styles.tabButton,
-                            {
-                                backgroundColor: timePeriod === period ? primaryColors.Primary : primaryColors.Error,
-                                marginRight: 10
-                            }
-                        ]}
-                    >
-                        <Text style={[styles.tabText, { color: currentTheme.ButtonText }]}>
-                            {period.charAt(0).toUpperCase() + period.slice(1)}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
+            <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Completed Habits</Text>
 
             {todayHabits.length > 0 ? (
                 <FlatList
                     data={todayHabits}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
-                        <HabitCard habit={item} displayedDay={displayedDay} />
+                        <CompletedHabitCard habit={item} displayedDay={displayedDay} />
                     )}
                     contentContainerStyle={styles.listContainer}
                 />
@@ -71,7 +50,7 @@ const styles = StyleSheet.create({
     container: {
         marginHorizontal: 16,
         marginBottom: 100,
-         marginTop: 30,
+        marginTop: 30,
     },
     title: {
         fontSize: 18,
@@ -110,4 +89,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default HabitToComplete
+export default CompletedHabit
