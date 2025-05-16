@@ -3,23 +3,36 @@ import { Text, View, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import LottieView from 'lottie-react-native';
 import useColorStore from '../store/ColorStore';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 const Loading = ({ navigation }: any) => {
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
 
+  useFocusEffect(
+    useCallback(() => {
+      const timer = setTimeout(() => {
+        navigation.replace('SignIn');
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }, [])
+  );
+
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
       <View style={styles.contentContainer}>
         <View style={styles.animationContainer}>
-          <LottieView 
-            style={styles.animation} 
-            source={require('../assets/animations/loading.json')} 
-            autoPlay 
-            loop 
+          <LottieView
+            style={styles.animation}
+            source={require('../assets/animations/loading.json')}
+            autoPlay
+            loop
           />
         </View>
-        
+
         <View style={styles.textWrapper}>
           <Text style={[styles.loadingText, { color: primaryColors.Primary }]}>
             Habit<Text style={{ color: currentTheme.PrimaryText }}>Tracker</Text>
@@ -28,7 +41,7 @@ const Loading = ({ navigation }: any) => {
             Building better habits, one day at a time
           </Text>
         </View>
-        
+
         <View style={styles.loadingWrapper}>
           <Text style={[styles.loadingIndicator, { color: currentTheme.SecondoryText }]}>
             loading<Text style={styles.dots}>...</Text>
@@ -55,7 +68,7 @@ const styles = StyleSheet.create({
   },
   animation: {
     width: 240,
-    height: 240, 
+    height: 240,
     alignSelf: 'center',
   },
   textWrapper: {
