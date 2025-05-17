@@ -5,7 +5,7 @@ import { habitType } from '../../types/Types'
 import HabitCard from './HabitCard'
 import useColorStore from '../../store/ColorStore'
 
-const HabitToComplete = ({ displayedDay }: { displayedDay: Date }) => {
+const HabitToComplete = () => {
     const habits = useHabitStore(state => state.habits)
     const periodTypes = ['daily', 'weekly', 'monthly']
     const [timePeriod, setTimePeriod] = useState('daily')
@@ -21,7 +21,7 @@ const HabitToComplete = ({ displayedDay }: { displayedDay: Date }) => {
 
     useEffect(() => {
         getTodayHabits(habits, timePeriod)
-    }, [habits, timePeriod, displayedDay])
+    }, [habits, timePeriod])
 
     return (
         <View style={styles.container}>
@@ -52,7 +52,7 @@ const HabitToComplete = ({ displayedDay }: { displayedDay: Date }) => {
                     data={todayHabits}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
-                        <HabitCard habit={item} displayedDay={displayedDay} />
+                        <HabitCard habit={item}/>
                     )}
                     contentContainerStyle={styles.listContainer}
                 />
@@ -70,8 +70,8 @@ const HabitToComplete = ({ displayedDay }: { displayedDay: Date }) => {
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: 16,
+         marginVertical: 12,
         marginBottom: 100,
-         marginTop: 30,
     },
     title: {
         fontSize: 18,

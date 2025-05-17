@@ -4,7 +4,7 @@ import { habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 
-const HabitCard = ({ habit, displayedDay }: { habit: habitType, displayedDay: Date }) => {
+const HabitCard = ({ habit }: { habit: habitType }) => {
 
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)

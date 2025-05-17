@@ -100,9 +100,8 @@ export type habitStoreType = {
     removeAll: () => Promise<void>;
 }
 
-export type habittToCompleteType = {
-    id: number;
-    onDate: Date;
+export type completingHabitType = {
+    id: number,
     goal:
     { type: 'units'; completedAmount: number } |
     {
@@ -112,6 +111,14 @@ export type habittToCompleteType = {
         }
     } |
     null;
+    onDate: Date
+    status: 'pending' | 'completed';
+}
+
+export type habitCompletionStoreType = {
+    habits: completingHabitType[];
+    loadHabits: () => Promise<void>;
+    completeHabit: (id: number) => Promise<void>;
 }
 
 
