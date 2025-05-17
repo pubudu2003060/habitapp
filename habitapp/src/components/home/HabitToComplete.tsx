@@ -1,27 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
 import { useHabitStore } from '../../store/HabitsStore'
-import { habitType } from '../../types/Types'
+import { completingHabitType, habitType } from '../../types/Types'
 import HabitCard from './HabitCard'
 import useColorStore from '../../store/ColorStore'
+import { useHabitCompletionStore } from '../../store/HabitCompletionStore'
 
 const HabitToComplete = () => {
-    const habits = useHabitStore(state => state.habits)
+    const completingHabits = useHabitCompletionStore(state => state.habits)
+     const loadCompletingHabits = useHabitCompletionStore(state => state.loadHabits)
+    const currentHabits = useHabitStore(state => state.habits)
     const periodTypes = ['daily', 'weekly', 'monthly']
     const [timePeriod, setTimePeriod] = useState('daily')
-    const [todayHabits, setTodayHabits] = useState<habitType[]>([])
+    const [todayHabits, setTodayHabits] = useState<completingHabitType[]>([])
 
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)
 
-    const getTodayHabits = (habits: habitType[], timePeriod: string) => {
-        const filteredHabits = habits.filter((habit) => habit.repeat.type === timePeriod)
+    const getTodayHabits = (habits: completingHabitType[], timePeriod: string) => {
+        const filteredHabits = habits.filter((habit) => {
+            const h = currentHabits.find((element) => element.id === habit.id)
+            return h?.repeat.type === timePeriod
+        })
         setTodayHabits(filteredHabits)
     }
 
+    useEffect(()=>{
+        loadCompletingHabits()
+    },[currentHabits])
+
     useEffect(() => {
-        getTodayHabits(habits, timePeriod)
-    }, [habits, timePeriod])
+        getTodayHabits(completingHabits, timePeriod)
+    }, [completingHabits, timePeriod])
 
     return (
         <View style={styles.container}>
@@ -52,7 +62,7 @@ const HabitToComplete = () => {
                     data={todayHabits}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
-                        <HabitCard habit={item}/>
+                        <HabitCard shownHabit={item} />
                     )}
                     contentContainerStyle={styles.listContainer}
                 />
@@ -70,7 +80,7 @@ const HabitToComplete = () => {
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: 16,
-         marginVertical: 12,
+        marginVertical: 12,
         marginBottom: 100,
     },
     title: {

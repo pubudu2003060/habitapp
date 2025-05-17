@@ -1,10 +1,15 @@
 import React from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
-import { habitType } from '../../types/Types'
+import { completingHabitType, habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
+import { useHabitStore } from '../../store/HabitsStore'
 
-const HabitCard = ({ habit }: { habit: habitType }) => {
+const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
+
+    const currentHabits = useHabitStore(state => state.habits)
+
+    const habit = currentHabits.find((habit) => habit.id === shownHabit.id)
 
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)
@@ -12,9 +17,9 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
     const progress = Math.floor(Math.random() * 100)
 
     const getRepeatText = () => {
-        if (habit.repeat.type === 'daily') {
+        if (habit?.repeat.type === 'daily') {
             return `${habit.repeat.days.length} days per week`
-        } else if (habit.repeat.type === 'weekly') {
+        } else if (habit?.repeat.type === 'weekly') {
             if (habit.goal?.type === 'units') {
                 return `${habit.goal.amount} ${habit.goal.amount > 1 ? 'times' : 'time'} per week`
             } else if (habit.goal?.type === 'timer') {
@@ -28,9 +33,9 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
             }
             return 'Weekly'
         } else {
-            if (habit.goal?.type === 'units') {
+            if (habit?.goal?.type === 'units') {
                 return `${habit.goal.amount} ${habit.goal.amount > 1 ? 'times' : 'time'} per month`
-            } else if (habit.goal?.type === 'timer') {
+            } else if (habit?.goal?.type === 'timer') {
                 const hours = habit.goal.timePeriod.hours
                 const minutes = habit.goal.timePeriod.minutes
                 if (hours > 0) {
@@ -65,10 +70,10 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
 
                 <View style={styles.habitInfo}>
                     <Text style={[styles.habitName, { color: currentTheme.PrimaryText }]}>
-                        {habit.name}
+                        {habit?.name}
                     </Text>
                     <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]} numberOfLines={2}>
-                        {habit.description}
+                        {habit?.description}
                     </Text>
                     <Text style={[styles.repeatInfo, { color: primaryColors.Accent }]}>
                         {getRepeatText()}
@@ -84,7 +89,7 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                     <Text style={[styles.actionText, { color: currentTheme.ButtonText }]}>Complete</Text>
                 </TouchableOpacity>
 
-                {habit.goal?.type === 'units' && (
+                {habit?.goal?.type === 'units' && (
                     <View style={styles.unitContainer}>
                         <Text style={[styles.unitText, { color: currentTheme.PrimaryText }]}>
                             0/{habit.goal.amount}
@@ -92,7 +97,7 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                     </View>
                 )}
 
-                {habit.goal?.type === 'timer' && (
+                {habit?.goal?.type === 'timer' && (
                     <View style={styles.timerContainer}>
                         <Text style={[styles.timerText, { color: currentTheme.PrimaryText }]}>
                             0/{habit.goal.timePeriod.hours}h {habit.goal.timePeriod.minutes}m
