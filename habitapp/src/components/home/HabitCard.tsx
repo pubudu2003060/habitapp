@@ -1,32 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
-import { completingHabitType, habitType } from '../../types/Types'
+import {habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
-import { AnimatedCircularProgress } from 'react-native-circular-progress'
-import { useHabitStore } from '../../store/HabitsStore'
-import { useHabitCompletionStore } from '../../store/HabitCompletionStore'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
-
-    const currentHabits = useHabitStore(state => state.habits)
-
-    const habit = currentHabits.find((habit) => habit.id === shownHabit.id)
+const HabitCard = ({ habit }: { habit: habitType }) => {
 
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)
 
-    const completeHabit = useHabitCompletionStore(state => state.completeCompletionHabit)
-
-    const [progress, setProgress] = useState(0)
+    const [progress, setProgress] = useState<number>(0)
 
     useEffect(() => {
-        const currnetprogress = shownHabit?.goal?.type === 'units' ? shownHabit.goal.completedAmount / (habit?.goal?.type === 'units' ? habit.goal.amount : 0) :
-            shownHabit.goal?.type === "timer" ? shownHabit.goal.completedTimePeriod.hours * 60 + shownHabit.goal.completedTimePeriod.minutes / (habit?.goal?.type === 'timer' ? habit.goal.timePeriod.hours * 60 + habit.goal.timePeriod.minutes : 100) :
-                0
+        // const currnetprogress = habit?.goal?.type === 'units' ? habit.progress.completedAmount / (habit?.goal?.type === 'units' ? habit.goal.amount : 0) :
+        //     habit.goal?.type === "timer" ? habit.goal.completedTimePeriod.hours * 60 + habit.goal.completedTimePeriod.minutes / (habit?.goal?.type === 'timer' ? habit.goal.timePeriod.hours * 60 + habit.goal.timePeriod.minutes : 100) :
+        //         0
 
-        setProgress(currnetprogress * 100)
-    }, [shownHabit, habit])
+        setProgress(0)
+    }, [])
 
 
     const getRepeatText = () => {
@@ -84,7 +75,7 @@ const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
             <View style={styles.actionsContainer}>
                 <TouchableOpacity
                     style={[styles.actionButton, { backgroundColor: primaryColors.Primary }]}
-                    onPress={() => { if (habit?.id !== undefined) completeHabit(habit.id) }}
+                    onPress={() => { }}
                 >
                     <Text style={[styles.actionText, { color: currentTheme.ButtonText }]}>Complete</Text>
                 </TouchableOpacity>

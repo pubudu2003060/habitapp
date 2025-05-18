@@ -86,9 +86,20 @@ export type habitType = {
         }
     } |
     null;
+    progress:
+    { type: 'units'; completedAmount: number } |
+    {
+        type: 'timer'; completedTimePeriod: {
+            hours: number;
+            minutes: number;
+        }
+    } |
+    null;
     reminder: Date;
-    setDate: Date
-    status: 'current' | 'finished' | 'deleted';
+    setDate: Date;
+    lastCompletedDate: Date | undefined;
+    completeStatus: 'pending' | 'completed';
+    habitStatus: 'current' | 'finished' | 'deleted';
 }
 
 export type habitStoreType = {
@@ -98,31 +109,9 @@ export type habitStoreType = {
     removeHabit: (id: number) => Promise<void>;
     editHabit: (habit: habitType) => Promise<void>;
     removeAll: () => Promise<void>;
-}
-
-export type completingHabitType = {
-    id: number,
-    userId: string,
-    goal:
-    { type: 'units'; completedAmount: number } |
-    {
-        type: 'timer'; completedTimePeriod: {
-            hours: number;
-            minutes: number;
-        }
-    } |
-    null;
-    onDate: Date
-    status: 'pending' | 'completed';
-}
-
-export type habitCompletionStoreType = {
-    completionHabits: completingHabitType[];
     resetCompletionHabits: (period: 'daily' | 'weekly' | 'monthly') => Promise<void>;
-    loadCompletionHabits: () => Promise<void>;
     completeCompletionHabit: (id: number) => Promise<void>;
-    reloadCompletionHabits: () => Promise<void>;
-
 }
+
 
 

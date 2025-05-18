@@ -1,47 +1,29 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
 import { useHabitStore } from '../../store/HabitsStore'
-import { completingHabitType, habitType } from '../../types/Types'
+import { habitType } from '../../types/Types'
 import HabitCard from './HabitCard'
 import useColorStore from '../../store/ColorStore'
-import { useHabitCompletionStore } from '../../store/HabitCompletionStore'
 
 const HabitToComplete = () => {
-    const completingHabits = useHabitCompletionStore(state => state.completionHabits)
-    const loadCompletionHabits = useHabitCompletionStore(state => state.loadCompletionHabits)
-     const reloadCompletionHabits = useHabitCompletionStore(state => state.reloadCompletionHabits)
+
     const currentHabits = useHabitStore(state => state.habits)
 
     const periodTypes = ['daily', 'weekly', 'monthly']
     const [timePeriod, setTimePeriod] = useState('daily')
-    const [todayHabits, setTodayHabits] = useState<completingHabitType[]>([])
+    const [todayHabits, setTodayHabits] = useState<habitType[]>([])
 
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)
 
-    const getTodayHabits = (habits: completingHabitType[], timePeriod: string) => {
-        const filteredHabits = habits.filter((habit) => {
-            const h = currentHabits.find((element) => element.id === habit.id)
-            return h?.repeat.type === timePeriod
-        })
-        const sortedHabits = filteredHabits.sort((a, b) => {
-            if (a.status === b.status) return 0
-            return a.status === 'pending' ? -1 : 1
-        })
+    const getTodayHabits = (timePeriod: string) => {
+        const sortedHabits = currentHabits.filter((habit) => habit.habitStatus === 'current' && habit.repeat.type === timePeriod)
         setTodayHabits(sortedHabits)
     }
 
     useEffect(() => {
-        loadCompletionHabits()
-    }, [])
-
-    useEffect(() => {
-        getTodayHabits(completingHabits, timePeriod)
-    }, [completingHabits, timePeriod, currentHabits])
-
-    useEffect(() => {
-        reloadCompletionHabits()
-    }, [currentHabits])
+        getTodayHabits(timePeriod)
+    }, [timePeriod, currentHabits])
 
     return (
         <View style={styles.container}>
@@ -72,7 +54,7 @@ const HabitToComplete = () => {
                     data={todayHabits}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => (
-                        <HabitCard shownHabit={item} />
+                        <HabitCard habit={item} />
                     )}
                     contentContainerStyle={styles.listContainer}
                 />

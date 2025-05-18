@@ -30,8 +30,11 @@ const Add = () => {
       repeat: { type: "daily", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] },
       endDate: null,
       goal: null,
+      progress:null,
       reminder: new Date(0, 0, 0),
-      status: "current",
+      lastCompletedDate:undefined,
+      completeStatus:"pending",
+      habitStatus: "current",
       setDate: new Date()
     })
 
@@ -45,15 +48,18 @@ const Add = () => {
     addHabit(habit)
     Alert.alert("Habit added Succesfully!")
     setHabit({
-      id: Date.now(),
+     id: Date.now(),
       userId: user?.id || "",
       name: "",
       description: "",
       repeat: { type: "daily", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] },
       endDate: null,
       goal: null,
+      progress:null,
       reminder: new Date(0, 0, 0),
-      status: "current",
+      lastCompletedDate:undefined,
+      completeStatus:"pending",
+      habitStatus: "current",
       setDate: new Date()
     })
   }

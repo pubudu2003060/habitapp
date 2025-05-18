@@ -17,10 +17,10 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                 <CheckBox
                     onClick={() => {
                         if (habit.goal) {
-                            setHabit(h => ({ ...h, goal: null }));
+                            setHabit(h => ({ ...h, goal: null,progress:null }));
                             setActiveSection("units");
                         } else {
-                            setHabit(h => ({ ...h, goal: { type: "units", amount: 1 } }));
+                            setHabit(h => ({ ...h, goal: { type: "units", amount: 1 },progress: { type: "units", completedAmount: 0 } }));
                             setActiveSection("units");
                         }
                     }}
@@ -40,7 +40,7 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                     }]}
                     onPress={() => {
                         setActiveSection("units")
-                        setHabit(h => ({ ...h, goal: { type: "units", amount: 1 } }))
+                        setHabit(h => ({ ...h, goal: { type: "units", amount: 1 },progress: { type: "units", completedAmount: 1 } }))
                     }}
                 >
                     <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Units</Text>
@@ -52,7 +52,7 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                     }]}
                     onPress={() => {
                         setActiveSection("timer")
-                        setHabit(h => ({ ...h, goal: { type: "timer", timePeriod: { hours: 0, minutes: 5 } } }))
+                        setHabit(h => ({ ...h, goal: { type: "timer", timePeriod: { hours: 0, minutes: 5 } },progress: { type: "timer", completedTimePeriod: { hours: 0, minutes: 5 } } }))
                     }}
                 >
                     <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Timer</Text>
@@ -75,7 +75,7 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                             value={habit.goal?.type === 'units' ? habit.goal.amount.toString() : ""}
                             onChangeText={(text) => {
                                 if (Number(text) <= 34)
-                                    setHabit(h => ({ ...h, goal: { type: "units", amount: Number(text) } }))
+                                    setHabit(h => ({ ...h, goal: { type: "units", amount: Number(text) },progress: { type: "units", completedAmount: Number(text) } }))
                             }}
                         />
                     </View>
@@ -105,6 +105,12 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                                                     hours: Number(text),
                                                     minutes: h.goal?.type === 'timer' ? h.goal.timePeriod.minutes : 0
                                                 }
+                                            },progress: {
+                                                type: 'timer',
+                                                completedTimePeriod: {
+                                                    hours: Number(text),
+                                                    minutes: h.goal?.type === 'timer' ? h.goal.timePeriod.minutes : 0
+                                                }
                                             }
                                         }))
                                 }}
@@ -130,6 +136,13 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                                             goal: {
                                                 type: 'timer',
                                                 timePeriod: {
+                                                    hours: h.goal?.type === 'timer' ? h.goal.timePeriod.hours : 0,
+                                                    minutes: Number(text)
+                                                }
+                                            },
+                                            progress: {
+                                                type: 'timer',
+                                                completedTimePeriod: {
                                                     hours: h.goal?.type === 'timer' ? h.goal.timePeriod.hours : 0,
                                                     minutes: Number(text)
                                                 }
