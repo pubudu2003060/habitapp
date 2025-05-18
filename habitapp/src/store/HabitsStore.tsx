@@ -45,14 +45,14 @@ export const useHabitStore = create<habitStoreType>((set) => ({
         }
 
     },
-    removeHabit: async (userId: number) => {
+    removeHabit: async (id: number) => {
         const habits = useHabitStore.getState().habits
-        const filtered = [...habits].filter(h => h.userId !== String(userId))
+        const filtered = [...habits].filter(h => h.id !== id)
         set((state) => ({
             habits: filtered
         }))
         await AsyncStorage.setItem("@habits", JSON.stringify(filtered));
-        await firestore().collection('habits').doc(userId.toString()).delete()
+        await firestore().collection('habits').doc(id.toString()).delete()
     },
     editHabit: async (updatedHabit: habitType) => {
         const habits = useHabitStore.getState().habits

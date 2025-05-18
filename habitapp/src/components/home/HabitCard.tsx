@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { completingHabitType, habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { useHabitStore } from '../../store/HabitsStore'
+import { useHabitCompletionStore } from '../../store/HabitCompletionStore'
 
 const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
 
@@ -14,7 +15,18 @@ const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)
 
-    const progress = Math.floor(Math.random() * 100)
+    const completeHabit = useHabitCompletionStore(state => state.completeHabit)
+
+    const [progress, setProgress] = useState(0)
+
+    useEffect(() => {
+        const currnetprogress = shownHabit?.goal?.type === 'units' ? shownHabit.goal.completedAmount / (habit?.goal?.type === 'units' ? habit.goal.amount : 0) :
+            shownHabit.goal?.type === "timer" ? shownHabit.goal.completedTimePeriod.hours * 60 + shownHabit.goal.completedTimePeriod.minutes / (habit?.goal?.type === 'timer' ? habit.goal.timePeriod.hours * 60 + habit.goal.timePeriod.minutes : 100) :
+                0
+
+        setProgress(currnetprogress * 100)
+    }, [shownHabit, habit])
+
 
     const getRepeatText = () => {
         if (habit?.repeat.type === 'daily') {
@@ -60,7 +72,7 @@ const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
                         tintColor={primaryColors.Primary}
                         backgroundColor={currentTheme.Border}
                     >
-                        {(fill: any) => (                          
+                        {(fill: any) => (
                             <Text style={[styles.progressText, { color: currentTheme.PrimaryText }]}>
                                 {Math.round(fill)}%
                             </Text>
@@ -84,7 +96,7 @@ const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
             <View style={styles.actionsContainer}>
                 <TouchableOpacity
                     style={[styles.actionButton, { backgroundColor: primaryColors.Primary }]}
-                    onPress={() => {/* Mark as complete functionality */ }}
+                    onPress={() => { if (habit?.id !== undefined) completeHabit(habit.id) }}
                 >
                     <Text style={[styles.actionText, { color: currentTheme.ButtonText }]}>Complete</Text>
                 </TouchableOpacity>

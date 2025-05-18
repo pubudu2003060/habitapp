@@ -1,25 +1,27 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Button, ScrollView, StyleSheet, Text, View } from 'react-native'
 import PagerView from 'react-native-pager-view'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { useHabitStore } from '../store/HabitsStore'
 
 const Explore = () => {
+
+  const habits = useHabitStore(state => state.habits)
+  const removeHabit = useHabitStore(state => state.removeHabit)
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <PagerView style={styles.pagerView} initialPage={0}>
-        <View key="1">
-          <Text>First page</Text>
-        </View>
-        <View key="2">
-          <Text>Second page</Text>
-        </View>
-        <View key="3">
-          <Text>3 page</Text>
-        </View>
-        <View key="4">
-          <Text>4 page</Text>
-        </View>
-      </PagerView>
+      <ScrollView>
+        {habits.map((habit) => {
+          return (
+            <View>
+              <Text>{habit.name}</Text>
+              <Button title='remove' onPress={() => { removeHabit(habit.id) }}></Button>
+              <Text>----------------</Text>
+            </View>
+          )
+        })}
+      </ScrollView>
     </SafeAreaView>
 
 
@@ -29,7 +31,7 @@ const Explore = () => {
 const styles = StyleSheet.create({
   pagerView: {
     flex: 1,
-    height:300
+    height: 300
   },
 });
 

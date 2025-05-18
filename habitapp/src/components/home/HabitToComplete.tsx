@@ -8,7 +8,7 @@ import { useHabitCompletionStore } from '../../store/HabitCompletionStore'
 
 const HabitToComplete = () => {
     const completingHabits = useHabitCompletionStore(state => state.habits)
-     const loadCompletingHabits = useHabitCompletionStore(state => state.loadHabits)
+    const loadCompletingHabits = useHabitCompletionStore(state => state.resetHabits)
     const currentHabits = useHabitStore(state => state.habits)
     const periodTypes = ['daily', 'weekly', 'monthly']
     const [timePeriod, setTimePeriod] = useState('daily')
@@ -22,16 +22,21 @@ const HabitToComplete = () => {
             const h = currentHabits.find((element) => element.id === habit.id)
             return h?.repeat.type === timePeriod
         })
-        setTodayHabits(filteredHabits)
+        const sortedHabits = filteredHabits.sort((a, b) => {
+            if (a.status === b.status) return 0
+            return a.status === 'pending' ? -1 : 1
+        })
+
+        setTodayHabits(sortedHabits)
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         loadCompletingHabits()
-    },[currentHabits])
+    }, [currentHabits])
 
     useEffect(() => {
         getTodayHabits(completingHabits, timePeriod)
-    }, [completingHabits, timePeriod])
+    }, [completingHabits, timePeriod,currentHabits])
 
     return (
         <View style={styles.container}>

@@ -117,6 +117,7 @@ export type completingHabitType = {
 
 export type habitCompletionStoreType = {
     habits: completingHabitType[];
+    resetHabits: () => Promise<void>;
     loadHabits: () => Promise<void>;
     completeHabit: (id: number) => Promise<void>;
 }
