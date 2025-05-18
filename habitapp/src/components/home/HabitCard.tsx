@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
-import {habitType } from '../../types/Types'
+import { habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -12,12 +12,25 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
     const [progress, setProgress] = useState<number>(0)
 
     useEffect(() => {
-        // const currnetprogress = habit?.goal?.type === 'units' ? habit.progress.completedAmount / (habit?.goal?.type === 'units' ? habit.goal.amount : 0) :
-        //     habit.goal?.type === "timer" ? habit.goal.completedTimePeriod.hours * 60 + habit.goal.completedTimePeriod.minutes / (habit?.goal?.type === 'timer' ? habit.goal.timePeriod.hours * 60 + habit.goal.timePeriod.minutes : 100) :
-        //         0
+        if (habit.goal && habit.progress) {
+            if (habit.goal.type === 'units' && habit.progress.type === 'units') {
+                const progressValue = habit.goal.amount > 0
+                    ? habit.progress.completedAmount / habit.goal.amount
+                    : 0;
+                setProgress(progressValue);
+            } else if (habit.goal.type === 'timer' && habit.progress.type === 'timer') {
+                const totalMinutesGoal = habit.goal.timePeriod.hours * 60 + habit.goal.timePeriod.minutes;
+                const totalMinutesDone = habit.progress.completedTimePeriod.hours * 60 + habit.progress.completedTimePeriod.minutes;
+                const progressValue = totalMinutesGoal > 0
+                    ? totalMinutesDone / totalMinutesGoal
+                    : 0;
+                setProgress(progressValue);
+            }
+        } else {
+            setProgress(0);
+        }
+    }, [habit]);
 
-        setProgress(0)
-    }, [])
 
 
     const getRepeatText = () => {
