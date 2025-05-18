@@ -16,6 +16,7 @@ const Explore = () => {
           return (
             <View>
               <Text>{habit.name}</Text>
+              <Text>{habit.habitStatus}</Text>
               <Button title='remove' onPress={() => { removeHabit(habit.id) }}></Button>
               <Text>----------------</Text>
             </View>

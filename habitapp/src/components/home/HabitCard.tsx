@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CompletionModel from './CompletionModel';
 
 const HabitCard = ({ habit }: { habit: habitType }) => {
 
@@ -10,6 +11,8 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
     const primaryColors = useColorStore(state => state.primaryColors)
 
     const [progress, setProgress] = useState<number>(0)
+
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
 
     useEffect(() => {
         if (habit.goal && habit.progress) {
@@ -30,8 +33,6 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
             setProgress(0);
         }
     }, [habit]);
-
-
 
     const getRepeatText = () => {
         if (habit?.repeat.type === 'daily') {
@@ -88,7 +89,7 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
             <View style={styles.actionsContainer}>
                 <TouchableOpacity
                     style={[styles.actionButton, { backgroundColor: primaryColors.Primary }]}
-                    onPress={() => { }}
+                    onPress={() => setModalVisible(true)}
                 >
                     <Text style={[styles.actionText, { color: currentTheme.ButtonText }]}>Complete</Text>
                 </TouchableOpacity>
@@ -109,6 +110,8 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                     </View>
                 )}
             </View>
+
+            <CompletionModel modalVisible={modalVisible} setModalVisible={setModalVisible}/>
         </View>
     )
 }
