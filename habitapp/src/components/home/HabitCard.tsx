@@ -5,6 +5,7 @@ import useColorStore from '../../store/ColorStore'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { useHabitStore } from '../../store/HabitsStore'
 import { useHabitCompletionStore } from '../../store/HabitCompletionStore'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
 
@@ -15,7 +16,7 @@ const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)
 
-    const completeHabit = useHabitCompletionStore(state => state.completeHabit)
+    const completeHabit = useHabitCompletionStore(state => state.completeCompletionHabit)
 
     const [progress, setProgress] = useState(0)
 
@@ -64,20 +65,7 @@ const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
         <View style={[styles.card, { backgroundColor: currentTheme.Card }]}>
             <View style={styles.cardContent}>
                 <View style={styles.progressContainer}>
-                    <AnimatedCircularProgress
-                        size={60}
-                        width={6}
-                        fill={progress}
-                        rotation={0}
-                        tintColor={primaryColors.Primary}
-                        backgroundColor={currentTheme.Border}
-                    >
-                        {(fill: any) => (
-                            <Text style={[styles.progressText, { color: currentTheme.PrimaryText }]}>
-                                {Math.round(fill)}%
-                            </Text>
-                        )}
-                    </AnimatedCircularProgress>
+                    <Icon name='home' size={26} color={currentTheme.PrimaryText} />
                 </View>
 
                 <View style={styles.habitInfo}>

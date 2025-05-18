@@ -116,10 +116,10 @@ export type completingHabitType = {
 }
 
 export type habitCompletionStoreType = {
-    habits: completingHabitType[];
-    resetHabits: () => Promise<void>;
-    loadHabits: () => Promise<void>;
-    completeHabit: (id: number) => Promise<void>;
+    completionHabits: completingHabitType[];
+    resetCompletionHabits: (period: 'daily' | 'weekly' | 'monthly') => Promise<void>;
+    loadCompletionHabits: () => Promise<void>;
+    completeCompletionHabit: (id: number) => Promise<void>;
 }
 
 

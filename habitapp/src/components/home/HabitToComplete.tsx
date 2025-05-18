@@ -7,9 +7,10 @@ import useColorStore from '../../store/ColorStore'
 import { useHabitCompletionStore } from '../../store/HabitCompletionStore'
 
 const HabitToComplete = () => {
-    const completingHabits = useHabitCompletionStore(state => state.habits)
-    const loadCompletingHabits = useHabitCompletionStore(state => state.resetHabits)
+    const completingHabits = useHabitCompletionStore(state => state.completionHabits)
+    const loadCompletionHabits = useHabitCompletionStore(state => state.loadCompletionHabits)
     const currentHabits = useHabitStore(state => state.habits)
+
     const periodTypes = ['daily', 'weekly', 'monthly']
     const [timePeriod, setTimePeriod] = useState('daily')
     const [todayHabits, setTodayHabits] = useState<completingHabitType[]>([])
@@ -26,17 +27,21 @@ const HabitToComplete = () => {
             if (a.status === b.status) return 0
             return a.status === 'pending' ? -1 : 1
         })
-
         setTodayHabits(sortedHabits)
     }
 
     useEffect(() => {
-        loadCompletingHabits()
-    }, [currentHabits])
+        loadCompletionHabits()
+    }, [])
 
     useEffect(() => {
         getTodayHabits(completingHabits, timePeriod)
-    }, [completingHabits, timePeriod,currentHabits])
+    }, [completingHabits, timePeriod, currentHabits])
+
+    useEffect(() => {
+        loadCompletionHabits() 
+    }, [timePeriod])
+
 
     return (
         <View style={styles.container}>
