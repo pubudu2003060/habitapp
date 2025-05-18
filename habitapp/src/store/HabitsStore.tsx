@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { habitStoreType, habitType } from "../types/Types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firestore, { Filter } from '@react-native-firebase/firestore';
-import { useUserStore } from "./UserStore";
 
 export const isTimeToReset = (period: string, lastReset: Date): boolean => {
     const now = new Date();
@@ -27,7 +26,6 @@ export const isTimeToReset = (period: string, lastReset: Date): boolean => {
 
     return false;
 };
-
 
 export const useHabitStore = create<habitStoreType>((set) => ({
     habits: [],
@@ -95,7 +93,7 @@ export const useHabitStore = create<habitStoreType>((set) => ({
             habits: []
         }))
     },
-     resetCompletionHabits: async (period) => {
+    resetCompletionHabits: async (period) => {
         // try {
         //     const lastResetData = await AsyncStorage.getItem("@lastReset");
         //     const lastReset = lastResetData ? JSON.parse(lastResetData) : {};
@@ -147,15 +145,19 @@ export const useHabitStore = create<habitStoreType>((set) => ({
     }
     ,
     completeCompletionHabit: async (id: number) => {
-        // try {
-        //     const habits = useHabitCompletionStore.getState().completionHabits
-        //     set((state) => ({
-        //         completionHabits: state.completionHabits.map(habit =>
-        //             habit.id === id ? { ...habit, status: 'completed' } : habit
-        //         )
-        //     }))
-        // } catch (error) {
+        try {
+            const habits = useHabitStore.getState().habits
+            const updateHabits: habitType[] = habits.map((habit) => habit.id === id ? { ...habit, habitStatus: "finished" } : habit)
+            const updated = habits.find(h => h.id === id);
+            set(() => ({
+                habits: updateHabits
+            }))
+            await AsyncStorage.setItem('@habits', JSON.stringify(updateHabits));
+            if (updated) {
+                await firestore().collection('habits').doc(updated.id.toString()).update(updated);
+            }
+        } catch (error) {
 
-        // }
+        }
     },
 }))
