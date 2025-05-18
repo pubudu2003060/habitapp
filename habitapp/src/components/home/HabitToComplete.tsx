@@ -9,6 +9,7 @@ import { useHabitCompletionStore } from '../../store/HabitCompletionStore'
 const HabitToComplete = () => {
     const completingHabits = useHabitCompletionStore(state => state.completionHabits)
     const loadCompletionHabits = useHabitCompletionStore(state => state.loadCompletionHabits)
+     const reloadCompletionHabits = useHabitCompletionStore(state => state.reloadCompletionHabits)
     const currentHabits = useHabitStore(state => state.habits)
 
     const periodTypes = ['daily', 'weekly', 'monthly']
@@ -39,9 +40,8 @@ const HabitToComplete = () => {
     }, [completingHabits, timePeriod, currentHabits])
 
     useEffect(() => {
-        loadCompletionHabits() 
-    }, [timePeriod])
-
+        reloadCompletionHabits()
+    }, [currentHabits])
 
     return (
         <View style={styles.container}>

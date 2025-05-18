@@ -65,7 +65,7 @@ const HabitCard = ({ shownHabit }: { shownHabit: completingHabitType }) => {
         <View style={[styles.card, { backgroundColor: currentTheme.Card }]}>
             <View style={styles.cardContent}>
                 <View style={styles.progressContainer}>
-                    <Icon name='home' size={26} color={currentTheme.PrimaryText} />
+                    <Icon name='image' size={26} color={currentTheme.PrimaryText} />
                 </View>
 
                 <View style={styles.habitInfo}>

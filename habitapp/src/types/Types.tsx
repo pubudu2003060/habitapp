@@ -102,6 +102,7 @@ export type habitStoreType = {
 
 export type completingHabitType = {
     id: number,
+    userId: string,
     goal:
     { type: 'units'; completedAmount: number } |
     {
@@ -120,6 +121,8 @@ export type habitCompletionStoreType = {
     resetCompletionHabits: (period: 'daily' | 'weekly' | 'monthly') => Promise<void>;
     loadCompletionHabits: () => Promise<void>;
     completeCompletionHabit: (id: number) => Promise<void>;
+    reloadCompletionHabits: () => Promise<void>;
+
 }
 
 
