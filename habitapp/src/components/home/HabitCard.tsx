@@ -122,7 +122,9 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                 {habit?.goal?.type === 'timer' && (
                     <View style={styles.timerContainer}>
                         <Text style={[styles.timerText, { color: currentTheme.PrimaryText }]}>
+
                             {habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.hours + "h " + habit.progress.completedTimePeriod.minutes+'m' : 0}/{habit.goal.timePeriod.hours}h {habit.goal.timePeriod.minutes}m
+
                         </Text>
                     </View>
                 )}

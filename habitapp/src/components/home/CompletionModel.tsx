@@ -57,6 +57,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
       } else {
         updateProgress(habit.id, newProgress);
       }
+      
       setModalVisible(false);
     } catch (error) {
       console.error('Error completing habit:', error);
