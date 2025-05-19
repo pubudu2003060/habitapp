@@ -49,16 +49,9 @@ const HabitToComplete = () => {
                 ))}
             </View>
 
-            {todayHabits.length > 0 ? (
-                <FlatList
-                    data={todayHabits}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => (
-                        <HabitCard habit={item} />
-                    )}
-                    contentContainerStyle={styles.listContainer}
-                />
-            ) : (
+            {todayHabits.length > 0 ? todayHabits.map((habit) => (
+                <HabitCard key={habit.id.toString()} habit={habit} />
+            )) : (
                 <View style={styles.emptyContainer}>
                     <Text style={[styles.emptyText, { color: currentTheme.SecondoryText }]}>
                         No {timePeriod} habits to complete
@@ -97,9 +90,6 @@ const styles = StyleSheet.create({
     tabText: {
         fontWeight: '600',
         fontSize: 14,
-    },
-    listContainer: {
-        paddingBottom: 10,
     },
     emptyContainer: {
         padding: 20,
