@@ -132,7 +132,6 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
     )
 }
 
-
 const styles = StyleSheet.create({
         card: {
             borderRadius: 16,

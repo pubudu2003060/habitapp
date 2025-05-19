@@ -56,7 +56,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
       if (newProgress) {
         updateProgress(habit.id, newProgress);
       } else {
-        updateProgress(habit.id, newProgress);
+        updateProgress(habit.id, null);
       }
 
       setModalVisible(false);

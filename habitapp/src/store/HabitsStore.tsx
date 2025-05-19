@@ -75,10 +75,10 @@ export const useHabitStore = create<habitStoreType>((set) => ({
     resetCompletionHabits: async (period) => {
         try {
 
-            console.log(period+" reset")
+            console.log(period + " reset")
 
             const lastResetData = await AsyncStorage.getItem("@lastReset");
-            const lastReset:lastDateType = lastResetData ? JSON.parse(lastResetData) : {};
+            const lastReset: lastDateType = lastResetData ? JSON.parse(lastResetData) : {};
             const user = useUserStore.getState().user;
 
             const allHabits = useHabitStore.getState().habits;
@@ -155,10 +155,10 @@ export const useHabitStore = create<habitStoreType>((set) => ({
                         updatedHabit.completeStatus = 'completed';
                         updatedHabit.lastCompletedDate = new Date();
                     }
-                } else {
-                    updatedHabit.completeStatus = 'completed';
-                    updatedHabit.lastCompletedDate = new Date();
                 }
+            } else {
+                updatedHabit.completeStatus = 'completed';
+                updatedHabit.lastCompletedDate = new Date();
             }
 
             const updatedHabits = habits.map(h => h.id === id ? updatedHabit : h);
