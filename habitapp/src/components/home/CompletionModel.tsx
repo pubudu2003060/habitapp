@@ -5,24 +5,15 @@ import { habitType } from '../../types/Types';
 import { useHabitStore } from '../../store/HabitsStore';
 
 
-const CompletionModel = ({ 
-  modalVisible, 
-  setModalVisible,
-  habit 
-}: { 
-  modalVisible: boolean, 
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>,
-  habit: habitType 
-}) => {
+const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisible: boolean, setModalVisible: React.Dispatch<React.SetStateAction<boolean>>, habit: habitType }) => {
+  
   const currentTheme = useColorStore(state => state.currentTheme)
   const primaryColors = useColorStore(state => state.primaryColors)
-  
-  // State for units progress
+
   const [unitsCompleted, setUnitsCompleted] = useState<string>(
     habit.progress?.type === 'units' ? habit.progress.completedAmount.toString() : '0'
   );
-  
-  // State for timer progress
+
   const [hours, setHours] = useState<string>(
     habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.hours.toString() : '0'
   );
@@ -32,28 +23,27 @@ const CompletionModel = ({
 
   const handleComplete = async () => {
     try {
-      let newProgress:habitType['progress'] = null;
-      
+      let newProgress: habitType['progress'] = null;
+
       if (habit.goal?.type === 'units') {
-        // Handle units progress
         const completedAmount = parseInt(unitsCompleted) || 0;
-        newProgress = { 
-          type: 'units', 
-          completedAmount 
+        newProgress = {
+          type: 'units',
+          completedAmount
         };
       } else if (habit.goal?.type === 'timer') {
         // Handle timer progress
         const hoursVal = parseInt(hours) || 0;
         const minutesVal = parseInt(minutes) || 0;
-        newProgress = { 
-          type: 'timer', 
+        newProgress = {
+          type: 'timer',
           completedTimePeriod: {
             hours: hoursVal,
             minutes: minutesVal
-          } 
+          }
         };
       }
-      
+
       // Update habit progress
       if (newProgress) {
         await useHabitStore.getState().updateProgress(habit.id, newProgress);
@@ -66,7 +56,7 @@ const CompletionModel = ({
         };
         await useHabitStore.getState().editHabit(updatedHabit);
       }
-      
+
       setModalVisible(false);
     } catch (error) {
       console.error('Error completing habit:', error);
@@ -81,7 +71,7 @@ const CompletionModel = ({
             Units completed: ({unitsCompleted}/{habit.goal.amount})
           </Text>
           <TextInput
-            style={[styles.input, { 
+            style={[styles.input, {
               borderColor: currentTheme.Border,
               color: currentTheme.PrimaryText
             }]}
@@ -102,7 +92,7 @@ const CompletionModel = ({
           <View style={styles.timerInputs}>
             <View style={styles.timeInputWrapper}>
               <TextInput
-                style={[styles.timeInput, { 
+                style={[styles.timeInput, {
                   borderColor: currentTheme.Border,
                   color: currentTheme.PrimaryText
                 }]}
@@ -114,12 +104,12 @@ const CompletionModel = ({
               />
               <Text style={[styles.timeLabel, { color: currentTheme.SecondoryText }]}>hours</Text>
             </View>
-            
+
             <Text style={{ color: currentTheme.PrimaryText, fontSize: 18 }}>:</Text>
-            
+
             <View style={styles.timeInputWrapper}>
               <TextInput
-                style={[styles.timeInput, { 
+                style={[styles.timeInput, {
                   borderColor: currentTheme.Border,
                   color: currentTheme.PrimaryText
                 }]}
@@ -155,13 +145,13 @@ const CompletionModel = ({
           <Text style={[styles.habitTitle, { color: currentTheme.PrimaryText }]}>
             {habit.name}
           </Text>
-          
+
           {habit.description && (
             <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]}>
               {habit.description}
             </Text>
           )}
-          
+
           {renderProgressInput()}
 
           <View style={styles.modalActions}>

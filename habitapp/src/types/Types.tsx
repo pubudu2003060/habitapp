@@ -110,7 +110,6 @@ export type habitStoreType = {
     editHabit: (habit: habitType) => Promise<void>;
     removeAll: () => Promise<void>;
     resetCompletionHabits: (period: 'daily' | 'weekly' | 'monthly') => Promise<void>;
-    completeCompletionHabit: (id: number) => Promise<void>;
     updateProgress:(id:number,newProgress:habitType['progress'])=>Promise<habitType|undefined>
 }
 
