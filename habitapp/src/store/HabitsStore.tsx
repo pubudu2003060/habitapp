@@ -144,75 +144,61 @@ export const useHabitStore = create<habitStoreType>((set) => ({
         // } catch (error) {
         //     console.log(`Error resetting ${period} habits:`, error);
         // }
-    }
-    ,
-    completeCompletionHabit: async (id: number) => {
-        try {
-            const habits = useHabitStore.getState().habits
-            const updateHabits: habitType[] = habits.map((habit) => habit.id === id ? { ...habit, habitStatus: "finished" } : habit)
-            const updated = habits.find(h => h.id === id);
-            set(() => ({
-                habits: updateHabits
-            }))
-            await AsyncStorage.setItem('@habits', JSON.stringify(updateHabits));
-            if (updated) {
-                await firestore().collection('habits').doc(updated.id.toString()).update(updated);
-            }
-        } catch (error) {
-
-        }
     },
     updateProgress: async (id: number, newProgress: habitType['progress']) => {
-    try {
-        const habits = useHabitStore.getState().habits;
-        const habitToUpdate = habits.find(h => h.id === id);
-        
-        if (!habitToUpdate) {
-            return;
-        }
-        
-        const updatedHabit: habitType = {
-            ...habitToUpdate,
-            progress: newProgress
-        };
-        
-        if (updatedHabit.goal && updatedHabit.progress) {
-            if (updatedHabit.goal.type === 'units' && updatedHabit.progress.type === 'units') {
-                if (updatedHabit.progress.completedAmount >= updatedHabit.goal.amount) {
-                    updatedHabit.completeStatus = 'completed';
-                    updatedHabit.lastCompletedDate = new Date();
-                }
-            } else if (updatedHabit.goal.type === 'timer' && updatedHabit.progress.type === 'timer') {
-                const goalMinutes = updatedHabit.goal.timePeriod.hours * 60 + updatedHabit.goal.timePeriod.minutes;
-                const progressMinutes = updatedHabit.progress.completedTimePeriod.hours * 60 + 
-                                    updatedHabit.progress.completedTimePeriod.minutes;
-                
-                if (progressMinutes >= goalMinutes) {
+        try {
+            const habits = useHabitStore.getState().habits;
+            const habitToUpdate = habits.find(h => h.id === id);
+
+            if (!habitToUpdate) {
+                return;
+            }
+
+            const updatedHabit: habitType = {
+                ...habitToUpdate,
+                progress: newProgress
+            };
+
+            if (updatedHabit.goal && updatedHabit.progress) {
+                if (updatedHabit.goal.type === 'units' && updatedHabit.progress.type === 'units') {
+                    if (updatedHabit.progress.completedAmount == updatedHabit.goal.amount) {
+                        updatedHabit.completeStatus = 'completed';
+                        updatedHabit.lastCompletedDate = new Date();
+                    }
+                } else if (updatedHabit.goal.type === 'timer' && updatedHabit.progress.type === 'timer') {
+                    const goalMinutes = updatedHabit.goal.timePeriod.hours * 60 + updatedHabit.goal.timePeriod.minutes;
+                    const progressMinutes = updatedHabit.progress.completedTimePeriod.hours * 60 +
+                        updatedHabit.progress.completedTimePeriod.minutes;
+
+                    if (progressMinutes == goalMinutes) {
+                        updatedHabit.completeStatus = 'completed';
+                        updatedHabit.lastCompletedDate = new Date();
+                    }
+                } else {
                     updatedHabit.completeStatus = 'completed';
                     updatedHabit.lastCompletedDate = new Date();
                 }
             }
+
+            const updatedHabits = habits.map(h => h.id === id ? updatedHabit : h);
+            set(() => ({
+                habits: updatedHabits
+            }));
+
+            await AsyncStorage.setItem("@habits", JSON.stringify(updatedHabits));
+
+            await firestore()
+                .collection('habits')
+                .doc(id.toString())
+                .update({
+                    progress: updatedHabit.progress,
+                    completeStatus: updatedHabit.completeStatus,
+                    lastCompletedDate: updatedHabit.lastCompletedDate
+                });
+
+            return updatedHabit;
+        } catch (error) {
+            console.error("Error updating habit progress:", error);
         }
-        
-        const updatedHabits = habits.map(h => h.id === id ? updatedHabit : h);
-        set(() => ({
-            habits: updatedHabits
-        }));
-        
-        await AsyncStorage.setItem("@habits", JSON.stringify(updatedHabits));
-        
-        await firestore()
-            .collection('habits')
-            .doc(id.toString())
-            .update({
-                progress: updatedHabit.progress,
-                completeStatus: updatedHabit.completeStatus,
-                lastCompletedDate: updatedHabit.lastCompletedDate
-            });
-        
-        return updatedHabit;
-    } catch (error) {
-        console.error("Error updating habit progress:", error);
     }
-}
 }))

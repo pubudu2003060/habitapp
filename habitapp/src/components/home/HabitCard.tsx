@@ -22,17 +22,20 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                 const progressValue = habit.goal.amount > 0
                     ? habit.progress.completedAmount / habit.goal.amount
                     : 0;
-                setProgress(progressValue);
+                setProgress(progressValue * 100);
             } else if (habit.goal.type === 'timer' && habit.progress.type === 'timer') {
                 const totalMinutesGoal = habit.goal.timePeriod.hours * 60 + habit.goal.timePeriod.minutes;
                 const totalMinutesDone = habit.progress.completedTimePeriod.hours * 60 + habit.progress.completedTimePeriod.minutes;
                 const progressValue = totalMinutesGoal > 0
                     ? totalMinutesDone / totalMinutesGoal
                     : 0;
-                setProgress(progressValue);
+                setProgress(progressValue * 100);
             }
         } else {
-            setProgress(0);
+            if (habit.completeStatus === 'pending')
+                setProgress(0);
+            else
+                setProgress(100);
         }
     }, [habit]);
 
@@ -83,6 +86,9 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                         {habit?.description}
                     </Text>
                     <Text style={[styles.repeatInfo, { color: primaryColors.Accent }]}>
+                        {habit.completeStatus}
+                    </Text>
+                    <Text style={[styles.repeatInfo, { color: primaryColors.Accent }]}>
                         {getRepeatText()}
                     </Text>
                 </View>
@@ -90,13 +96,19 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
 
             <View style={styles.actionsContainer}>
                 <TouchableOpacity
-                    style={[styles.actionButton, { backgroundColor: primaryColors.Primary }]}
+                    style={[styles.actionButton, { backgroundColor: progress !== 100 ? primaryColors.Primary : currentTheme.SecondoryText }]}
                     onPress={() => {
                         setModalVisible && setModalVisible(true)
                         setModelHabit && setModelHabit(habit)
                     }}
+                    disabled={progress === 100 ? true : false}
                 >
-                    <Text style={[styles.actionText, { color: currentTheme.ButtonText }]}>Complete</Text>
+                    <Text style={[
+                        styles.actionText,
+                        { color: currentTheme.ButtonText }
+                    ]}>
+                        Complete
+                    </Text>
                 </TouchableOpacity>
 
                 {habit?.goal?.type === 'units' && (
@@ -110,7 +122,7 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                 {habit?.goal?.type === 'timer' && (
                     <View style={styles.timerContainer}>
                         <Text style={[styles.timerText, { color: currentTheme.PrimaryText }]}>
-                            {habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.minutes+"h"+habit.progress.completedTimePeriod.minutes : 0}/{habit.goal.timePeriod.hours}h {habit.goal.timePeriod.minutes}m
+                            {habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.hours + "h " + habit.progress.completedTimePeriod.minutes+'m' : 0}/{habit.goal.timePeriod.hours}h {habit.goal.timePeriod.minutes}m
                         </Text>
                     </View>
                 )}

@@ -1,72 +1,62 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import useColorStore from '../../store/ColorStore';
 import { habitType } from '../../types/Types';
 import { useHabitStore } from '../../store/HabitsStore';
 
 
-const CompletionModel = ({ 
-  modalVisible, 
-  setModalVisible,
-  habit 
-}: { 
-  modalVisible: boolean, 
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>,
-  habit: habitType 
-}) => {
+const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisible: boolean, setModalVisible: React.Dispatch<React.SetStateAction<boolean>>, habit: habitType }) => {
+
   const currentTheme = useColorStore(state => state.currentTheme)
   const primaryColors = useColorStore(state => state.primaryColors)
-  
-  // State for units progress
-  const [unitsCompleted, setUnitsCompleted] = useState<string>(
-    habit.progress?.type === 'units' ? habit.progress.completedAmount.toString() : '0'
-  );
-  
-  // State for timer progress
-  const [hours, setHours] = useState<string>(
-    habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.hours.toString() : '0'
-  );
-  const [minutes, setMinutes] = useState<string>(
-    habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.minutes.toString() : '0'
-  );
+
+  const updateProgress = useHabitStore(state => state.updateProgress)
+
+  const [unitsCompleted, setUnitsCompleted] = useState<string>('0');
+
+  useEffect(() => {
+    setUnitsCompleted(habit.progress?.type === 'units' ? habit.progress.completedAmount.toString() : '0')
+  }, [habit])
+
+  const [hours, setHours] = useState<string>('0');
+
+  useEffect(() => {
+    setHours(habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.hours.toString() : '0')
+  }, [habit])
+
+  const [minutes, setMinutes] = useState<string>('0');
+
+  useEffect(() => {
+    setMinutes(habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.minutes.toString() : '0')
+  }, [habit])
 
   const handleComplete = async () => {
     try {
-      let newProgress:habitType['progress'] = null;
-      
+      let newProgress: habitType['progress'] = null;
+
       if (habit.goal?.type === 'units') {
-        // Handle units progress
         const completedAmount = parseInt(unitsCompleted) || 0;
-        newProgress = { 
-          type: 'units', 
-          completedAmount 
+        newProgress = {
+          type: 'units',
+          completedAmount
         };
       } else if (habit.goal?.type === 'timer') {
-        // Handle timer progress
         const hoursVal = parseInt(hours) || 0;
         const minutesVal = parseInt(minutes) || 0;
-        newProgress = { 
-          type: 'timer', 
+        newProgress = {
+          type: 'timer',
           completedTimePeriod: {
             hours: hoursVal,
             minutes: minutesVal
-          } 
+          }
         };
       }
-      
-      // Update habit progress
+
       if (newProgress) {
-        await useHabitStore.getState().updateProgress(habit.id, newProgress);
+        updateProgress(habit.id, newProgress);
       } else {
-        // For habits without goals, just mark as completed
-        const updatedHabit: habitType = {
-          ...habit,
-          completeStatus: 'completed',
-          lastCompletedDate: new Date()
-        };
-        await useHabitStore.getState().editHabit(updatedHabit);
+        updateProgress(habit.id, newProgress);
       }
-      
       setModalVisible(false);
     } catch (error) {
       console.error('Error completing habit:', error);
@@ -81,7 +71,7 @@ const CompletionModel = ({
             Units completed: ({unitsCompleted}/{habit.goal.amount})
           </Text>
           <TextInput
-            style={[styles.input, { 
+            style={[styles.input, {
               borderColor: currentTheme.Border,
               color: currentTheme.PrimaryText
             }]}
@@ -102,7 +92,7 @@ const CompletionModel = ({
           <View style={styles.timerInputs}>
             <View style={styles.timeInputWrapper}>
               <TextInput
-                style={[styles.timeInput, { 
+                style={[styles.timeInput, {
                   borderColor: currentTheme.Border,
                   color: currentTheme.PrimaryText
                 }]}
@@ -114,12 +104,12 @@ const CompletionModel = ({
               />
               <Text style={[styles.timeLabel, { color: currentTheme.SecondoryText }]}>hours</Text>
             </View>
-            
+
             <Text style={{ color: currentTheme.PrimaryText, fontSize: 18 }}>:</Text>
-            
+
             <View style={styles.timeInputWrapper}>
               <TextInput
-                style={[styles.timeInput, { 
+                style={[styles.timeInput, {
                   borderColor: currentTheme.Border,
                   color: currentTheme.PrimaryText
                 }]}
@@ -155,13 +145,13 @@ const CompletionModel = ({
           <Text style={[styles.habitTitle, { color: currentTheme.PrimaryText }]}>
             {habit.name}
           </Text>
-          
+
           {habit.description && (
             <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]}>
               {habit.description}
             </Text>
           )}
-          
+
           {renderProgressInput()}
 
           <View style={styles.modalActions}>
