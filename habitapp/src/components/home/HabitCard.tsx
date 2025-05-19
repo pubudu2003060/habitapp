@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import { habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import Icon from 'react-native-vector-icons/FontAwesome';
-import CompletionModel from './CompletionModel';
+import { modelContext } from '../../screens/Home.screen';
 
 const HabitCard = ({ habit }: { habit: habitType }) => {
 
@@ -12,7 +12,9 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
 
     const [progress, setProgress] = useState<number>(0)
 
-    const [modalVisible, setModalVisible] = useState<boolean>(false);
+    const context = useContext(modelContext);
+    const setModalVisible = context?.setModalVisible;
+    const setModelHabit = context?.setModalHabit;
 
     useEffect(() => {
         if (habit.goal && habit.progress) {
@@ -89,7 +91,10 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
             <View style={styles.actionsContainer}>
                 <TouchableOpacity
                     style={[styles.actionButton, { backgroundColor: primaryColors.Primary }]}
-                    onPress={() => setModalVisible(true)}
+                    onPress={() => {
+                        setModalVisible && setModalVisible(true)
+                        setModelHabit && setModelHabit(habit)
+                    }}
                 >
                     <Text style={[styles.actionText, { color: currentTheme.ButtonText }]}>Complete</Text>
                 </TouchableOpacity>
@@ -97,7 +102,7 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                 {habit?.goal?.type === 'units' && (
                     <View style={styles.unitContainer}>
                         <Text style={[styles.unitText, { color: currentTheme.PrimaryText }]}>
-                            0/{habit.goal.amount}
+                            {habit.progress?.type === 'units' ? habit.progress.completedAmount : 0}/{habit.goal.amount}
                         </Text>
                     </View>
                 )}
@@ -105,13 +110,13 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                 {habit?.goal?.type === 'timer' && (
                     <View style={styles.timerContainer}>
                         <Text style={[styles.timerText, { color: currentTheme.PrimaryText }]}>
-                            0/{habit.goal.timePeriod.hours}h {habit.goal.timePeriod.minutes}m
+                            {habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.minutes+"h"+habit.progress.completedTimePeriod.minutes : 0}/{habit.goal.timePeriod.hours}h {habit.goal.timePeriod.minutes}m
                         </Text>
                     </View>
                 )}
             </View>
 
-            <CompletionModel modalVisible={modalVisible} setModalVisible={setModalVisible}/>
+
         </View>
     )
 }

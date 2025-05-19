@@ -111,7 +111,15 @@ export type habitStoreType = {
     removeAll: () => Promise<void>;
     resetCompletionHabits: (period: 'daily' | 'weekly' | 'monthly') => Promise<void>;
     completeCompletionHabit: (id: number) => Promise<void>;
+    updateProgress:(id:number,newProgress:habitType['progress'])=>Promise<habitType|undefined>
 }
+
+export type ModelContextType = {
+  modalVisible: boolean;
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  modalHabit: habitType | undefined;
+  setModalHabit: React.Dispatch<React.SetStateAction<habitType | undefined>>;
+};
 
 
 

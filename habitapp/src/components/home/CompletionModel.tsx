@@ -1,47 +1,189 @@
-import React from 'react'
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react'
+import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import useColorStore from '../../store/ColorStore';
+import { habitType } from '../../types/Types';
+import { useHabitStore } from '../../store/HabitsStore';
 
-const CompletionModel = ({modalVisible,setModalVisible}:{modalVisible:boolean,setModalVisible:React.Dispatch<React.SetStateAction<boolean>>}) => {
 
-   const currentTheme = useColorStore(state => state.currentTheme)
-    const primaryColors = useColorStore(state => state.primaryColors)
-    
-  return (
-   <Modal
-    animationType="slide"
-    transparent={true}
-    visible={modalVisible}
-    onRequestClose={() => setModalVisible(false)}
->
-    <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { backgroundColor: currentTheme.Card }]}>
-            <Text style={[styles.modalText, { color: currentTheme.PrimaryText }]}>
-                Do you want to mark this habit as complete?
-            </Text>
+const CompletionModel = ({ 
+  modalVisible, 
+  setModalVisible,
+  habit 
+}: { 
+  modalVisible: boolean, 
+  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>,
+  habit: habitType 
+}) => {
+  const currentTheme = useColorStore(state => state.currentTheme)
+  const primaryColors = useColorStore(state => state.primaryColors)
+  
+  // State for units progress
+  const [unitsCompleted, setUnitsCompleted] = useState<string>(
+    habit.progress?.type === 'units' ? habit.progress.completedAmount.toString() : '0'
+  );
+  
+  // State for timer progress
+  const [hours, setHours] = useState<string>(
+    habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.hours.toString() : '0'
+  );
+  const [minutes, setMinutes] = useState<string>(
+    habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.minutes.toString() : '0'
+  );
 
-            <View style={styles.modalActions}>
-                <TouchableOpacity
-                    onPress={() => {
-                        // You can call complete logic here
-                        setModalVisible(false);
-                    }}
-                    style={[styles.modalButton, { backgroundColor: primaryColors.Primary }]}
-                >
-                    <Text style={{ color: currentTheme.ButtonText }}>Yes</Text>
-                </TouchableOpacity>
+  const handleComplete = async () => {
+    try {
+      let newProgress:habitType['progress'] = null;
+      
+      if (habit.goal?.type === 'units') {
+        // Handle units progress
+        const completedAmount = parseInt(unitsCompleted) || 0;
+        newProgress = { 
+          type: 'units', 
+          completedAmount 
+        };
+      } else if (habit.goal?.type === 'timer') {
+        // Handle timer progress
+        const hoursVal = parseInt(hours) || 0;
+        const minutesVal = parseInt(minutes) || 0;
+        newProgress = { 
+          type: 'timer', 
+          completedTimePeriod: {
+            hours: hoursVal,
+            minutes: minutesVal
+          } 
+        };
+      }
+      
+      // Update habit progress
+      if (newProgress) {
+        await useHabitStore.getState().updateProgress(habit.id, newProgress);
+      } else {
+        // For habits without goals, just mark as completed
+        const updatedHabit: habitType = {
+          ...habit,
+          completeStatus: 'completed',
+          lastCompletedDate: new Date()
+        };
+        await useHabitStore.getState().editHabit(updatedHabit);
+      }
+      
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Error completing habit:', error);
+    }
+  };
 
-                <TouchableOpacity
-                    onPress={() => setModalVisible(false)}
-                    style={[styles.modalButton, { backgroundColor: '#ccc' }]}
-                >
-                    <Text style={{ color: '#000' }}>Cancel</Text>
-                </TouchableOpacity>
-            </View>
+  const renderProgressInput = () => {
+    if (habit.goal?.type === 'units') {
+      return (
+        <View style={styles.inputContainer}>
+          <Text style={[styles.inputLabel, { color: currentTheme.PrimaryText }]}>
+            Units completed: ({unitsCompleted}/{habit.goal.amount})
+          </Text>
+          <TextInput
+            style={[styles.input, { 
+              borderColor: currentTheme.Border,
+              color: currentTheme.PrimaryText
+            }]}
+            keyboardType="numeric"
+            value={unitsCompleted}
+            onChangeText={setUnitsCompleted}
+            placeholder="Enter amount"
+            placeholderTextColor={currentTheme.SecondoryText}
+          />
         </View>
-    </View>
-</Modal>
+      );
+    } else if (habit.goal?.type === 'timer') {
+      return (
+        <View style={styles.inputContainer}>
+          <Text style={[styles.inputLabel, { color: currentTheme.PrimaryText }]}>
+            Time completed: (Goal: {habit.goal.timePeriod.hours}h {habit.goal.timePeriod.minutes}m)
+          </Text>
+          <View style={styles.timerInputs}>
+            <View style={styles.timeInputWrapper}>
+              <TextInput
+                style={[styles.timeInput, { 
+                  borderColor: currentTheme.Border,
+                  color: currentTheme.PrimaryText
+                }]}
+                keyboardType="numeric"
+                value={hours}
+                onChangeText={setHours}
+                placeholder="0"
+                placeholderTextColor={currentTheme.SecondoryText}
+              />
+              <Text style={[styles.timeLabel, { color: currentTheme.SecondoryText }]}>hours</Text>
+            </View>
+            
+            <Text style={{ color: currentTheme.PrimaryText, fontSize: 18 }}>:</Text>
+            
+            <View style={styles.timeInputWrapper}>
+              <TextInput
+                style={[styles.timeInput, { 
+                  borderColor: currentTheme.Border,
+                  color: currentTheme.PrimaryText
+                }]}
+                keyboardType="numeric"
+                value={minutes}
+                onChangeText={setMinutes}
+                placeholder="0"
+                placeholderTextColor={currentTheme.SecondoryText}
+              />
+              <Text style={[styles.timeLabel, { color: currentTheme.SecondoryText }]}>mins</Text>
+            </View>
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <Text style={[styles.modalText, { color: currentTheme.PrimaryText }]}>
+          Mark this habit as complete?
+        </Text>
+      );
+    }
+  };
 
+  return (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => setModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={[styles.modalContent, { backgroundColor: currentTheme.Card }]}>
+          <Text style={[styles.habitTitle, { color: currentTheme.PrimaryText }]}>
+            {habit.name}
+          </Text>
+          
+          {habit.description && (
+            <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]}>
+              {habit.description}
+            </Text>
+          )}
+          
+          {renderProgressInput()}
+
+          <View style={styles.modalActions}>
+            <TouchableOpacity
+              onPress={handleComplete}
+              style={[styles.modalButton, { backgroundColor: primaryColors.Primary }]}
+            >
+              <Text style={{ color: currentTheme.ButtonText, fontWeight: '600' }}>
+                Complete
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={[styles.modalButton, { backgroundColor: '#ccc' }]}
+            >
+              <Text style={{ color: '#000', fontWeight: '600' }}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
   )
 }
 
@@ -51,29 +193,83 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
-},
-modalContent: {
-    width: '80%',
+  },
+  modalContent: {
+    width: '85%',
     padding: 20,
     borderRadius: 12,
     alignItems: 'center',
-},
-modalText: {
+  },
+  habitTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  habitDescription: {
+    fontSize: 14,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  modalText: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 16,
     textAlign: 'center',
-},
-modalActions: {
+  },
+  inputContainer: {
+    width: '100%',
+    marginVertical: 12,
+  },
+  inputLabel: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 16,
+    width: '100%',
+  },
+  timerInputs: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    gap: 10,
+  },
+  timeInputWrapper: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  timeInput: {
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 16,
+    textAlign: 'center',
+    width: '100%',
+  },
+  timeLabel: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+  modalActions: {
     flexDirection: 'row',
     gap: 12,
-},
-modalButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    marginTop: 20,
+  },
+  modalButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 8,
-},
-
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 100,
+  },
 })
 
 export default CompletionModel
