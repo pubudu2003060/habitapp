@@ -14,14 +14,21 @@ const ShortStatus = () => {
   const primaryColors = useColorStore(state => state.primaryColors);
 
   const habits = useHabitStore(state => state.habits)
-  const todayHabits = habits.filter((habit) => habit.repeat.type === 'daily' && habit.habitStatus === 'current')
-  const completeTodayHabits = habits.filter((habit) => habit.repeat.type === 'daily' && habit.habitStatus === 'current' && habit.completeStatus === 'completed')
+   const todayHabits = habits.filter(habit => habit.repeat.type === 'daily' && habit.habitStatus === 'current');
+    const completeTodayHabits = todayHabits.filter(habit => habit.completeStatus === 'completed');
 
-  const [progress, setProgress] = useState((completeTodayHabits.length / todayHabits.length)*100);
+  const progressPercent = todayHabits.length === 0 ? 0 : (completeTodayHabits.length / todayHabits.length) * 100;
+
+  const [progress, setProgress] = useState(progressPercent);
 
   useEffect(() => {
-    setProgress((completeTodayHabits.length / todayHabits.length)*100)
-  }, [habits])
+    const todayHabits = habits.filter(habit => habit.repeat.type === 'daily' && habit.habitStatus === 'current');
+    const completeTodayHabits = todayHabits.filter(habit => habit.completeStatus === 'completed');
+    const progressPercent = todayHabits.length === 0 ? 0 : (completeTodayHabits.length / todayHabits.length) * 100;
+
+    setProgress(progressPercent);
+  }, [habits]);
+
 
   return (
     <View style={styles.container}>
@@ -47,7 +54,7 @@ const ShortStatus = () => {
           backgroundColor={currentTheme.Border} >
           {(fill: any) => (
             <Text style={[styles.progressText, { color: currentTheme.PrimaryText }]}>
-              {progress.toFixed(2)}%
+              {fill.toFixed(2)}%
             </Text>
           )}
         </AnimatedCircularProgress>

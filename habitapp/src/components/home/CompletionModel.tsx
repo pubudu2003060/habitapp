@@ -104,8 +104,8 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
                 keyboardType="numeric"
                 value={hours}
                 onChangeText={(text) => {
-                  const inputHours = Number(text) 
-                  const inputMinutes = Number(minutes) 
+                  const inputHours = Number(text)
+                  const inputMinutes = Number(minutes)
                   const goalHours = habit.goal?.type === 'timer' ? habit.goal.timePeriod.hours : 0;
                   const goalMinutes = habit.goal?.type === 'timer' ? habit.goal.timePeriod.minutes : 0;
                   const totalInputMinutes = inputHours * 60 + inputMinutes;
@@ -131,8 +131,8 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
                 keyboardType="numeric"
                 value={minutes}
                 onChangeText={(text) => {
-                  const inputHours = Number(hours) 
-                  const inputMinutes = Number(text) 
+                  const inputHours = Number(hours)
+                  const inputMinutes = Number(text)
                   const goalHours = habit.goal?.type === 'timer' ? habit.goal.timePeriod.hours : 0;
                   const goalMinutes = habit.goal?.type === 'timer' ? habit.goal.timePeriod.minutes : 0;
                   const totalInputMinutes = inputHours * 60 + inputMinutes;
