@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { habitStoreType, habitType } from "../types/Types";
+import { habitStoreType, habitType, lastDateType } from "../types/Types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firestore, { Filter } from '@react-native-firebase/firestore';
 import { useUserStore } from "./UserStore";
@@ -14,13 +14,13 @@ export const useHabitStore = create<habitStoreType>((set) => ({
                 habits: newHabits
             }))
             await AsyncStorage.setItem("@habits", JSON.stringify(newHabits));
-            await firestore()
-                .collection('habits')
-                .doc(habit.id.toString())
-                .set(habit)
-                .then(() => {
-                    console.log('User added!');
-                });
+            // await firestore()
+            //     .collection('habits')
+            //     .doc(habit.id.toString())
+            //     .set(habit)
+            //     .then(() => {
+            //         console.log('User added!');
+            //     });
         } catch (error) {
             console.log("habit data add error" + error)
         }
@@ -32,17 +32,17 @@ export const useHabitStore = create<habitStoreType>((set) => ({
             set(() => ({
                 habits: habitsString
             }));
-            const snapshot = await firestore()
-                .collection('habits')
-                .where(Filter("userId", "==", userID))
-                .get()
-            const remoteHabits = snapshot.docs.map(doc => doc.data() as habitType)
-            if (remoteHabits.length > 0) {
-                set(() => ({
-                    habits: remoteHabits
-                }))
-                await AsyncStorage.setItem("@habits", JSON.stringify(remoteHabits));
-            }
+            // const snapshot = await firestore()
+            //     .collection('habits')
+            //     .where(Filter("userId", "==", userID))
+            //     .get()
+            // const remoteHabits = snapshot.docs.map(doc => doc.data() as habitType)
+            // if (remoteHabits.length > 0) {
+            //     set(() => ({
+            //         habits: remoteHabits
+            //     }))
+            //     await AsyncStorage.setItem("@habits", JSON.stringify(remoteHabits));
+            // }
         } catch (error) {
             console.error('Error loading habits:', error);
         }
@@ -74,8 +74,11 @@ export const useHabitStore = create<habitStoreType>((set) => ({
     },
     resetCompletionHabits: async (period) => {
         try {
+
+            console.log(period+" reset")
+
             const lastResetData = await AsyncStorage.getItem("@lastReset");
-            const lastReset = lastResetData ? JSON.parse(lastResetData) : {};
+            const lastReset:lastDateType = lastResetData ? JSON.parse(lastResetData) : {};
             const user = useUserStore.getState().user;
 
             const allHabits = useHabitStore.getState().habits;
@@ -97,21 +100,21 @@ export const useHabitStore = create<habitStoreType>((set) => ({
             }));
 
 
-            await AsyncStorage.setItem("@todayHabits", JSON.stringify(newHabitList));
-            await firestore().collection('habits')
-                .where('userId', '==', user?.id)
-                .where('repeat.type', '==', period)
-                .get()
-                .then(snapshot => {
-                    const batch = firestore().batch();
-                    snapshot.forEach(doc => batch.delete(doc.ref));
-                    return batch.commit();
-                });
-            await Promise.all(
-                newHabitList.map(habit =>
-                    firestore().collection('habitcompletion').doc(habit.id.toString()).set(habit)
-                )
-            );
+            await AsyncStorage.setItem("@habits", JSON.stringify(newHabitList));
+            // await firestore().collection('habits')
+            //     .where('userId', '==', user?.id)
+            //     .where('repeat.type', '==', period)
+            //     .get()
+            //     .then(snapshot => {
+            //         const batch = firestore().batch();
+            //         snapshot.forEach(doc => batch.delete(doc.ref));
+            //         return batch.commit();
+            //     });
+            // await Promise.all(
+            //     newHabitList.map(habit =>
+            //         firestore().collection('habitcompletion').doc(habit.id.toString()).set(habit)
+            //     )
+            // );
 
             const updatedReset = {
                 ...lastReset,
@@ -165,14 +168,14 @@ export const useHabitStore = create<habitStoreType>((set) => ({
 
             await AsyncStorage.setItem("@habits", JSON.stringify(updatedHabits));
 
-            await firestore()
-                .collection('habits')
-                .doc(id.toString())
-                .update({
-                    progress: updatedHabit.progress,
-                    completeStatus: updatedHabit.completeStatus,
-                    lastCompletedDate: updatedHabit.lastCompletedDate
-                });
+            // await firestore()
+            //     .collection('habits')
+            //     .doc(id.toString())
+            //     .update({
+            //         progress: updatedHabit.progress,
+            //         completeStatus: updatedHabit.completeStatus,
+            //         lastCompletedDate: updatedHabit.lastCompletedDate
+            //     });
 
             return updatedHabit;
         } catch (error) {

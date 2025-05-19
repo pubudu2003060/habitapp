@@ -120,5 +120,11 @@ export type ModelContextType = {
   setModalHabit: React.Dispatch<React.SetStateAction<habitType | undefined>>;
 };
 
+export type lastDateType = {
+    daily:Date;
+    weekly:Date;
+    monthly:Date;
+} 
+
 
 
