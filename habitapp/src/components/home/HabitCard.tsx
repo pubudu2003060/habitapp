@@ -123,7 +123,7 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                     <View style={styles.timerContainer}>
                         <Text style={[styles.timerText, { color: currentTheme.PrimaryText }]}>
 
-                            {habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.hours + "h " + habit.progress.completedTimePeriod.minutes+'m' : 0}/{habit.goal.timePeriod.hours}h {habit.goal.timePeriod.minutes}m
+                            {habit.progress?.type === 'timer' ? habit.progress.completedTimePeriod.hours + "h " + habit.progress.completedTimePeriod.minutes + 'm' : 0}/{habit.goal.timePeriod.hours}h {habit.goal.timePeriod.minutes}m
 
                         </Text>
                     </View>
@@ -135,75 +135,76 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
     )
 }
 
-const styles = StyleSheet.create({
-    card: {
-        borderRadius: 16,
-        padding: 16,
-        marginBottom: 12,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 6,
-        elevation: 3,
-    },
-    cardContent: {
-        flexDirection: 'row',
-        marginBottom: 12,
-    },
-    progressContainer: {
-        marginRight: 16,
-        justifyContent: 'center',
-    },
-    progressText: {
-        fontSize: 12,
-        fontWeight: 'bold',
-    },
-    habitInfo: {
-        flex: 1,
-    },
-    habitName: {
-        fontSize: 18,
-        fontWeight: '600',
-        marginBottom: 4,
-    },
-    habitDescription: {
-        fontSize: 14,
-        marginBottom: 6,
-    },
-    repeatInfo: {
-        fontSize: 14,
-        fontWeight: '500',
-    },
-    actionsContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginTop: 8,
-    },
-    actionButton: {
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 999,
-        alignItems: 'center',
-    },
-    actionText: {
-        fontWeight: '600',
-        fontSize: 14,
-    },
-    unitContainer: {
-        alignItems: 'center',
-    },
-    unitText: {
-        fontSize: 16,
-        fontWeight: '700',
-    },
-    timerContainer: {
-        alignItems: 'center',
-    },
-    timerText: {
-        fontSize: 14,
-        fontWeight: '600',
-    }
-});
 
-export default HabitCard
+const styles = StyleSheet.create({
+        card: {
+            borderRadius: 16,
+            padding: 16,
+            marginBottom: 12,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 6,
+            elevation: 3,
+        },
+        cardContent: {
+            flexDirection: 'row',
+            marginBottom: 12,
+        },
+        progressContainer: {
+            marginRight: 16,
+            justifyContent: 'center',
+        },
+        progressText: {
+            fontSize: 12,
+            fontWeight: 'bold',
+        },
+        habitInfo: {
+            flex: 1,
+        },
+        habitName: {
+            fontSize: 18,
+            fontWeight: '600',
+            marginBottom: 4,
+        },
+        habitDescription: {
+            fontSize: 14,
+            marginBottom: 6,
+        },
+        repeatInfo: {
+            fontSize: 14,
+            fontWeight: '500',
+        },
+        actionsContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginTop: 8,
+        },
+        actionButton: {
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            borderRadius: 999,
+            alignItems: 'center',
+        },
+        actionText: {
+            fontWeight: '600',
+            fontSize: 14,
+        },
+        unitContainer: {
+            alignItems: 'center',
+        },
+        unitText: {
+            fontSize: 16,
+            fontWeight: '700',
+        },
+        timerContainer: {
+            alignItems: 'center',
+        },
+        timerText: {
+            fontSize: 14,
+            fontWeight: '600',
+        }
+    });
+
+    export default HabitCard

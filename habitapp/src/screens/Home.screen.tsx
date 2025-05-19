@@ -14,25 +14,6 @@ const Home = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [modalHabit, setModalHabit] = useState<habitType>();
 
-  // useEffect(() => {
-  //   const reset = async () => {
-  //     const lastResetData = await AsyncStorage.getItem("@lastReset");
-  //     const lastReset = lastResetData ? JSON.parse(lastResetData) : {};
-  //     const checkAndReset = async (period: 'daily' | 'weekly' | 'monthly') => {
-  //       const last = lastReset[period] ? new Date(lastReset[period]) : new Date(0);
-  //       if (isTimeToReset(period, last)) {
-  //         await useHabitCompletionStore.getState().resetCompletionHabits(period);
-  //       }
-  //     };
-  //     await Promise.all([
-  //       checkAndReset('daily'),
-  //       checkAndReset('weekly'),
-  //       checkAndReset('monthly'),
-  //     ]);
-  //   }
-  //   reset()
-  // }, [])
-
   const currentTheme = useColorStore(state => state.currentTheme);
 
   return (

@@ -2,30 +2,7 @@ import { create } from "zustand";
 import { habitStoreType, habitType } from "../types/Types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firestore, { Filter } from '@react-native-firebase/firestore';
-
-export const isTimeToReset = (period: string, lastReset: Date): boolean => {
-    const now = new Date();
-
-    if (period === 'daily') {
-        return (
-            now.toDateString() !== lastReset.toDateString() &&
-            now.getHours() >= 12
-        );
-    } else if (period === 'weekly') {
-        const lastWeek = new Date(lastReset);
-        lastWeek.setDate(lastWeek.getDate() - lastWeek.getDay());
-        const thisWeek = new Date(now);
-        thisWeek.setDate(thisWeek.getDate() - thisWeek.getDay());
-        return thisWeek > lastWeek;
-    } else if (period === 'monthly') {
-        return (
-            now.getMonth() !== lastReset.getMonth() ||
-            now.getFullYear() !== lastReset.getFullYear()
-        );
-    }
-
-    return false;
-};
+import { useUserStore } from "./UserStore";
 
 export const useHabitStore = create<habitStoreType>((set) => ({
     habits: [],
@@ -96,54 +73,55 @@ export const useHabitStore = create<habitStoreType>((set) => ({
         }))
     },
     resetCompletionHabits: async (period) => {
-        // try {
-        //     const lastResetData = await AsyncStorage.getItem("@lastReset");
-        //     const lastReset = lastResetData ? JSON.parse(lastResetData) : {};
-        //     const user = useUserStore.getState().user
+        try {
+            const lastResetData = await AsyncStorage.getItem("@lastReset");
+            const lastReset = lastResetData ? JSON.parse(lastResetData) : {};
+            const user = useUserStore.getState().user;
+
+            const allHabits = useHabitStore.getState().habits;
+
+            const newHabitList: habitType[] = allHabits.map(habit =>
+                habit.habitStatus === 'current' && habit.repeat.type === period
+                    ? {
+                        ...habit,
+                        progress: habit.goal?.type === 'units'
+                            ? { type: "units", completedAmount: 0 }
+                            : { type: "timer", completedTimePeriod: { hours: 0, minutes: 0 } },
+                        completeStatus: 'pending'
+                    }
+                    : habit
+            )
+
+            set(state => ({
+                habits: newHabitList
+            }));
 
 
-        //     if (!isTimeToReset(period, new Date(lastReset[period]))) return;
+            await AsyncStorage.setItem("@todayHabits", JSON.stringify(newHabitList));
+            await firestore().collection('habits')
+                .where('userId', '==', user?.id)
+                .where('repeat.type', '==', period)
+                .get()
+                .then(snapshot => {
+                    const batch = firestore().batch();
+                    snapshot.forEach(doc => batch.delete(doc.ref));
+                    return batch.commit();
+                });
+            await Promise.all(
+                newHabitList.map(habit =>
+                    firestore().collection('habitcompletion').doc(habit.id.toString()).set(habit)
+                )
+            );
 
-        //     const allHabits = useHabitStore.getState().habits;
-        //     const filteredHabits = allHabits.filter(h =>
-        //         h.habitStatus === 'current' && h.repeat.type === period
-        //     );
+            const updatedReset = {
+                ...lastReset,
+                [period]: new Date().toISOString()
+            };
+            await AsyncStorage.setItem("@lastReset", JSON.stringify(updatedReset));
 
-        //     const todayHabits: completingHabitType[] = filteredHabits.map((habit) => ({
-        //         id: habit.id,
-        //         userId: user?.id ? user?.id.toString() : "",
-        //         goal: habit.goal?.type === 'units'
-        //             ? { type: 'units', completedAmount: 0 }
-        //             : habit.goal?.type === 'timer'
-        //                 ? { type: 'timer', completedTimePeriod: { hours: 0, minutes: 0 } }
-        //                 : null,
-        //         onDate: new Date(),
-        //         status: 'pending',
-        //     }));
-
-        //     set(() => ({ completionHabits: todayHabits }));
-        //     await AsyncStorage.setItem("@todayHabits", JSON.stringify(todayHabits));
-        //     await firestore().collection('habitcompletion').where('userId', '==', user?.id).get().then(snapshot => {
-        //         const batch = firestore().batch();
-        //         snapshot.forEach(doc => batch.delete(doc.ref));
-        //         return batch.commit();
-        //     });
-
-        //     await Promise.all(
-        //         todayHabits.map(habit =>
-        //             firestore().collection('habitcompletion').doc(habit.id.toString()).set(habit)
-        //         )
-        //     );
-
-        //     const updatedReset = {
-        //         ...lastReset,
-        //         [period]: new Date().toISOString()
-        //     };
-        //     await AsyncStorage.setItem("@lastReset", JSON.stringify(updatedReset));
-
-        // } catch (error) {
-        //     console.log(`Error resetting ${period} habits:`, error);
-        // }
+        } catch (error) {
+            console.log(`Error resetting ${period} habits:`, error);
+        }
     },
     updateProgress: async (id: number, newProgress: habitType['progress']) => {
         try {

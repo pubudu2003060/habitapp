@@ -3,6 +3,7 @@ import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'reac
 import useColorStore from '../../store/ColorStore';
 import { habitType } from '../../types/Types';
 import { useHabitStore } from '../../store/HabitsStore';
+import Goal from '../add/Goal';
 
 
 const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisible: boolean, setModalVisible: React.Dispatch<React.SetStateAction<boolean>>, habit: habitType }) => {
@@ -57,7 +58,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
       } else {
         updateProgress(habit.id, newProgress);
       }
-      
+
       setModalVisible(false);
     } catch (error) {
       console.error('Error completing habit:', error);
@@ -78,7 +79,10 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
             }]}
             keyboardType="numeric"
             value={unitsCompleted}
-            onChangeText={setUnitsCompleted}
+            onChangeText={(text) => {
+              if (Number(text) <= (habit.goal?.type === 'units' ? habit.goal.amount : 0))
+                setUnitsCompleted(text)
+            }}
             placeholder="Enter amount"
             placeholderTextColor={currentTheme.SecondoryText}
           />
@@ -99,7 +103,17 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
                 }]}
                 keyboardType="numeric"
                 value={hours}
-                onChangeText={setHours}
+                onChangeText={(text) => {
+                  const inputHours = Number(text) 
+                  const inputMinutes = Number(minutes) 
+                  const goalHours = habit.goal?.type === 'timer' ? habit.goal.timePeriod.hours : 0;
+                  const goalMinutes = habit.goal?.type === 'timer' ? habit.goal.timePeriod.minutes : 0;
+                  const totalInputMinutes = inputHours * 60 + inputMinutes;
+                  const totalGoalMinutes = goalHours * 60 + goalMinutes;
+                  if (totalInputMinutes <= totalGoalMinutes) {
+                    setHours(text);
+                  }
+                }}
                 placeholder="0"
                 placeholderTextColor={currentTheme.SecondoryText}
               />
@@ -116,7 +130,17 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
                 }]}
                 keyboardType="numeric"
                 value={minutes}
-                onChangeText={setMinutes}
+                onChangeText={(text) => {
+                  const inputHours = Number(hours) 
+                  const inputMinutes = Number(text) 
+                  const goalHours = habit.goal?.type === 'timer' ? habit.goal.timePeriod.hours : 0;
+                  const goalMinutes = habit.goal?.type === 'timer' ? habit.goal.timePeriod.minutes : 0;
+                  const totalInputMinutes = inputHours * 60 + inputMinutes;
+                  const totalGoalMinutes = goalHours * 60 + goalMinutes;
+                  if (totalInputMinutes <= totalGoalMinutes) {
+                    setMinutes(text);
+                  }
+                }}
                 placeholder="0"
                 placeholderTextColor={currentTheme.SecondoryText}
               />
