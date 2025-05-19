@@ -86,9 +86,6 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
                         {habit?.description}
                     </Text>
                     <Text style={[styles.repeatInfo, { color: primaryColors.Accent }]}>
-                        {habit.completeStatus}
-                    </Text>
-                    <Text style={[styles.repeatInfo, { color: primaryColors.Accent }]}>
                         {getRepeatText()}
                     </Text>
                 </View>

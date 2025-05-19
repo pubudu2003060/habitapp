@@ -5,12 +5,23 @@ import PagerView from 'react-native-pager-view';
 import { addDays, eachDayOfInterval, eachWeekOfInterval, format, subDays } from 'date-fns';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import useColorStore from '../../store/ColorStore';
+import { useHabitStore } from '../../store/HabitsStore';
 
 const ShortStatus = () => {
   const user = useUserStore(state => state.user)
   const [today] = useState(new Date())
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
+
+  const habits = useHabitStore(state => state.habits)
+  const todayHabits = habits.filter((habit) => habit.repeat.type === 'daily' && habit.habitStatus === 'current')
+  const completeTodayHabits = habits.filter((habit) => habit.repeat.type === 'daily' && habit.habitStatus === 'current' && habit.completeStatus === 'completed')
+
+  const [progress, setProgress] = useState((completeTodayHabits.length / todayHabits.length)*100);
+
+  useEffect(() => {
+    setProgress((completeTodayHabits.length / todayHabits.length)*100)
+  }, [habits])
 
   return (
     <View style={styles.container}>
@@ -29,14 +40,14 @@ const ShortStatus = () => {
         <AnimatedCircularProgress
           size={120}
           width={15}
-          fill={60}
+          fill={progress}
           rotation={0}
           tintColor={primaryColors.Primary}
           onAnimationComplete={() => console.log('onAnimationComplete')}
           backgroundColor={currentTheme.Border} >
           {(fill: any) => (
             <Text style={[styles.progressText, { color: currentTheme.PrimaryText }]}>
-              {Math.round(fill)}%
+              {progress.toFixed(2)}%
             </Text>
           )}
         </AnimatedCircularProgress>
@@ -119,10 +130,10 @@ const styles = StyleSheet.create({
   statsProgress: {
     fontSize: 14,
   },
-   progressText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
+  progressText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
 export default ShortStatus

@@ -6,8 +6,6 @@ import Tabs from './BottmBar';
 import { useHabitStore } from '../store/HabitsStore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-
 export const isTimeToReset = (period: string, lastReset: Date): boolean => {
     const now = new Date();
 
