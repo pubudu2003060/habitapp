@@ -5,17 +5,10 @@ import { useUserStore } from '../store/UserStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import HeaderBar from '../components/header/HeaderBar';
 import PictureBar from '../components/profile/PictureBar';
+import Settings from '../components/profile/Settings';
 
 const Profile = () => {
-  const isDark = useColorStore(state => state.isDark);
-  const setTheme = useColorStore(state => state.setTheme);
-  const currentTheme = useColorStore(state => state.currentTheme);
-  const primaryColors = useColorStore(state => state.primaryColors);
-  const remove = useUserStore(state => state.signOut)
-
-  const toggleTheme = () => {
-    setTheme(isDark ? 'light' : 'dark');
-  };
+    const currentTheme = useColorStore(state => state.currentTheme);
 
   return (
     <SafeAreaView style={{ backgroundColor: currentTheme.Background, flex: 1 }}>
@@ -23,91 +16,12 @@ const Profile = () => {
         <HeaderBar title='Profile'/>
         <PictureBar/>
         
-        <View style={styles.settingsContainer}>
-          <Text style={[styles.sectionTitle, { color: currentTheme.PrimaryText }]}>Settings</Text>
-          
-          <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
-            <View style={styles.settingRow}>
-              <Text style={[styles.settingLabel, { color: currentTheme.PrimaryText }]}>Theme</Text>
-              <TouchableOpacity
-                style={[styles.themeButton, { backgroundColor: primaryColors.Info }]}
-                onPress={toggleTheme}
-              >
-                <Text style={styles.themeButtonText}>
-                  {isDark ? "Light Mode" : "Dark Mode"}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          
-          <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
-            <View style={styles.settingRow}>
-              <Text style={[styles.settingLabel, { color: currentTheme.PrimaryText }]}>Account</Text>
-              <TouchableOpacity
-                style={[styles.logoutButton, { backgroundColor: primaryColors.Error }]}
-                onPress={remove}
-              >
-                <Text style={styles.logoutButtonText}>Logout</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+        <Settings/>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  settingsContainer: {
-    paddingHorizontal: 16,
-    paddingTop: 24,
-    paddingBottom: 40,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginBottom: 16,
-    marginLeft: 4,
-  },
-  settingCard: {
-    borderRadius: 16,
-    marginBottom: 16,
-    padding: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  settingLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  themeButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-  },
-  themeButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  logoutButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-  },
-  logoutButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 14,
-  }
-});
+
 
 export default Profile;
