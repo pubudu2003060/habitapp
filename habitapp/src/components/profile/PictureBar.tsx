@@ -12,8 +12,9 @@ import {
 import { CameraOptions, launchCamera, launchImageLibrary, MediaType } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useColorStore from '../../store/ColorStore';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
-const PictureBar = ({ totalHabits = 0, completedHabits = 0, challenges = 0 }) => {
+const PictureBar = ({ totalHabits = 0, completedHabits = 0 }) => {
   const [profileImage, setProfileImage] = useState<{ uri: string } | null>(null);
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
@@ -93,7 +94,7 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0, challenges = 0 }) =>
       return;
     }
 
-    const options:CameraOptions = {
+    const options: CameraOptions = {
       mediaType: 'photo',
       quality: 0.8,
       saveToPhotos: false,
@@ -112,7 +113,7 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0, challenges = 0 }) =>
   };
 
   const chooseFromGallery = () => {
-    const options:CameraOptions = {
+    const options: CameraOptions = {
       mediaType: 'photo',
       quality: 0.8,
     };
@@ -132,20 +133,20 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0, challenges = 0 }) =>
   return (
     <View style={[styles.container, { backgroundColor: currentTheme.Card }]}>
       <View style={styles.profileSection}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.profileTouchable}
           onPress={handleChoosePhoto}
         >
           <View style={styles.imageContainer}>
             {profileImage ? (
-              <Image source={profileImage} style={styles.profileImage} />
+              <Image source={profileImage} style={[styles.profileImage,{borderColor:primaryColors.Primary}]} />
             ) : (
               <View style={[styles.placeholderImage, { backgroundColor: primaryColors.Accent, borderColor: primaryColors.Primary }]}>
-                <Text style={styles.placeholderText}>Add Photo</Text>
+                <Text style={[styles.placeholderText,{color:currentTheme.SecondoryText}]}>Add Photo</Text>
               </View>
             )}
-            <View style={[styles.cameraIcon, { backgroundColor: primaryColors.Primary }]}>
-              <Text style={styles.cameraIconText}>📷</Text>
+            <View style={[styles.cameraIcon, { backgroundColor: currentTheme.Background,borderColor:primaryColors.Primary }]}>
+               <Icon name='camera' size={16} color={primaryColors.Info} />
             </View>
           </View>
         </TouchableOpacity>
@@ -165,12 +166,6 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0, challenges = 0 }) =>
           <Text style={[styles.statLabel, { color: currentTheme.SecondoryText }]}>Completed Today</Text>
         </View>
 
-        <View style={[styles.statDivider, { backgroundColor: currentTheme.Border }]} />
-
-        <View style={styles.statItem}>
-          <Text style={[styles.statValue, { color: primaryColors.Accent }]}>{challenges}</Text>
-          <Text style={[styles.statLabel, { color: currentTheme.SecondoryText }]}>Total Challenges</Text>
-        </View>
       </View>
     </View>
   );
@@ -206,7 +201,6 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     borderWidth: 3,
-    borderColor: '#A78BFA',
   },
   placeholderImage: {
     width: 100,
@@ -217,7 +211,6 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   placeholderText: {
-    color: '#ffffff',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -231,15 +224,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#ffffff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 2,
-  },
-  cameraIconText: {
-    fontSize: 16,
   },
   userName: {
     fontSize: 20,
