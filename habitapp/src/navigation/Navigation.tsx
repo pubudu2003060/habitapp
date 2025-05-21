@@ -58,6 +58,7 @@ const Navigation = () => {
         const reset = async () => {
             const lastResetData = await AsyncStorage.getItem("@lastReset");
             const lastReset: lastDateType = lastResetData ? JSON.parse(lastResetData) : {};
+            console.log(lastReset)
             const checkAndReset = async (period: 'daily' | 'weekly' | 'monthly') => {
                 const last = lastReset[period] ? new Date(lastReset[period]) : new Date();
                 if (isTimeToReset(period, last)) {

@@ -17,7 +17,7 @@ const Home = () => {
   const currentTheme = useColorStore(state => state.currentTheme);
 
   return (
-    <modelContext.Provider value={{ modalVisible, setModalVisible ,modalHabit,setModalHabit}}>
+    <modelContext.Provider value={{ modalVisible, setModalVisible, modalHabit, setModalHabit }}>
       <SafeAreaView style={{ backgroundColor: currentTheme.Background, flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <Text style={{ color: 'black' }}>{modalVisible}</Text>
