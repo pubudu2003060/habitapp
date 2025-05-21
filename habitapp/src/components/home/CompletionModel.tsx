@@ -181,19 +181,18 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
 
           <View style={styles.modalActions}>
             <TouchableOpacity
+              onPress={() => setModalVisible(false)}
+              style={[styles.modalButton, { backgroundColor:primaryColors.Error }]}
+            >
+              <Text style={{ color: currentTheme.ButtonText, fontWeight: '600' }}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={handleComplete}
               style={[styles.modalButton, { backgroundColor: primaryColors.Primary }]}
             >
               <Text style={{ color: currentTheme.ButtonText, fontWeight: '600' }}>
                 Complete
               </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={[styles.modalButton, { backgroundColor: '#ccc' }]}
-            >
-              <Text style={{ color: '#000', fontWeight: '600' }}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -20,12 +20,27 @@ const Profile = () => {
 
   const [nameModalVisible, setNameModalVisible] = useState(false);
 
+  const handleSaveName = async (newName: string) => {
+    const { user, editUser } = useUserStore.getState();
 
-  const handleSaveName = (newName: string) => {
-    // You will implement the logic to save the name
-    console.log("Name changed to:", newName);
-    // Call your name change function here
+    if (!user) {
+      console.error("No user is currently signed in.");
+      return;
+    }
+
+    const updatedUser = {
+      ...user,
+      name: newName
+    };
+
+    try {
+      await editUser(updatedUser);
+      console.log("Name successfully updated to:", newName);
+    } catch (error) {
+      console.error("Failed to update name:", error);
+    }
   };
+
 
   return (
     <SafeAreaView style={{ backgroundColor: currentTheme.Background, flex: 1 }}>
