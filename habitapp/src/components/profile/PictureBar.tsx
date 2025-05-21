@@ -13,11 +13,14 @@ import { CameraOptions, launchCamera, launchImageLibrary, MediaType } from 'reac
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useColorStore from '../../store/ColorStore';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useUserStore } from '../../store/UserStore';
 
 const PictureBar = ({ totalHabits = 0, completedHabits = 0,name=''}) => {
   const [profileImage, setProfileImage] = useState<{ uri: string } | null>(null);
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
+  const user = useUserStore(state=>state.user)
+  const storageKey = user?.id+'profileImage'
 
   useEffect(() => {
     loadProfileImage();
@@ -25,7 +28,7 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0,name=''}) => {
 
   const loadProfileImage = async () => {
     try {
-      const savedImage = await AsyncStorage.getItem('profileImage');
+      const savedImage = await AsyncStorage.getItem(storageKey);
       if (savedImage) {
         setProfileImage({ uri: savedImage });
       }
@@ -36,7 +39,7 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0,name=''}) => {
 
   const saveProfileImage = async (imageUri: any) => {
     try {
-      await AsyncStorage.setItem('profileImage', imageUri);
+      await AsyncStorage.setItem(storageKey, imageUri);
       setProfileImage({ uri: imageUri });
     } catch (error) {
       console.error('Error saving profile image:', error);
@@ -128,7 +131,7 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0,name=''}) => {
         saveProfileImage(source.uri);
       }
     });
-  };
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: currentTheme.Card }]}>
@@ -141,7 +144,7 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0,name=''}) => {
             {profileImage ? (
               <Image source={profileImage} style={[styles.profileImage,{borderColor:primaryColors.Info}]} />
             ) : (
-              <View style={[styles.placeholderImage, { backgroundColor: primaryColors.Accent, borderColor: primaryColors.Primary }]}>
+              <View style={[styles.placeholderImage, { backgroundColor: currentTheme.Card, borderColor: primaryColors.Primary }]}>
                 <Text style={[styles.placeholderText,{color:currentTheme.SecondoryText}]}>Add Photo</Text>
               </View>
             )}
