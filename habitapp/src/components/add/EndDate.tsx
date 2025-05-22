@@ -19,30 +19,27 @@ const EndDate = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispat
                 <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Set to End Date</Text>
                 <CheckBox
                     onClick={() => {
-                        setEndDate(!endDate)
-                        if (endDate) {
-                            setHabit(h => ({ ...h, endDate: null }));
+                        if (!habit.endDate) {
+                            setHabit(h => ({ ...h, endDate: new Date() }));
                         } else {
-                            if (!habit.endDate) {
-                                setHabit(h => ({ ...h, endDate: new Date() }));
-                            }
+                            setHabit(h => ({ ...h, endDate: null }));
                         }
                     }}
-                    isChecked={endDate}
-                    checkBoxColor={endDate ?primaryColors.Primary : primaryColors.Error}
+                    isChecked={habit.endDate ? true : false}
+                    checkBoxColor={habit.endDate ? primaryColors.Primary : primaryColors.Error}
                     style={styles.checkbox}
                 />
             </View>
             <View
-                pointerEvents={!endDate ? 'none' : 'auto'}
-                style={[styles.dateSection, { opacity: endDate ? 1 : 0.5 }]}
+                pointerEvents={!habit.endDate ? 'none' : 'auto'}
+                style={[styles.dateSection, { opacity: habit.endDate ? 1 : 0.5 }]}
             >
                 <Text style={[styles.label, { color: currentTheme.SecondoryText }]}>End</Text>
                 <TouchableOpacity
                     style={[styles.buttonWrapper, { backgroundColor: primaryColors.Primary }]}
                     onPress={() => setOpen(true)}
                 >
-                    <Text style={[styles.buttonText,{color:currentTheme.ButtonText}]}>
+                    <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>
                         {habit.endDate ? habit.endDate.toDateString() : "Select End Date"}
                     </Text>
                 </TouchableOpacity>

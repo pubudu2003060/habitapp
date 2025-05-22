@@ -66,7 +66,7 @@ const Add = () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: currentTheme.Background }}>
-      <ScrollView>
+      <ScrollView  showsHorizontalScrollIndicator={false}>
         <HeaderBar title="Create Habit"></HeaderBar>
         <NameAndDescription habit={habit} setHabit={setHabit} />
         <Repeat habit={habit} setHabit={setHabit} />

@@ -33,7 +33,6 @@ const Explore = () => {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
       <HeaderBar title='Explore your Habits' />
-
       <View style={styles.filterContainer}>
         <ScrollView
           horizontal
@@ -88,7 +87,7 @@ const Explore = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom:100
+   
   },
   filterContainer: {
     paddingVertical: 12,
@@ -111,7 +110,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flexGrow: 1,
-    paddingBottom: 20,
+    paddingBottom: 110,
   },
   emptyContainer: {
     flex: 1,
