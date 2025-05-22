@@ -14,8 +14,8 @@ const ShortStatus = () => {
   const primaryColors = useColorStore(state => state.primaryColors);
 
   const habits = useHabitStore(state => state.habits)
-   const todayHabits = habits.filter(habit => habit.repeat.type === 'daily' && habit.habitStatus === 'current');
-    const completeTodayHabits = todayHabits.filter(habit => habit.completeStatus === 'completed');
+  const todayHabits = habits.filter(habit => habit.repeat.type === 'daily' && habit.habitStatus === 'current');
+  const completeTodayHabits = todayHabits.filter(habit => habit.completeStatus === 'completed');
 
   const progressPercent = todayHabits.length === 0 ? 0 : (completeTodayHabits.length / todayHabits.length) * 100;
 
@@ -28,7 +28,6 @@ const ShortStatus = () => {
 
     setProgress(progressPercent);
   }, [habits]);
-
 
   return (
     <View style={styles.container}>
@@ -60,8 +59,24 @@ const ShortStatus = () => {
         </AnimatedCircularProgress>
         <View style={styles.statsTextContainer}>
           <Text style={[styles.statsTitle, { color: currentTheme.PrimaryText }]}>Daily Habits</Text>
-          <Text style={[styles.statsSubtitle, { color: primaryColors.Accent }]}>Almost there! Goals in reach!</Text>
-          <Text style={[styles.statsProgress, { color: currentTheme.SecondoryText }]}>3/7 of habit complete</Text>
+          <Text style={[styles.statsSubtitle, { color: primaryColors.Accent }]}>
+            {todayHabits.length === 0
+              ? "No daily habits set for today."
+              : progress === 100
+                ? "Awesome! All habits completed!"
+                : progress >= 75
+                  ? "Almost there! Goals in reach!"
+                  : progress >= 50
+                    ? "You're doing great! Keep going!"
+                    : progress > 0
+                      ? "Good start! Keep the streak alive!"
+                      : "Let's get started!"}
+          </Text>
+          <Text style={[styles.statsProgress, { color: currentTheme.SecondoryText }]}>
+            {todayHabits.length === 0
+              ? "Nothing to track today"
+              : `${completeTodayHabits.length}/${todayHabits.length} habits completed`}
+          </Text>
         </View>
       </View>
 

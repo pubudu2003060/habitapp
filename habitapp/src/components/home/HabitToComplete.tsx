@@ -53,6 +53,7 @@ const HabitToComplete = () => {
                 <HabitCard key={habit.id.toString()} habit={habit} />
             )) : (
                 <View style={styles.emptyContainer}>
+                    <Text style={[styles.emptyIcon, { color: currentTheme.SecondoryText }]}>📝</Text>
                     <Text style={[styles.emptyText, { color: currentTheme.SecondoryText }]}>
                         No {timePeriod} habits to complete
                     </Text>
@@ -95,6 +96,10 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    emptyIcon: {
+        fontSize: 48,
+        marginBottom: 16,
     },
     emptyText: {
         fontSize: 16,

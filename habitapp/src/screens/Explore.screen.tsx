@@ -34,7 +34,6 @@ const Explore = () => {
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
       <HeaderBar title='Explore your Habits' />
 
-      {/* Filter Buttons */}
       <View style={styles.filterContainer}>
         <ScrollView
           horizontal
@@ -59,7 +58,6 @@ const Explore = () => {
         </ScrollView>
       </View>
 
-      {/* Habits List */}
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
