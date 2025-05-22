@@ -1,13 +1,17 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
 import { habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import { useHabitStore } from '../../store/HabitsStore'
 
-const HabitCard = ({ habit }: {habit:habitType}) => {
+interface HabitCardProps {
+  habit: habitType;
+}
+
+const HabitCard = ({ habit }: HabitCardProps) => {
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
-  const removeHabit = useHabitStore(state => state.removeHabit);
+  const { removeHabit, finishHabit, deleteHabit } = useHabitStore();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -53,11 +57,65 @@ const HabitCard = ({ habit }: {habit:habitType}) => {
     return 0;
   };
 
+  const handleFinishHabit = () => {
+    Alert.alert(
+      "Finish Habit",
+      `Are you sure you want to mark "${habit.name}" as finished? This action will end the habit.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Finish", 
+          onPress: () => finishHabit(habit.id),
+          style: "default"
+        }
+      ]
+    );
+  };
+
+  const handleDeleteHabit = () => {
+    Alert.alert(
+      "Delete Habit",
+      `Are you sure you want to delete "${habit.name}"? This will move it to deleted status and it will be permanently removed on the first day of next month.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Delete", 
+          onPress: () => deleteHabit(habit.id),
+          style: "destructive"
+        }
+      ]
+    );
+  };
+
+  const handlePermanentDelete = () => {
+    Alert.alert(
+      "Permanent Delete",
+      `Are you sure you want to permanently delete "${habit.name}"? This action cannot be undone.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Delete Forever", 
+          onPress: () => removeHabit(habit.id),
+          style: "destructive"
+        }
+      ]
+    );
+  };
+
   const progressPercentage = calculateProgress();
 
+  const isExpired = habit.endDate && new Date() >= new Date(habit.endDate);
+
   return (
-    <View style={[styles.habitCard, { backgroundColor: currentTheme.Card, borderColor: currentTheme.Border }]}>
-  
+    <View style={[
+      styles.habitCard, 
+      { 
+        backgroundColor: currentTheme.Card, 
+        borderColor: currentTheme.Border,
+        opacity: habit.habitStatus === 'deleted' ? 0.6 : 1
+      }
+    ]}>
+     
       <View style={styles.headerContainer}>
         <View style={styles.titleContainer}>
           <Text style={[styles.habitName, { color: currentTheme.PrimaryText }]}>{habit.name}</Text>
@@ -71,6 +129,14 @@ const HabitCard = ({ habit }: {habit:habitType}) => {
           </View>
         </View>
       </View>
+
+      {isExpired && habit.habitStatus === 'current' && (
+        <View style={[styles.warningContainer, { backgroundColor: primaryColors.Error + '20', borderColor: primaryColors.Error }]}>
+          <Text style={[styles.warningText, { color: primaryColors.Error }]}>
+            ⚠️ This habit has expired and will be automatically finished
+          </Text>
+        </View>
+      )}
 
       {habit.description && (
         <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]}>{habit.description}</Text>
@@ -144,7 +210,9 @@ const HabitCard = ({ habit }: {habit:habitType}) => {
         {habit.endDate && (
           <View style={styles.infoItem}>
             <Text style={[styles.infoLabel, { color: currentTheme.SecondoryText }]}>End Date</Text>
-            <Text style={[styles.infoValue, { color: currentTheme.PrimaryText }]}>
+            <Text style={[styles.infoValue, { 
+              color: isExpired ? primaryColors.Error : currentTheme.PrimaryText 
+            }]}>
               {new Date(habit.endDate).toLocaleDateString()}
             </Text>
           </View>
@@ -152,11 +220,31 @@ const HabitCard = ({ habit }: {habit:habitType}) => {
       </View>
 
       <View style={styles.buttonContainer}>
+        {habit.habitStatus === 'current' && (
+          <TouchableOpacity
+            onPress={handleFinishHabit}
+            style={[styles.actionButton, { backgroundColor: primaryColors.Info }]}
+          >
+            <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Finish</Text>
+          </TouchableOpacity>
+        )}
+        
+        {habit.habitStatus !== 'deleted' && (
+          <TouchableOpacity
+            onPress={handleDeleteHabit}
+            style={[styles.actionButton, { backgroundColor: primaryColors.Accent }]}
+          >
+            <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Delete</Text>
+          </TouchableOpacity>
+        )}
+        
         <TouchableOpacity
-          onPress={() => removeHabit(habit.id)}
+          onPress={handlePermanentDelete}
           style={[styles.removeButton, { backgroundColor: primaryColors.Error }]}
         >
-          <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Remove</Text>
+          <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>
+            {habit.habitStatus === 'deleted' ? 'Remove Now' : 'Remove'}
+          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -204,6 +292,16 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '600',
     textTransform: 'capitalize',
+  },
+  warningContainer: {
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 12,
+  },
+  warningText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
   habitDescription: {
     fontSize: 14,
@@ -255,6 +353,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginTop: 8,
+    gap: 8,
+  },
+  actionButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 20,
   },
   removeButton: {
     paddingVertical: 10,
