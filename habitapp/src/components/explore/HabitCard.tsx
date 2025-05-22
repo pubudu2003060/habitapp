@@ -4,11 +4,7 @@ import { habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import { useHabitStore } from '../../store/HabitsStore'
 
-interface HabitCardProps {
-  habit: habitType;
-}
-
-const HabitCard = ({ habit }: HabitCardProps) => {
+const HabitCard = ({ habit }: {habit:habitType}) => {
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
   const removeHabit = useHabitStore(state => state.removeHabit);
@@ -61,7 +57,7 @@ const HabitCard = ({ habit }: HabitCardProps) => {
 
   return (
     <View style={[styles.habitCard, { backgroundColor: currentTheme.Card, borderColor: currentTheme.Border }]}>
-      {/* Header */}
+  
       <View style={styles.headerContainer}>
         <View style={styles.titleContainer}>
           <Text style={[styles.habitName, { color: currentTheme.PrimaryText }]}>{habit.name}</Text>
@@ -76,12 +72,10 @@ const HabitCard = ({ habit }: HabitCardProps) => {
         </View>
       </View>
 
-      {/* Description */}
       {habit.description && (
         <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]}>{habit.description}</Text>
       )}
 
-      {/* Progress Bar */}
       {habit.goal && (
         <View style={styles.progressContainer}>
           <View style={[styles.progressBar, { backgroundColor: currentTheme.Border }]}>
@@ -101,7 +95,6 @@ const HabitCard = ({ habit }: HabitCardProps) => {
         </View>
       )}
 
-      {/* Info Grid */}
       <View style={styles.infoGrid}>
         <View style={styles.infoItem}>
           <Text style={[styles.infoLabel, { color: currentTheme.SecondoryText }]}>Repeat</Text>
@@ -199,7 +192,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   statusContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     gap: 4,
   },
   statusBadge: {
