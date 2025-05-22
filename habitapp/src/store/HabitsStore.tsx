@@ -181,5 +181,143 @@ export const useHabitStore = create<habitStoreType>((set) => ({
         } catch (error) {
             console.error("Error updating habit progress:", error);
         }
+    },
+    finishHabit: async (id: number) => {
+        try {
+            const habits = useHabitStore.getState().habits;
+            const updatedHabits = habits.map(habit =>
+                habit.id === id
+                    ? { ...habit, habitStatus: 'finished' as const }
+                    : habit
+            );
+
+            set(() => ({
+                habits: updatedHabits
+            }));
+
+            await AsyncStorage.setItem("@habits", JSON.stringify(updatedHabits));
+
+            // await firestore()
+            //     .collection('habits')
+            //     .doc(id.toString())
+            //     .update({ habitStatus: 'finished' });
+
+            console.log(`Habit ${id} marked as finished`);
+        } catch (error) {
+            console.error("Error finishing habit:", error);
+        }
+    },
+    deleteHabit: async (id: number) => {
+        try {
+            const habits = useHabitStore.getState().habits;
+            const updatedHabits = habits.map(habit =>
+                habit.id === id
+                    ? { ...habit, habitStatus: 'deleted' as const }
+                    : habit
+            );
+
+            set(() => ({
+                habits: updatedHabits
+            }));
+
+            await AsyncStorage.setItem("@habits", JSON.stringify(updatedHabits));
+
+            // await firestore()
+            //     .collection('habits')
+            //     .doc(id.toString())
+            //     .update({ habitStatus: 'deleted' });
+
+            console.log(`Habit ${id} marked as deleted`);
+        } catch (error) {
+            console.error("Error deleting habit:", error);
+        }
+    },
+    checkAndFinishExpiredHabits: async () => {
+        try {
+            const habits = useHabitStore.getState().habits;
+            const currentDate = new Date();
+            currentDate.setHours(0, 0, 0, 0);
+
+            let hasUpdates = false;
+            const updatedHabits = habits.map(habit => {
+                if (habit.endDate && habit.habitStatus === 'current') {
+                    const endDate = new Date(habit.endDate);
+                    endDate.setHours(0, 0, 0, 0);
+
+                    if (currentDate >= endDate) {
+                        hasUpdates = true;
+                        return { ...habit, habitStatus: 'finished' as const };
+                    }
+                }
+                return habit;
+            });
+
+            if (hasUpdates) {
+                set(() => ({
+                    habits: updatedHabits
+                }));
+
+                await AsyncStorage.setItem("@habits", JSON.stringify(updatedHabits));
+
+                // Batch update finished habits in Firestore
+                // const batch = firestore().batch();
+                // updatedHabits.forEach(habit => {
+                //     if (habit.habitStatus === 'finished' && habits.find(h => h.id === habit.id)?.habitStatus === 'current') {
+                //         const habitRef = firestore().collection('habits').doc(habit.id.toString());
+                //         batch.update(habitRef, { habitStatus: 'finished' });
+                //     }
+                // });
+                // await batch.commit();
+
+                console.log('Expired habits marked as finished');
+            }
+        } catch (error) {
+            console.error("Error checking expired habits:", error);
+        }
+    },
+    cleanupDeletedHabits: async () => {
+        try {
+            const habits = useHabitStore.getState().habits;
+            const activeHabits = habits.filter(habit => habit.habitStatus !== 'deleted');
+            const deletedHabits = habits.filter(habit => habit.habitStatus === 'deleted');
+
+            if (deletedHabits.length > 0) {
+                set(() => ({
+                    habits: activeHabits
+                }));
+
+                await AsyncStorage.setItem("@habits", JSON.stringify(activeHabits));
+
+                // Delete from Firestore
+                // const batch = firestore().batch();
+                // deletedHabits.forEach(habit => {
+                //     const habitRef = firestore().collection('habits').doc(habit.id.toString());
+                //     batch.delete(habitRef);
+                // });
+                // await batch.commit();
+
+                console.log(`Cleaned up ${deletedHabits.length} deleted habits`);
+            }
+        } catch (error) {
+            console.error("Error cleaning up deleted habits:", error);
+        }
+    },
+    performMonthlyCleanup: async () => {
+        try {
+            const lastCleanupData = await AsyncStorage.getItem("@lastCleanup");
+            const lastCleanup = lastCleanupData ? new Date(JSON.parse(lastCleanupData)) : new Date(0);
+            const currentDate = new Date();
+
+            if (currentDate.getDate() === 1 &&
+                (lastCleanup.getMonth() !== currentDate.getMonth() ||
+                    lastCleanup.getFullYear() !== currentDate.getFullYear())) {
+
+                await useHabitStore.getState().cleanupDeletedHabits();
+                await AsyncStorage.setItem("@lastCleanup", JSON.stringify(currentDate.toISOString()));
+                console.log('Monthly cleanup performed');
+            }
+        } catch (error) {
+            console.error("Error performing monthly cleanup:", error);
+        }
     }
 }))

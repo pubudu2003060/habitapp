@@ -151,7 +151,6 @@ const HabitCard = ({ habit }: {habit:habitType}) => {
         )}
       </View>
 
-      {/* Action Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => removeHabit(habit.id)}

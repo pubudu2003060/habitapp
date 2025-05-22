@@ -110,21 +110,26 @@ export type habitStoreType = {
     editHabit: (habit: habitType) => Promise<void>;
     removeAll: () => Promise<void>;
     resetCompletionHabits: (period: 'daily' | 'weekly' | 'monthly') => Promise<void>;
-    updateProgress:(id:number,newProgress:habitType['progress'])=>Promise<habitType|undefined>
+    updateProgress: (id: number, newProgress: habitType['progress']) => Promise<habitType | undefined>
+    finishHabit: (id: number) => Promise<void>;
+    deleteHabit: (id: number) => Promise<void>;
+    checkAndFinishExpiredHabits: () => Promise<void>;
+    cleanupDeletedHabits: () => Promise<void>;
+    performMonthlyCleanup: () => Promise<void>;
 }
 
 export type ModelContextType = {
-  modalVisible: boolean;
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  modalHabit: habitType | undefined;
-  setModalHabit: React.Dispatch<React.SetStateAction<habitType | undefined>>;
+    modalVisible: boolean;
+    setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+    modalHabit: habitType | undefined;
+    setModalHabit: React.Dispatch<React.SetStateAction<habitType | undefined>>;
 };
 
 export type lastDateType = {
-    daily:Date;
-    weekly:Date;
-    monthly:Date;
-} 
+    daily: Date;
+    weekly: Date;
+    monthly: Date;
+}
 
 
 
