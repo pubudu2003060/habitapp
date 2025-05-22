@@ -8,8 +8,9 @@ import PictureBar from '../components/profile/PictureBar';
 import Settings from '../components/profile/Settings';
 import { useHabitStore } from '../store/HabitsStore';
 import ChangeNameModal from '../components/profile/NameChangedModel';
+import PrivacyPolicy from '../components/profile/PrivacyPolicy';
 
-const Profile = () => {
+const Profile = ({navigation}:any) => {
 
   const habits = useHabitStore(state => state.habits)
   const totalHabits = habits.filter(habit => habit.habitStatus === 'current')
@@ -21,6 +22,7 @@ const Profile = () => {
   const [nameModalVisible, setNameModalVisible] = useState(false);
 
   const handleSaveName = async (newName: string) => {
+    navigation.navigate('SignUp')
     const { user, editUser } = useUserStore.getState();
 
     if (!user) {
@@ -41,20 +43,24 @@ const Profile = () => {
     }
   };
 
+  const [showPrivacy, setShowPrivacy] = useState(false);
 
   return (
     <SafeAreaView style={{ backgroundColor: currentTheme.Background, flex: 1 }}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <HeaderBar title='Profile' />
         <PictureBar totalHabits={totalHabits.length} completedHabits={completed.length} name={user?.name} />
-        <Settings visible={setNameModalVisible} />
+        <Settings visible={setNameModalVisible} privacyVisible={setShowPrivacy} />
         <ChangeNameModal
           visible={nameModalVisible}
           onClose={() => setNameModalVisible(false)}
           currentName={user?.name}
           onSave={handleSaveName}
         />
-
+        <PrivacyPolicy
+        visible={showPrivacy}
+        onClose={() => setShowPrivacy(false)}
+      />
       </ScrollView>
     </SafeAreaView>
   );

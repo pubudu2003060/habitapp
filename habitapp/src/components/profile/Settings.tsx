@@ -4,7 +4,7 @@ import useColorStore from '../../store/ColorStore';
 import { useUserStore } from '../../store/UserStore';
 import ChangeNameModal from './NameChangedModel';
 
-const Settings = ({ visible }: any) => {
+const Settings = ({ visible, navigation,privacyVisible }: any) => {
 
     const isDark = useColorStore(state => state.isDark);
     const setTheme = useColorStore(state => state.setTheme);
@@ -16,13 +16,22 @@ const Settings = ({ visible }: any) => {
         setTheme(isDark ? 'light' : 'dark');
     };
 
+    const navigateToPrivacyPolicy = () => {
+        navigation.navigate('PrivacyPolicy');
+    };
+
     return (
         <View style={styles.settingsContainer}>
             <Text style={[styles.sectionTitle, { color: currentTheme.PrimaryText }]}>Settings</Text>
 
             <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
                 <View style={styles.settingRow}>
-                    <Text style={[styles.settingLabel, { color: currentTheme.PrimaryText }]}>Changed Profile Name</Text>
+                    <View style={styles.settingInfo}>
+                        <Text style={[styles.settingLabel, { color: currentTheme.PrimaryText }]}>Profile Name</Text>
+                        <Text style={[styles.currentValue, { color: currentTheme.SecondoryText }]}>
+                            {"User"}
+                        </Text>
+                    </View>
                     <TouchableOpacity
                         style={[styles.themeButton, { backgroundColor: primaryColors.Primary }]}
                         onPress={() => visible(true)}
@@ -36,7 +45,12 @@ const Settings = ({ visible }: any) => {
 
             <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
                 <View style={styles.settingRow}>
-                    <Text style={[styles.settingLabel, { color: currentTheme.PrimaryText }]}>Theme</Text>
+                    <View style={styles.settingInfo}>
+                        <Text style={[styles.settingLabel, { color: currentTheme.PrimaryText }]}>Theme</Text>
+                        <Text style={[styles.currentValue, { color: currentTheme.SecondoryText }]}>
+                            {isDark ? "Dark Mode" : "Light Mode"}
+                        </Text>
+                    </View>
                     <TouchableOpacity
                         style={[styles.themeButton, { backgroundColor: primaryColors.Primary }]}
                         onPress={toggleTheme}
@@ -50,7 +64,31 @@ const Settings = ({ visible }: any) => {
 
             <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
                 <View style={styles.settingRow}>
-                    <Text style={[styles.settingLabel, { color: currentTheme.PrimaryText }]}>Logout</Text>
+                    <View style={styles.settingInfo}>
+                        <Text style={[styles.settingLabel, { color: currentTheme.PrimaryText }]}>Privacy Policy</Text>
+                        <Text style={[styles.currentValue, { color: currentTheme.SecondoryText }]}>
+                            View our privacy policy and data practices
+                        </Text>
+                    </View>
+                    <TouchableOpacity
+                        style={[styles.themeButton, { backgroundColor: primaryColors.Primary }]}
+                        onPress={()=>{privacyVisible(true)}}
+                    >
+                        <Text style={styles.themeButtonText}>
+                            View
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
+                <View style={styles.settingRow}>
+                    <View style={styles.settingInfo}>
+                        <Text style={[styles.settingLabel, { color: currentTheme.PrimaryText }]}>Account</Text>
+                        <Text style={[styles.currentValue, { color: currentTheme.SecondoryText }]}>
+                            Sign out from your account
+                        </Text>
+                    </View>
                     <TouchableOpacity
                         style={[styles.logoutButton, { backgroundColor: primaryColors.Error }]}
                         onPress={remove}
@@ -67,7 +105,7 @@ const styles = StyleSheet.create({
     settingsContainer: {
         paddingHorizontal: 16,
         paddingTop: 24,
-        paddingBottom: 40,
+        marginBottom: 100
     },
     sectionTitle: {
         fontSize: 22,
@@ -89,6 +127,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+    }, settingInfo: {
+        flex: 1,
+        paddingRight: 8,
+    },
+    actionButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+    },
+    actionButtonText: {
+        color: '#FFFFFF',
+        fontWeight: '600',
+        fontSize: 14,
+    },
+    currentValue: {
+        fontSize: 14,
     },
     settingLabel: {
         fontSize: 16,
