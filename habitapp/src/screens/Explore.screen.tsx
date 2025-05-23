@@ -16,8 +16,8 @@ const Explore = () => {
   const filteredHabits = habits.filter(habit => {
     if (filter === 'all') return true;
     if (filter === 'current') return habit.habitStatus === 'current';
-    if (filter === 'completed') return habit.completeStatus === 'completed';
-    if (filter === 'pending') return habit.completeStatus === 'pending';
+    if (filter === 'completed') return habit.habitStatus === 'current' && habit.completeStatus === 'completed';
+    if (filter === 'pending') return habit.habitStatus === 'current' && habit.completeStatus === 'pending';
     return true;
   });
 
@@ -49,8 +49,8 @@ const Explore = () => {
                 {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
                 {filterType === 'all' && ` (${habits.length})`}
                 {filterType === 'current' && ` (${habits.filter(h => h.habitStatus === 'current').length})`}
-                {filterType === 'completed' && ` (${habits.filter(h => h.completeStatus === 'completed').length})`}
-                {filterType === 'pending' && ` (${habits.filter(h => h.completeStatus === 'pending').length})`}
+                {filterType === 'completed' && ` (${habits.filter(h => h.habitStatus === 'current' && h.completeStatus === 'completed').length})`}
+                {filterType === 'pending' && ` (${habits.filter(h => h.habitStatus === 'current' && h.completeStatus === 'pending').length})`}
               </Text>
             </TouchableOpacity>
           ))}

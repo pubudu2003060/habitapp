@@ -16,3 +16,31 @@ export const isFirstTime =async () => {
 
     }
 }
+
+
+export const isTimeToReset = (period: string, lastReset: Date): boolean => {
+  const now = new Date();
+  if (period === 'daily') {
+    return (
+      now.getFullYear() > lastReset.getFullYear() &&
+      now.getMonth() > lastReset.getMonth() ||
+      now.getDate() > lastReset.getDate()
+    );
+  } else if (period === 'weekly') {
+    const toStartOfWeek = (date: Date): Date => {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() - d.getDay());
+      return d;
+    };
+    const lastWeek = toStartOfWeek(new Date(lastReset));
+    const thisWeek = toStartOfWeek(new Date(now));
+    return thisWeek.getTime() > lastWeek.getTime();
+  } else if (period === 'monthly') {
+    return (
+      now.getFullYear() > lastReset.getFullYear() ||
+      now.getMonth() > lastReset.getMonth()
+    );
+  }
+  return false;
+};

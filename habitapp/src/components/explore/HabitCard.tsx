@@ -46,7 +46,7 @@ const HabitCard = ({ habit }: HabitCardProps) => {
 
   const calculateProgress = () => {
     if (!habit.goal || !habit.progress) return 0;
-    
+
     if (habit.goal.type === 'units' && habit.progress.type === 'units') {
       return (habit.progress.completedAmount / habit.goal.amount) * 100;
     } else if (habit.goal.type === 'timer' && habit.progress.type === 'timer') {
@@ -63,8 +63,8 @@ const HabitCard = ({ habit }: HabitCardProps) => {
       `Are you sure you want to mark "${habit.name}" as finished? This action will end the habit.`,
       [
         { text: "Cancel", style: "cancel" },
-        { 
-          text: "Finish", 
+        {
+          text: "Finish",
           onPress: () => finishHabit(habit.id),
           style: "default"
         }
@@ -77,25 +77,10 @@ const HabitCard = ({ habit }: HabitCardProps) => {
       "Delete Habit",
       `Are you sure you want to delete "${habit.name}"? This will move it to deleted status and it will be permanently removed on the first day of next month.`,
       [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete", 
+        { text: "Cancel", style: 'cancel' },
+        {
+          text: "Delete",
           onPress: () => deleteHabit(habit.id),
-          style: "destructive"
-        }
-      ]
-    );
-  };
-
-  const handlePermanentDelete = () => {
-    Alert.alert(
-      "Permanent Delete",
-      `Are you sure you want to permanently delete "${habit.name}"? This action cannot be undone.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete Forever", 
-          onPress: () => removeHabit(habit.id),
           style: "destructive"
         }
       ]
@@ -108,14 +93,14 @@ const HabitCard = ({ habit }: HabitCardProps) => {
 
   return (
     <View style={[
-      styles.habitCard, 
-      { 
-        backgroundColor: currentTheme.Card, 
+      styles.habitCard,
+      {
+        backgroundColor: currentTheme.Card,
         borderColor: currentTheme.Border,
         opacity: habit.habitStatus === 'deleted' ? 0.6 : 1
       }
     ]}>
-     
+
       <View style={styles.headerContainer}>
         <View style={styles.titleContainer}>
           <Text style={[styles.habitName, { color: currentTheme.PrimaryText }]}>{habit.name}</Text>
@@ -123,9 +108,9 @@ const HabitCard = ({ habit }: HabitCardProps) => {
             <View style={[styles.statusBadge, { backgroundColor: getHabitStatusColor(habit.habitStatus) }]}>
               <Text style={[styles.statusText, { color: currentTheme.ButtonText }]}>{habit.habitStatus}</Text>
             </View>
-            <View style={[styles.statusBadge, { backgroundColor: getStatusColor(habit.completeStatus) }]}>
+            {habit.habitStatus === 'current' && <View style={[styles.statusBadge, { backgroundColor: getStatusColor(habit.completeStatus) }]}>
               <Text style={[styles.statusText, { color: currentTheme.ButtonText }]}>{habit.completeStatus}</Text>
-            </View>
+            </View>}
           </View>
         </View>
       </View>
@@ -145,14 +130,14 @@ const HabitCard = ({ habit }: HabitCardProps) => {
       {habit.goal && (
         <View style={styles.progressContainer}>
           <View style={[styles.progressBar, { backgroundColor: currentTheme.Border }]}>
-            <View 
+            <View
               style={[
-                styles.progressFill, 
-                { 
+                styles.progressFill,
+                {
                   backgroundColor: progressPercentage === 100 ? primaryColors.Primary : primaryColors.Accent,
                   width: `${Math.min(progressPercentage, 100)}%`
                 }
-              ]} 
+              ]}
             />
           </View>
           <Text style={[styles.progressText, { color: currentTheme.SecondoryText }]}>
@@ -210,8 +195,8 @@ const HabitCard = ({ habit }: HabitCardProps) => {
         {habit.endDate && (
           <View style={styles.infoItem}>
             <Text style={[styles.infoLabel, { color: currentTheme.SecondoryText }]}>End Date</Text>
-            <Text style={[styles.infoValue, { 
-              color: isExpired ? primaryColors.Error : currentTheme.PrimaryText 
+            <Text style={[styles.infoValue, {
+              color: isExpired ? primaryColors.Error : currentTheme.PrimaryText
             }]}>
               {new Date(habit.endDate).toLocaleDateString()}
             </Text>
@@ -228,24 +213,16 @@ const HabitCard = ({ habit }: HabitCardProps) => {
             <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Finish</Text>
           </TouchableOpacity>
         )}
-        
+
         {habit.habitStatus !== 'deleted' && (
           <TouchableOpacity
             onPress={handleDeleteHabit}
-            style={[styles.actionButton, { backgroundColor: primaryColors.Accent }]}
+            style={[styles.actionButton, { backgroundColor: primaryColors.Error }]}
           >
             <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Delete</Text>
           </TouchableOpacity>
         )}
-        
-        <TouchableOpacity
-          onPress={handlePermanentDelete}
-          style={[styles.removeButton, { backgroundColor: primaryColors.Error }]}
-        >
-          <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>
-            {habit.habitStatus === 'deleted' ? 'Remove Now' : 'Remove'}
-          </Text>
-        </TouchableOpacity>
+
       </View>
     </View>
   );
