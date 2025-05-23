@@ -57,7 +57,6 @@ const HabitToComplete = () => {
                     </TouchableOpacity>
                 ))}
             </View>
-
             {loading ? <View style={styles.emptyContainer}>
                 <LottieView
                     style={styles.animation}

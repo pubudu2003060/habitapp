@@ -3,13 +3,14 @@ import { Modal, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'reac
 import useColorStore from '../../store/ColorStore';
 import { habitType } from '../../types/Types';
 import { useHabitStore } from '../../store/HabitsStore';
-import Goal from '../add/Goal';
-
+import LottieView from 'lottie-react-native';
 
 const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisible: boolean, setModalVisible: React.Dispatch<React.SetStateAction<boolean>>, habit: habitType }) => {
 
   const currentTheme = useColorStore(state => state.currentTheme)
   const primaryColors = useColorStore(state => state.primaryColors)
+
+  const [completed, setCompleted] = useState(false)
 
   const updateProgress = useHabitStore(state => state.updateProgress)
 
@@ -52,14 +53,19 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
           }
         };
       }
-
       if (newProgress) {
         updateProgress(habit.id, newProgress);
       } else {
         updateProgress(habit.id, null);
       }
 
-      setModalVisible(false);
+      setCompleted(true);
+
+      setTimeout(() => {
+        setCompleted(false);
+        setModalVisible(false);
+      }, 4000);
+
     } catch (error) {
       console.error('Error completing habit:', error);
     }
@@ -166,36 +172,45 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
       onRequestClose={() => setModalVisible(false)}
     >
       <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { backgroundColor: currentTheme.Card }]}>
-          <Text style={[styles.habitTitle, { color: currentTheme.PrimaryText }]}>
-            {habit.name}
-          </Text>
-
-          {habit.description && (
-            <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]}>
-              {habit.description}
+        {completed ?
+          <LottieView
+            source={require('../../assets/animations/habitComplete.json')} // Add your success Lottie file
+            autoPlay
+            loop={false}
+            style={{ width: 300, height: 300 }}
+          />
+          :
+          <View style={[styles.modalContent, { backgroundColor: currentTheme.Card }]}>
+            <Text style={[styles.habitTitle, { color: currentTheme.PrimaryText }]}>
+              {habit.name}
             </Text>
-          )}
 
-          {renderProgressInput()}
-
-          <View style={styles.modalActions}>
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={[styles.modalButton, { backgroundColor:primaryColors.Error }]}
-            >
-              <Text style={{ color: currentTheme.ButtonText, fontWeight: '600' }}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={handleComplete}
-              style={[styles.modalButton, { backgroundColor: primaryColors.Primary }]}
-            >
-              <Text style={{ color: currentTheme.ButtonText, fontWeight: '600' }}>
-                Complete
+            {habit.description && (
+              <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]}>
+                {habit.description}
               </Text>
-            </TouchableOpacity>
+            )}
+
+            {renderProgressInput()}
+
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                style={[styles.modalButton, { backgroundColor: primaryColors.Error }]}
+              >
+                <Text style={{ color: currentTheme.ButtonText, fontWeight: '600' }}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={handleComplete}
+                style={[styles.modalButton, { backgroundColor: primaryColors.Primary }]}
+              >
+                <Text style={{ color: currentTheme.ButtonText, fontWeight: '600' }}>
+                  Complete
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        }
       </View>
     </Modal>
   )
