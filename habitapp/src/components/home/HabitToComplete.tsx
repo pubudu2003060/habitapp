@@ -1,11 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
 import { useHabitStore } from '../../store/HabitsStore'
 import { habitType } from '../../types/Types'
 import HabitCard from './HabitCard'
 import useColorStore from '../../store/ColorStore'
+import { set } from 'date-fns'
+import LottieView from 'lottie-react-native'
 
 const HabitToComplete = () => {
+
+    const [loading, setLoading] = useState(true)
 
     const currentHabits = useHabitStore(state => state.habits)
 
@@ -16,13 +20,18 @@ const HabitToComplete = () => {
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)
 
-    const getTodayHabits = (timePeriod: string) => {
-        const sortedHabits = currentHabits.filter((habit) => habit.habitStatus === 'current' && habit.repeat.type === timePeriod)
-        setTodayHabits(sortedHabits)
-    }
-
     useEffect(() => {
-        getTodayHabits(timePeriod)
+        setLoading(true)
+
+        const timeout = setTimeout(() => {
+            const sortedHabits = currentHabits.filter(
+                (habit) => habit.habitStatus === 'current' && habit.repeat.type === timePeriod
+            )
+            setTodayHabits(sortedHabits)
+            setLoading(false)
+        }, 100)
+
+        return () => clearTimeout(timeout)
     }, [timePeriod, currentHabits])
 
     return (
@@ -49,7 +58,14 @@ const HabitToComplete = () => {
                 ))}
             </View>
 
-            {todayHabits.length > 0 ? todayHabits.map((habit) => (
+            {loading ? <View style={styles.emptyContainer}>
+                <LottieView
+                    style={styles.animation}
+                    source={require('../../assets/animations/habitLoading.json')}
+                    autoPlay
+                    loop
+                />
+            </View> : todayHabits.length > 0 ? todayHabits.map((habit) => (
                 <HabitCard key={habit.id.toString()} habit={habit} />
             )) : (
                 <View style={styles.emptyContainer}>
@@ -96,6 +112,11 @@ const styles = StyleSheet.create({
         padding: 20,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    animation: {
+        width: 240,
+        height: 240,
+        alignSelf: 'center',
     },
     emptyIcon: {
         fontSize: 48,
