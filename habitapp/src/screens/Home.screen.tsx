@@ -20,7 +20,6 @@ const Home = () => {
     <modelContext.Provider value={{ modalVisible, setModalVisible, modalHabit, setModalHabit }}>
       <SafeAreaView style={{ backgroundColor: currentTheme.Background, flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <Text style={{ color: 'black' }}>{modalVisible}</Text>
           <ShortStatus />
           <HabitToComplete />
         </ScrollView>

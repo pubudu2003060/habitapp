@@ -12,73 +12,13 @@ const Stat = () => {
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
 
-    const [displayedDay, setDisplayedDay] = useState(new Date())
 
-  const dates = eachWeekOfInterval(
-    {
-      start: subDays(new Date(), 21),
-      end: new Date()
-    },
-    {
-      weekStartsOn: 1
-    }
-  ).reduce((acc: Date[][], cur) => {
-    const alldays = eachDayOfInterval({
-      start: cur,
-      end: addDays(cur, 6)
-    })
 
-    acc.push(alldays)
 
-    return acc;
-  }, [])
 
   return (
     <SafeAreaView style={{flex:1}}>
-      <PagerView style={styles.pagerView} initialPage={3} >
-        {
-          dates.map((week, i) => {
-            return (
-              <View key={i} style={styles.daysRow}>
-                {week.map((day, index) => {
-                  const txt = format(day, 'EEEEE')
-                  const isToday = day.getDate() === displayedDay.getDate() &&
-                    day.getMonth() === displayedDay.getMonth() &&
-                    day.getFullYear() === displayedDay.getFullYear();
 
-                  function setDisplayedDay(day: Date) {
-                    throw new Error('Function not implemented.')
-                  }
-
-                  return (
-                    <TouchableOpacity key={index}
-                      style={[
-                        styles.dayContainer,
-                        isToday && { backgroundColor: primaryColors.Primary, borderRadius: 20 }
-                      ]}
-
-                      onPress={() => { setDisplayedDay(day) }}
-                    >
-                      <Text style={[
-                        styles.dayText,
-                        { color: isToday ? currentTheme.ButtonText : currentTheme.PrimaryText }
-                      ]}>
-                        {txt}
-                      </Text>
-                      <Text style={[
-                        styles.dateNumber,
-                        { color: isToday ? currentTheme.ButtonText : currentTheme.PrimaryText }
-                      ]}>
-                        {day.getDate()}
-                      </Text>
-                    </TouchableOpacity>
-                  )
-                })}
-              </View>
-            )
-          })
-        }
-      </PagerView>
     </SafeAreaView>
   )
 }
