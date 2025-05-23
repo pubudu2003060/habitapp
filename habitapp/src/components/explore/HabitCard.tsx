@@ -117,9 +117,9 @@ const HabitCard = ({ habit }: HabitCardProps) => {
 
       {isExpired && habit.habitStatus === 'current' && (
         <View style={[styles.warningContainer, { backgroundColor: primaryColors.Error + '20', borderColor: primaryColors.Error }]}>
-          <Text style={[styles.warningText, { color: primaryColors.Error }]}>
-            ⚠️ This habit has expired and will be automatically finished
-          </Text>
+            <Text style={[styles.warningText, { color: primaryColors.Error }]}>
+            ⚠️ This habit is past its end date and will be automatically finished.
+            </Text>
         </View>
       )}
 
