@@ -29,7 +29,7 @@ const HabitToComplete = () => {
             )
             setTodayHabits(sortedHabits)
             setLoading(false)
-        }, 100)
+        }, 500)
 
         return () => clearTimeout(timeout)
     }, [timePeriod, currentHabits])

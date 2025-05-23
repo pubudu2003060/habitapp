@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useHabitStore } from '../store/HabitsStore'
 import useColorStore from '../store/ColorStore'
 import HeaderBar from '../components/header/HeaderBar'
 import HabitCard from '../components/explore/HabitCard'
+import LottieView from 'lottie-react-native'
 
 const Explore = () => {
   const habits = useHabitStore(state => state.habits)
@@ -29,6 +30,17 @@ const Explore = () => {
   const getFilterTextStyle = (filterType: string) => ({
     color: filter === filterType ? currentTheme.ButtonText : currentTheme.PrimaryText,
   });
+
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setLoading(true);
+
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [filter, habits]);
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
@@ -61,7 +73,14 @@ const Explore = () => {
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        {filteredHabits.length > 0 ? (
+        {loading ? <View style={styles.emptyContainer}>
+          <LottieView
+            style={styles.animation}
+            source={require('../assets/animations/habitLoading.json')}
+            autoPlay
+            loop
+          />
+        </View> : filteredHabits.length > 0 ? (
           filteredHabits.map((habit, index) => (
             <HabitCard key={habit.id} habit={habit} />
           ))
@@ -87,7 +106,7 @@ const Explore = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-   
+
   },
   filterContainer: {
     paddingVertical: 12,
@@ -111,6 +130,11 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingBottom: 110,
+  },
+  animation: {
+    width: 240,
+    height: 240,
+    alignSelf: 'center',
   },
   emptyContainer: {
     flex: 1,
