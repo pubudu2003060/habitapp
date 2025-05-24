@@ -27,6 +27,7 @@ export type colorStoreType = {
     primaryColors: primaryType;
     currentTheme: themeType;
     isDark: boolean,
+    loadTheme: () => void;
     setTheme: (theme: 'light' | 'dark') => void;
 }
 

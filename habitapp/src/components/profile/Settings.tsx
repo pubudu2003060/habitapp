@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import useColorStore from '../../store/ColorStore';
 import { useUserStore } from '../../store/UserStore';
-import ChangeNameModal from './NameChangedModel';
 
 const Settings = ({ visible, navigation,privacyVisible }: any) => {
 
@@ -14,10 +13,6 @@ const Settings = ({ visible, navigation,privacyVisible }: any) => {
 
     const toggleTheme = () => {
         setTheme(isDark ? 'light' : 'dark');
-    };
-
-    const navigateToPrivacyPolicy = () => {
-        navigation.navigate('PrivacyPolicy');
     };
 
     return (

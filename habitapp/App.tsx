@@ -1,17 +1,28 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import Navigation from './src/navigation/Navigation'
 import { useHabitStore } from './src/store/HabitsStore';
 import { lastDateType } from './src/types/Types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isFirstTime, isTimeToReset } from './src/Services/HabitService';
+import useColorStore from './src/store/ColorStore';
+import { set } from 'date-fns';
 
 const App = () => {
 
   const resetCompletionHabits = useHabitStore(state => state.resetCompletionHabits)
   const performMonthlyCleanup = useHabitStore(state => state.performMonthlyCleanup);
   const checkAndFinishExpiredHabits = useHabitStore(state => state.checkAndFinishExpiredHabits);
-
+  const loadTheme = useColorStore(state => state.loadTheme)
   isFirstTime()
+  const [themeLoaded, setThemeLoaded] = useState(false);
+
+  useEffect(() => {
+    const load = async () => {
+      loadTheme();
+      setThemeLoaded(true);
+    };
+    load();
+  }, [])
 
   useEffect(() => {
     const initializeApp = async () => {
@@ -46,7 +57,9 @@ const App = () => {
   }, [])
 
   return (
-    <Navigation></Navigation>
+    <>
+      {themeLoaded ? <Navigation /> : null}
+    </>
   )
 }
 
