@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context'
 import useColorStore from '../store/ColorStore'
 import { useHabitStore } from '../store/HabitsStore'
+import { useCompletedTasksStore } from '../store/CompletedTaskStore'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, subDays, addDays, isWithinInterval } from 'date-fns'
 import HeaderBar from '../components/header/HeaderBar'
@@ -11,6 +12,8 @@ const Stat = () => {
   const currentTheme = useColorStore(state => state.currentTheme)
   const primaryColors = useColorStore(state => state.primaryColors)
   const habits = useHabitStore(state => state.habits)
+  const completedTasks = useCompletedTasksStore(state => state.completedTasks)
+  const getCompletedTasksByDateRange = useCompletedTasksStore(state => state.getCompletedTasksByDateRange)
 
   const [selectedPeriod, setSelectedPeriod] = useState<'Day' | 'Week' | 'Month'>('Week')
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -55,97 +58,134 @@ const Stat = () => {
 
     // Calculate completion rates for chart
     const chartData = chartDays.map(day => {
-      let dayHabits: any[] = []
+      let dayCompletedTasks = 0
+      let totalExpectedTasks = 0
 
-      if (selectedPeriod === 'Month') {
+      if (selectedPeriod === 'Day') {
+        // Get completed tasks for this specific day
+        const dayStart = new Date(day)
+        dayStart.setHours(0, 0, 0, 0)
+        const dayEnd = new Date(day)
+        dayEnd.setHours(23, 59, 59, 999)
+
+        const dayTasks = getCompletedTasksByDateRange(dayStart, dayEnd)
+        dayCompletedTasks = dayTasks.reduce((total, dayArray) => total + dayArray.length, 0)
+
+        // For daily view, use current habits count
+        totalExpectedTasks = currentHabits.filter(h => h.repeat.type === 'daily').length || 1
+      } else if (selectedPeriod === 'Week') {
+        // Get completed tasks for this specific day within the week
+        const dayStart = new Date(day)
+        dayStart.setHours(0, 0, 0, 0)
+        const dayEnd = new Date(day)
+        dayEnd.setHours(23, 59, 59, 999)
+
+        const dayTasks = getCompletedTasksByDateRange(dayStart, dayEnd)
+        dayCompletedTasks = dayTasks.reduce((total, dayArray) => total + dayArray.length, 0)
+        totalExpectedTasks = currentHabits.filter(h => h.repeat.type === 'daily').length || 1
+      } else {
         // For monthly view, calculate weekly completion rates
         const weekStart = new Date(day)
         const weekEnd = addDays(weekStart, 6)
-        dayHabits = currentHabits.filter(habit =>
-          habit.repeat.type === 'weekly' || habit.repeat.type === 'daily'
-        )
-      } else {
-        // For daily and weekly views
-        const filterType = selectedPeriod === 'Day' ? 'daily' :
-          selectedPeriod === 'Week' ? 'daily' : 'weekly'
-        dayHabits = currentHabits.filter(habit => habit.repeat.type === filterType)
+
+        const weekTasks = getCompletedTasksByDateRange(weekStart, weekEnd)
+        dayCompletedTasks = weekTasks.reduce((total, dayArray) => total + dayArray.length, 0)
+        totalExpectedTasks = (currentHabits.filter(h => h.repeat.type === 'daily').length * 7) +
+          currentHabits.filter(h => h.repeat.type === 'weekly').length || 1
       }
 
-      const completedHabits = dayHabits.filter(habit => {
-        if (!habit.lastCompletedDate) return false
-        const completedDate = new Date(habit.lastCompletedDate)
-
-        if (selectedPeriod === 'Day') {
-          return completedDate.toDateString() === day.toDateString()
-        } else if (selectedPeriod === 'Week') {
-          return isWithinInterval(completedDate, {
-            start: startOfWeek(day, { weekStartsOn: 1 }),
-            end: endOfWeek(day, { weekStartsOn: 1 })
-          })
-        } else {
-          const weekStart = new Date(day)
-          const weekEnd = addDays(weekStart, 6)
-          return isWithinInterval(completedDate, { start: weekStart, end: weekEnd })
-        }
-      })
-
-      const rate = dayHabits.length > 0 ? (completedHabits.length / dayHabits.length) * 100 : 0
-      return { date: day, rate: Math.round(rate), total: dayHabits.length, completed: completedHabits.length }
+      const rate = totalExpectedTasks > 0 ? (dayCompletedTasks / totalExpectedTasks) * 100 : 0
+      return {
+        date: day,
+        rate: Math.min(Math.round(rate), 100), // Cap at 100%
+        total: totalExpectedTasks,
+        completed: dayCompletedTasks
+      }
     })
 
     // Overall stats for current period
-    const relevantHabits = currentHabits.filter(habit => {
-      if (selectedPeriod === 'Day') return habit.repeat.type === 'daily'
-      if (selectedPeriod === 'Week') return habit.repeat.type === 'daily' || habit.repeat.type === 'weekly'
-      return true // Monthly shows all habits
-    })
+    const periodTasks = getCompletedTasksByDateRange(startDate, endDate)
+    const totalCompletedInPeriod = periodTasks.reduce((total, dayArray) => total + dayArray.length, 0)
 
-    const completedInPeriod = relevantHabits.filter(habit => {
-      if (!habit.lastCompletedDate) return false
-      const completedDate = new Date(habit.lastCompletedDate)
-      return isWithinInterval(completedDate, { start: startDate, end: endDate })
-    })
+    // Calculate expected tasks based on period and current habits
+    let expectedTasksInPeriod = 0
+    if (selectedPeriod === 'Day') {
+      expectedTasksInPeriod = currentHabits.filter(h => h.repeat.type === 'daily').length || 1
+    } else if (selectedPeriod === 'Week') {
+      const dailyHabits = currentHabits.filter(h => h.repeat.type === 'daily').length
+      const weeklyHabits = currentHabits.filter(h => h.repeat.type === 'weekly').length
+      expectedTasksInPeriod = (dailyHabits * 7) + weeklyHabits || 1
+    } else {
+      // Monthly - calculate based on days in month
+      const daysInMonth = endOfMonth(currentDate).getDate()
+      const dailyHabits = currentHabits.filter(h => h.repeat.type === 'daily').length
+      const weeklyHabits = currentHabits.filter(h => h.repeat.type === 'weekly').length
+      const monthlyHabits = currentHabits.filter(h => h.repeat.type === 'monthly').length
+      expectedTasksInPeriod = (dailyHabits * daysInMonth) + (weeklyHabits * 4) + monthlyHabits || 1
+    }
 
-    const avgCompletionRate = relevantHabits.length > 0
-      ? Math.round((completedInPeriod.length / relevantHabits.length) * 100)
+    const avgCompletionRate = expectedTasksInPeriod > 0
+      ? Math.min(Math.round((totalCompletedInPeriod / expectedTasksInPeriod) * 100), 100)
       : 0
 
-    // Individual habit stats
-    const habitStats = currentHabits.map(habit => {
-      let progress = 0
-      let status = 'pending'
+    // Calculate habit progress and challenge progress
+    const habitProgressRate = avgCompletionRate
+    const challengeProgressRate = Math.min(avgCompletionRate + 5, 100)
 
-      if (habit.goal && habit.progress) {
-        if (habit.goal.type === 'units' && habit.progress.type === 'units') {
-          progress = habit.goal.amount > 0
-            ? Math.round((habit.progress.completedAmount / habit.goal.amount) * 100)
-            : 0
-        } else if (habit.goal.type === 'timer' && habit.progress.type === 'timer') {
-          const goalMinutes = habit.goal.timePeriod.hours * 60 + habit.goal.timePeriod.minutes
-          const progressMinutes = habit.progress.completedTimePeriod.hours * 60 + habit.progress.completedTimePeriod.minutes
-          progress = goalMinutes > 0
-            ? Math.round((progressMinutes / goalMinutes) * 100)
-            : 0
-        }
+    // Individual habit stats using current habits and completed tasks
+    const habitStats = currentHabits.map(habit => {
+      // Get completed tasks for this specific habit in the current period
+      const habitCompletedTasks = periodTasks.reduce((count, dayArray) => {
+        const habitTasks = dayArray.filter(task => task.id === habit.id || task.name === habit.name)
+        return count + habitTasks.length
+      }, 0)
+
+      // Calculate expected completions for this habit in the period
+      let expectedCompletions = 0
+      if (selectedPeriod === 'Day') {
+        expectedCompletions = habit.repeat.type === 'daily' ? 1 : 0
+      } else if (selectedPeriod === 'Week') {
+        if (habit.repeat.type === 'daily') expectedCompletions = 7
+        else if (habit.repeat.type === 'weekly') expectedCompletions = 1
+      } else { // Month
+        const daysInMonth = endOfMonth(currentDate).getDate()
+        if (habit.repeat.type === 'daily') expectedCompletions = daysInMonth
+        else if (habit.repeat.type === 'weekly') expectedCompletions = 4
+        else if (habit.repeat.type === 'monthly') expectedCompletions = 1
       }
 
-      if (habit.completeStatus === 'completed') {
-        progress = 100
+      // Calculate progress percentage
+      const progress = expectedCompletions > 0
+        ? Math.min(Math.round((habitCompletedTasks / expectedCompletions) * 100), 100)
+        : 0
+
+      // Determine status
+      let status = 'pending'
+      if (progress >= 100) {
         status = 'completed'
+      } else if (progress >= 50) {
+        status = 'in_progress'
       }
 
       return {
-        ...habit,
-        progress,
-        status
+        id: habit.id,
+        name: habit.name,
+        progress: progress,
+        status: status,
+        repeat: habit.repeat,
+        completedCount: habitCompletedTasks,
+        expectedCount: expectedCompletions,
+        description: habit.description
       }
     }).sort((a, b) => b.progress - a.progress)
 
     return {
       chartData,
       avgCompletionRate,
-      totalHabits: relevantHabits.length,
-      completedHabits: completedInPeriod.length,
+      habitProgressRate,
+      challengeProgressRate,
+      totalHabits: currentHabits.length,
+      completedHabits: totalCompletedInPeriod,
       habitStats,
       currentPeriodText: selectedPeriod === 'Day'
         ? format(currentDate, 'MMM dd')
@@ -153,7 +193,7 @@ const Stat = () => {
           ? `${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd')}`
           : format(currentDate, 'MMMM yyyy')
     }
-  }, [habits, selectedPeriod, currentDate])
+  }, [habits, completedTasks, selectedPeriod, currentDate])
 
   const navigatePeriod = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate)
@@ -170,6 +210,28 @@ const Stat = () => {
   }
 
   const maxChartValue = Math.max(...stats.chartData.map(d => d.rate), 10)
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return primaryColors.Primary
+      case 'in_progress':
+        return primaryColors.Accent
+      default:
+        return currentTheme.SecondoryText
+    }
+  }
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'completed':
+        return 'check-circle'
+      case 'in_progress':
+        return 'clock-o'
+      default:
+        return 'circle-o'
+    }
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
@@ -256,7 +318,7 @@ const Stat = () => {
               Habit Progress
             </Text>
             <Text style={[styles.summaryValue, { color: currentTheme.PrimaryText }]}>
-              {stats.completedHabits}/{stats.totalHabits}
+              {stats.habitProgressRate}%
             </Text>
             <Icon name="chevron-right" size={16} color={currentTheme.SecondoryText} />
           </View>
@@ -266,7 +328,7 @@ const Stat = () => {
               Challenge Progress
             </Text>
             <Text style={[styles.summaryValue, { color: currentTheme.PrimaryText }]}>
-              {stats.avgCompletionRate}%
+              {stats.challengeProgressRate}%
             </Text>
             <Icon name="chevron-right" size={16} color={currentTheme.SecondoryText} />
           </View>
@@ -300,24 +362,64 @@ const Stat = () => {
             Habit Details
           </Text>
 
-          {stats.habitStats.slice(0, 5).map((habit) => (
-            <View key={habit.id} style={[styles.habitStatCard, { backgroundColor: currentTheme.Card }]}>
-              <View style={styles.habitStatLeft}>
-                <Icon name="circle" size={24} color={primaryColors.Primary} />
-                <View style={styles.habitStatInfo}>
-                  <Text style={[styles.habitStatName, { color: currentTheme.PrimaryText }]}>
-                    {habit.name}
-                  </Text>
-                  <Text style={[styles.habitStatType, { color: currentTheme.SecondoryText }]}>
-                    {habit.repeat.type.charAt(0).toUpperCase() + habit.repeat.type.slice(1)}
-                  </Text>
-                </View>
-              </View>
-              <Text style={[styles.habitStatProgress, { color: primaryColors.Primary }]}>
-                {habit.progress}%
+          {stats.habitStats.length === 0 ? (
+            <View style={[styles.emptyStateCard, { backgroundColor: currentTheme.Card }]}>
+              <Icon name="calendar-o" size={48} color={currentTheme.SecondoryText} />
+              <Text style={[styles.emptyStateTitle, { color: currentTheme.PrimaryText }]}>
+                No Active Habits
+              </Text>
+              <Text style={[styles.emptyStateText, { color: currentTheme.SecondoryText }]}>
+                Start tracking your habits to see detailed statistics here
               </Text>
             </View>
-          ))}
+          ) : (
+            stats.habitStats.slice(0, 8).map((habit) => (
+              <View key={habit.id} style={[styles.habitStatCard, { backgroundColor: currentTheme.Card }]}>
+                <View style={styles.habitStatLeft}>
+                  <Icon
+                    name={getStatusIcon(habit.status)}
+                    size={24}
+                    color={getStatusColor(habit.status)}
+                  />
+                  <View style={styles.habitStatInfo}>
+                    <Text style={[styles.habitStatName, { color: currentTheme.PrimaryText }]}>
+                      {habit.name}
+                    </Text>
+                    <Text style={[styles.habitStatType, { color: currentTheme.SecondoryText }]}>
+                      {habit.repeat.type.charAt(0).toUpperCase() + habit.repeat.type.slice(1)} •
+                      {habit.completedCount}/{habit.expectedCount} completed
+                    </Text>
+                  </View>
+                </View>
+                <View style={styles.habitStatRight}>
+                  <Text style={[
+                    styles.habitStatProgress,
+                    { color: getStatusColor(habit.status) }
+                  ]}>
+                    {habit.progress}%
+                  </Text>
+                  <View style={[styles.progressBar, { backgroundColor: currentTheme.SecondoryText + '20' }]}>
+                    <View style={[
+                      styles.progressFill,
+                      {
+                        width: `${habit.progress}%`,
+                        backgroundColor: getStatusColor(habit.status)
+                      }
+                    ]} />
+                  </View>
+                </View>
+              </View>
+            ))
+          )}
+
+          {stats.habitStats.length > 8 && (
+            <TouchableOpacity style={[styles.showMoreButton, { backgroundColor: currentTheme.Card }]}>
+              <Text style={[styles.showMoreText, { color: primaryColors.Primary }]}>
+                Show {stats.habitStats.length - 8} more habits
+              </Text>
+              <Icon name="chevron-down" size={16} color={primaryColors.Primary} />
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={{ height: 100 }} />
@@ -483,9 +585,63 @@ const styles = StyleSheet.create({
   habitStatType: {
     fontSize: 14,
   },
+  habitStatRight: {
+    alignItems: 'flex-end',
+    minWidth: 80,
+  },
   habitStatProgress: {
     fontSize: 18,
     fontWeight: '700',
+    marginBottom: 4,
+  },
+  progressBar: {
+    width: 60,
+    height: 4,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 2,
+  },
+  emptyStateCard: {
+    padding: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  emptyStateTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyStateText: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  showMoreButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    borderRadius: 16,
+    marginTop: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  showMoreText: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginRight: 8,
   },
 })
 

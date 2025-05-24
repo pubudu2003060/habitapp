@@ -6,6 +6,7 @@ import HabitCard from './HabitCard'
 import useColorStore from '../../store/ColorStore'
 import { set } from 'date-fns'
 import LottieView from 'lottie-react-native'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 const HabitToComplete = () => {
 
@@ -78,10 +79,15 @@ const HabitToComplete = () => {
                     <HabitCard key={habit.id.toString()} habit={habit} />
                 )) : (
                     <View style={styles.emptyContainer}>
-                        <Text style={[styles.emptyIcon, { color: currentTheme.SecondoryText }]}>📝</Text>
-                        <Text style={[styles.emptyText, { color: currentTheme.SecondoryText }]}>
-                            No {timePeriod} habits to complete
-                        </Text>
+                        <View style={[styles.emptyStateCard, { backgroundColor: currentTheme.Card }]}>
+                            <Icon name="calendar-o" size={48} color={currentTheme.SecondoryText} />
+                            <Text style={[styles.emptyStateTitle, { color: currentTheme.PrimaryText }]}>
+                                No {timePeriod} habits to complete.
+                            </Text>
+                            <Text style={[styles.emptyStateText, { color: currentTheme.SecondoryText }]}>
+                                Add a new habit or check back later to see your {timePeriod} habits here.
+                            </Text>
+                        </View>
                     </View>
                 )}
         </View>
@@ -118,7 +124,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     emptyContainer: {
-        padding: 20,
+        marginTop: 20,
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -134,7 +140,28 @@ const styles = StyleSheet.create({
     emptyText: {
         fontSize: 16,
         fontStyle: 'italic',
-    }
+    },
+    emptyStateCard: {
+    padding: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  emptyStateTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyStateText: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
 });
 
 export default HabitToComplete

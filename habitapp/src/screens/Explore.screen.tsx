@@ -6,6 +6,7 @@ import useColorStore from '../store/ColorStore'
 import HeaderBar from '../components/header/HeaderBar'
 import HabitCard from '../components/explore/HabitCard'
 import LottieView from 'lottie-react-native'
+import Icon from 'react-native-vector-icons/FontAwesome'
 
 const Explore = () => {
   const habits = useHabitStore(state => state.habits)
@@ -96,16 +97,18 @@ const Explore = () => {
             ))
           ) : (
             <View style={styles.emptyContainer}>
-              <Text style={[styles.emptyIcon, { color: currentTheme.SecondoryText }]}>📝</Text>
-              <Text style={[styles.emptyTitle, { color: currentTheme.PrimaryText }]}>
-                {filter === 'all' ? 'No habits found' : `No ${filter} habits`}
-              </Text>
-              <Text style={[styles.emptyText, { color: currentTheme.SecondoryText }]}>
-                {filter === 'all'
-                  ? 'Create your first habit to get started!'
-                  : `You don't have any ${filter} habits at the moment.`
-                }
-              </Text>
+              <View style={[styles.emptyStateCard, { backgroundColor: currentTheme.Card }]}>
+                <Icon name="calendar-o" size={48} color={currentTheme.SecondoryText} />
+                <Text style={[styles.emptyStateTitle, { color: currentTheme.PrimaryText }]}>
+                 {filter === 'all' ? 'No habits found' : `No ${filter} habits`}
+                </Text>
+                <Text style={[styles.emptyStateText, { color: currentTheme.SecondoryText }]}>
+                    {filter === 'all'
+                    ? 'Create your first habit to get started! Start by adding a new habit and track your progress every day.'
+                    : `You don't have any ${filter} habits at the moment. Try creating a new habit or updating your existing ones to see them here.`
+                  }
+                </Text>
+              </View>
             </View>
           )}
       </ScrollView>
@@ -150,8 +153,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 32,
-    paddingVertical: 60,
+    paddingHorizontal: 20,
   },
   emptyIcon: {
     fontSize: 48,
@@ -167,6 +169,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
+  },emptyStateCard: {
+    padding: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  emptyStateTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyStateText: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
   },
 });
 
