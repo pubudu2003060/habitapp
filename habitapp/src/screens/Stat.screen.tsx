@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import useColorStore from '../store/ColorStore'
 import { useHabitStore } from '../store/HabitsStore'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, subDays, addDays, subWeeks, addWeeks, subMonths, addMonths, isWithinInterval } from 'date-fns'
-
-const { width } = Dimensions.get('window')
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, subDays, addDays, isWithinInterval } from 'date-fns'
+import HeaderBar from '../components/header/HeaderBar'
 
 const Stat = () => {
   const currentTheme = useColorStore(state => state.currentTheme)
@@ -18,10 +17,9 @@ const Stat = () => {
 
   const periodTypes = ['Day', 'Week', 'Month']
 
-  // Calculate stats based on selected period
   const stats = useMemo(() => {
     const currentHabits = habits.filter(habit => habit.habitStatus === 'current')
-    
+
     let startDate: Date
     let endDate: Date
     let chartDays: Date[] = []
@@ -31,7 +29,7 @@ const Stat = () => {
       startDate.setHours(0, 0, 0, 0)
       endDate = new Date(currentDate)
       endDate.setHours(23, 59, 59, 999)
-      
+
       // Last 7 days for chart
       chartDays = Array.from({ length: 7 }, (_, i) => {
         const day = new Date(currentDate)
@@ -45,7 +43,7 @@ const Stat = () => {
     } else {
       startDate = startOfMonth(currentDate)
       endDate = endOfMonth(currentDate)
-      
+
       // Get weeks of the month for chart
       chartDays = []
       let weekStart = startOfWeek(startDate, { weekStartsOn: 1 })
@@ -58,31 +56,31 @@ const Stat = () => {
     // Calculate completion rates for chart
     const chartData = chartDays.map(day => {
       let dayHabits: any[] = []
-      
+
       if (selectedPeriod === 'Month') {
         // For monthly view, calculate weekly completion rates
         const weekStart = new Date(day)
         const weekEnd = addDays(weekStart, 6)
-        dayHabits = currentHabits.filter(habit => 
+        dayHabits = currentHabits.filter(habit =>
           habit.repeat.type === 'weekly' || habit.repeat.type === 'daily'
         )
       } else {
         // For daily and weekly views
-        const filterType = selectedPeriod === 'Day' ? 'daily' : 
-                          selectedPeriod === 'Week' ? 'daily' : 'weekly'
+        const filterType = selectedPeriod === 'Day' ? 'daily' :
+          selectedPeriod === 'Week' ? 'daily' : 'weekly'
         dayHabits = currentHabits.filter(habit => habit.repeat.type === filterType)
       }
 
       const completedHabits = dayHabits.filter(habit => {
         if (!habit.lastCompletedDate) return false
         const completedDate = new Date(habit.lastCompletedDate)
-        
+
         if (selectedPeriod === 'Day') {
           return completedDate.toDateString() === day.toDateString()
         } else if (selectedPeriod === 'Week') {
-          return isWithinInterval(completedDate, { 
-            start: startOfWeek(day, { weekStartsOn: 1 }), 
-            end: endOfWeek(day, { weekStartsOn: 1 }) 
+          return isWithinInterval(completedDate, {
+            start: startOfWeek(day, { weekStartsOn: 1 }),
+            end: endOfWeek(day, { weekStartsOn: 1 })
           })
         } else {
           const weekStart = new Date(day)
@@ -108,7 +106,7 @@ const Stat = () => {
       return isWithinInterval(completedDate, { start: startDate, end: endDate })
     })
 
-    const avgCompletionRate = relevantHabits.length > 0 
+    const avgCompletionRate = relevantHabits.length > 0
       ? Math.round((completedInPeriod.length / relevantHabits.length) * 100)
       : 0
 
@@ -119,13 +117,13 @@ const Stat = () => {
 
       if (habit.goal && habit.progress) {
         if (habit.goal.type === 'units' && habit.progress.type === 'units') {
-          progress = habit.goal.amount > 0 
+          progress = habit.goal.amount > 0
             ? Math.round((habit.progress.completedAmount / habit.goal.amount) * 100)
             : 0
         } else if (habit.goal.type === 'timer' && habit.progress.type === 'timer') {
           const goalMinutes = habit.goal.timePeriod.hours * 60 + habit.goal.timePeriod.minutes
           const progressMinutes = habit.progress.completedTimePeriod.hours * 60 + habit.progress.completedTimePeriod.minutes
-          progress = goalMinutes > 0 
+          progress = goalMinutes > 0
             ? Math.round((progressMinutes / goalMinutes) * 100)
             : 0
         }
@@ -149,17 +147,17 @@ const Stat = () => {
       totalHabits: relevantHabits.length,
       completedHabits: completedInPeriod.length,
       habitStats,
-      currentPeriodText: selectedPeriod === 'Day' 
+      currentPeriodText: selectedPeriod === 'Day'
         ? format(currentDate, 'MMM dd')
         : selectedPeriod === 'Week'
-        ? `${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd')}`
-        : format(currentDate, 'MMMM yyyy')
+          ? `${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd')}`
+          : format(currentDate, 'MMMM yyyy')
     }
   }, [habits, selectedPeriod, currentDate])
 
   const navigatePeriod = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate)
-    
+
     if (selectedPeriod === 'Day') {
       direction === 'prev' ? newDate.setDate(newDate.getDate() - 1) : newDate.setDate(newDate.getDate() + 1)
     } else if (selectedPeriod === 'Week') {
@@ -167,7 +165,7 @@ const Stat = () => {
     } else {
       direction === 'prev' ? newDate.setMonth(newDate.getMonth() - 1) : newDate.setMonth(newDate.getMonth() + 1)
     }
-    
+
     setCurrentDate(newDate)
   }
 
@@ -177,12 +175,7 @@ const Stat = () => {
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Stats</Text>
-          <TouchableOpacity>
-            <Icon name="trash" size={24} color={currentTheme.SecondoryText} />
-          </TouchableOpacity>
-        </View>
+        <HeaderBar title="Stats" />
 
         {/* Period Selector */}
         <View style={styles.tabContainer}>
@@ -193,14 +186,14 @@ const Stat = () => {
               style={[
                 styles.tabButton,
                 {
-                  backgroundColor: selectedPeriod === period ? primaryColors.Primary : currentTheme.Card,
+                  backgroundColor: selectedPeriod === period ? primaryColors.Primary : primaryColors.Error,
                 }
               ]}
             >
               <Text style={[
                 styles.tabText,
-                { 
-                  color: selectedPeriod === period ? currentTheme.ButtonText : currentTheme.SecondoryText 
+                {
+                  color: selectedPeriod === period ? currentTheme.ButtonText : currentTheme.SecondoryText
                 }
               ]}>
                 {period}
@@ -240,16 +233,16 @@ const Stat = () => {
                   {
                     height: (item.rate / maxChartValue) * 100,
                     backgroundColor: item.rate >= 75 ? primaryColors.Primary :
-                                   item.rate >= 50 ? primaryColors.Accent :
-                                   item.rate >= 25 ? '#FFC107' : primaryColors.Error
+                      item.rate >= 50 ? primaryColors.Accent :
+                        item.rate >= 25 ? '#FFC107' : primaryColors.Error
                   }
                 ]} />
                 <Text style={[styles.chartLabel, { color: currentTheme.SecondoryText }]}>
-                  {selectedPeriod === 'Day' 
+                  {selectedPeriod === 'Day'
                     ? format(item.date, 'E')[0]
                     : selectedPeriod === 'Week'
-                    ? format(item.date, 'E')[0]
-                    : format(item.date, 'dd')}
+                      ? format(item.date, 'E')[0]
+                      : format(item.date, 'dd')}
                 </Text>
               </View>
             ))}
@@ -306,7 +299,7 @@ const Stat = () => {
           <Text style={[styles.sectionTitle, { color: currentTheme.PrimaryText }]}>
             Habit Details
           </Text>
-          
+
           {stats.habitStats.slice(0, 5).map((habit) => (
             <View key={habit.id} style={[styles.habitStatCard, { backgroundColor: currentTheme.Card }]}>
               <View style={styles.habitStatLeft}>

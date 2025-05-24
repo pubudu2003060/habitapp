@@ -132,5 +132,32 @@ export type lastDateType = {
     monthly: Date;
 }
 
+export type completedTaskType = {
+    id: number;
+    userId: string;
+    name: string;
+    description: string;
+    completedDate: Date;
+    progress: habitType['progress'];
+    goal: habitType['goal'];
+    repeat: habitType['repeat'];
+    completedAt: Date;
+}
+
+export type completedTasksStoreType = {
+    completedTasks: completedTaskType[][]; 
+    addCompletedTask: (task: completedTaskType) => Promise<void>;
+    loadCompletedTasks: (userId: string) => Promise<void>;
+    getCompletedTasksByDate: (date: Date) => completedTaskType[];
+    getCompletedTasksByDateRange: (startDate: Date, endDate: Date) => completedTaskType[][];
+    removeCompletedTask: (taskId: number, date: Date) => Promise<void>;
+    clearAllCompletedTasks: () => Promise<void>;
+    getCompletedTasksStats: (userId: string, period: 'week' | 'month' | 'year') => {
+        totalCompleted: number;
+        dailyAverage: number;
+        mostProductiveDay: { date: Date; count: number } | null;
+    };
+}
+
 
 

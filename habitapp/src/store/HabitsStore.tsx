@@ -1,8 +1,9 @@
 import { create } from "zustand";
-import { habitStoreType, habitType, lastDateType } from "../types/Types";
+import { completedTaskType, habitStoreType, habitType, lastDateType } from "../types/Types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import firestore, { Filter } from '@react-native-firebase/firestore';
 import { useUserStore } from "./UserStore";
+import { useCompletedTasksStore } from "./CompletedTaskStore";
 
 export const useHabitStore = create<habitStoreType>((set) => ({
     habits: [],
@@ -140,11 +141,14 @@ export const useHabitStore = create<habitStoreType>((set) => ({
                 progress: newProgress
             };
 
+            let wasCompleted = false;
+
             if (updatedHabit.goal && updatedHabit.progress) {
                 if (updatedHabit.goal.type === 'units' && updatedHabit.progress.type === 'units') {
                     if (updatedHabit.progress.completedAmount == updatedHabit.goal.amount) {
                         updatedHabit.completeStatus = 'completed';
                         updatedHabit.lastCompletedDate = new Date();
+                        wasCompleted = true;
                     }
                 } else if (updatedHabit.goal.type === 'timer' && updatedHabit.progress.type === 'timer') {
                     const goalMinutes = updatedHabit.goal.timePeriod.hours * 60 + updatedHabit.goal.timePeriod.minutes;
@@ -154,11 +158,29 @@ export const useHabitStore = create<habitStoreType>((set) => ({
                     if (progressMinutes == goalMinutes) {
                         updatedHabit.completeStatus = 'completed';
                         updatedHabit.lastCompletedDate = new Date();
+                        wasCompleted = true;
                     }
                 }
             } else {
                 updatedHabit.completeStatus = 'completed';
                 updatedHabit.lastCompletedDate = new Date();
+                wasCompleted = true;
+            }
+
+            if (wasCompleted && updatedHabit.lastCompletedDate) {
+                const completedTask: completedTaskType = {
+                    id: updatedHabit.id,
+                    userId: updatedHabit.userId,
+                    name: updatedHabit.name,
+                    description: updatedHabit.description,
+                    completedDate: updatedHabit.lastCompletedDate,
+                    progress: updatedHabit.progress,
+                    goal: updatedHabit.goal,
+                    repeat: updatedHabit.repeat,
+                    completedAt: new Date()
+                };
+
+                await useCompletedTasksStore.getState().addCompletedTask(completedTask);
             }
 
             const updatedHabits = habits.map(h => h.id === id ? updatedHabit : h);
