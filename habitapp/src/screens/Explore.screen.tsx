@@ -42,6 +42,8 @@ const Explore = () => {
     return () => clearTimeout(timeout);
   }, [filter, habits]);
 
+  const isDark = useColorStore(state => state.isDark)
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
       <HeaderBar title='Explore your Habits' />
@@ -73,31 +75,39 @@ const Explore = () => {
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
-        {loading ? <View style={styles.emptyContainer}>
-          <LottieView
-            style={styles.animation}
-            source={require('../assets/animations/habitLoading.json')}
-            autoPlay
-            loop
-          />
-        </View> : filteredHabits.length > 0 ? (
-          filteredHabits.map((habit, index) => (
-            <HabitCard key={habit.id} habit={habit} />
-          ))
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Text style={[styles.emptyIcon, { color: currentTheme.SecondoryText }]}>📝</Text>
-            <Text style={[styles.emptyTitle, { color: currentTheme.PrimaryText }]}>
-              {filter === 'all' ? 'No habits found' : `No ${filter} habits`}
-            </Text>
-            <Text style={[styles.emptyText, { color: currentTheme.SecondoryText }]}>
-              {filter === 'all'
-                ? 'Create your first habit to get started!'
-                : `You don't have any ${filter} habits at the moment.`
-              }
-            </Text>
-          </View>
-        )}
+        {loading ?
+          isDark ? <View style={styles.emptyContainer}>
+            <LottieView
+              style={styles.animation}
+              source={require('../assets/animations/darkHabitLoading.json')}
+              autoPlay
+              loop
+            />
+          </View> : <View style={styles.emptyContainer}>
+            <LottieView
+              style={styles.animation}
+              source={require('../assets/animations/habitLoading.json')}
+              autoPlay
+              loop
+            />
+          </View> : filteredHabits.length > 0 ? (
+            filteredHabits.map((habit, index) => (
+              <HabitCard key={habit.id} habit={habit} />
+            ))
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={[styles.emptyIcon, { color: currentTheme.SecondoryText }]}>📝</Text>
+              <Text style={[styles.emptyTitle, { color: currentTheme.PrimaryText }]}>
+                {filter === 'all' ? 'No habits found' : `No ${filter} habits`}
+              </Text>
+              <Text style={[styles.emptyText, { color: currentTheme.SecondoryText }]}>
+                {filter === 'all'
+                  ? 'Create your first habit to get started!'
+                  : `You don't have any ${filter} habits at the moment.`
+                }
+              </Text>
+            </View>
+          )}
       </ScrollView>
     </SafeAreaView>
   )

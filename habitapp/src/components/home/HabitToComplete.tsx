@@ -19,6 +19,7 @@ const HabitToComplete = () => {
 
     const currentTheme = useColorStore(state => state.currentTheme)
     const primaryColors = useColorStore(state => state.primaryColors)
+    const isDark = useColorStore(state => state.isDark)
 
     useEffect(() => {
         setLoading(true)
@@ -57,23 +58,32 @@ const HabitToComplete = () => {
                     </TouchableOpacity>
                 ))}
             </View>
-            {loading ? <View style={styles.emptyContainer}>
-                <LottieView
-                    style={styles.animation}
-                    source={require('../../assets/animations/habitLoading.json')}
-                    autoPlay
-                    loop
-                />
-            </View> : todayHabits.length > 0 ? todayHabits.map((habit) => (
-                <HabitCard key={habit.id.toString()} habit={habit} />
-            )) : (
-                <View style={styles.emptyContainer}>
-                    <Text style={[styles.emptyIcon, { color: currentTheme.SecondoryText }]}>📝</Text>
-                    <Text style={[styles.emptyText, { color: currentTheme.SecondoryText }]}>
-                        No {timePeriod} habits to complete
-                    </Text>
+            {loading ?
+                isDark ? <View style={styles.emptyContainer}>
+                    <LottieView
+                        style={styles.animation}
+                        source={require('../../assets/animations/darkHabitLoading.json')}
+                        autoPlay
+                        loop
+                    />
+                </View> : <View style={styles.emptyContainer}>
+                    <LottieView
+                        style={styles.animation}
+                        source={require('../../assets/animations/habitLoading.json')}
+                        autoPlay
+                        loop
+                    />
                 </View>
-            )}
+                : todayHabits.length > 0 ? todayHabits.map((habit) => (
+                    <HabitCard key={habit.id.toString()} habit={habit} />
+                )) : (
+                    <View style={styles.emptyContainer}>
+                        <Text style={[styles.emptyIcon, { color: currentTheme.SecondoryText }]}>📝</Text>
+                        <Text style={[styles.emptyText, { color: currentTheme.SecondoryText }]}>
+                            No {timePeriod} habits to complete
+                        </Text>
+                    </View>
+                )}
         </View>
     )
 }

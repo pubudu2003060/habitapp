@@ -9,6 +9,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
 
   const currentTheme = useColorStore(state => state.currentTheme)
   const primaryColors = useColorStore(state => state.primaryColors)
+    const isDark = useColorStore(state => state.isDark)
 
   const [completed, setCompleted] = useState(false)
 
@@ -173,12 +174,18 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
     >
       <View style={styles.modalOverlay}>
         {completed ?
-          <LottieView
-            source={require('../../assets/animations/habitComplete.json')} // Add your success Lottie file
-            autoPlay
-            loop={false}
-            style={{ width: 300, height: 300 }}
-          />
+          isDark ?
+            <LottieView
+              source={require('../../assets/animations/darkhabitcomplete.json')} // Add your success Lottie file
+              autoPlay
+              loop={false}
+              style={{ width: 300, height: 300 }}
+            /> : <LottieView
+              source={require('../../assets/animations/habitComplete.json')} // Add your success Lottie file
+              autoPlay
+              loop={false}
+              style={{ width: 300, height: 300 }}
+            />
           :
           <View style={[styles.modalContent, { backgroundColor: currentTheme.Card }]}>
             <Text style={[styles.habitTitle, { color: currentTheme.PrimaryText }]}>
