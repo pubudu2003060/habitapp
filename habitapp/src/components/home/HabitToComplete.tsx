@@ -1,7 +1,7 @@
 import React, { use, useEffect, useState } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
 import { useHabitStore } from '../../store/HabitsStore'
-import { habitType } from '../../types/Types'
+import { DayOfWeek, habitType } from '../../types/Types'
 import HabitCard from './HabitCard'
 import useColorStore from '../../store/ColorStore'
 import { set } from 'date-fns'
@@ -25,9 +25,14 @@ const HabitToComplete = () => {
     useEffect(() => {
         setLoading(true)
 
+        const today = new Date()
+        const date = today.getDay()
+        const dayNames: DayOfWeek[] = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const currentDay = dayNames[date]
+
         const timeout = setTimeout(() => {
             const sortedHabits = currentHabits.filter(
-                (habit) => habit.habitStatus === 'current' && habit.repeat.type === timePeriod
+                (habit) => habit.habitStatus === 'current' && timePeriod == 'daily' ? habit.repeat.type === 'daily' && habit.repeat.days.includes(currentDay) : habit.repeat.type === timePeriod
             )
             setTodayHabits(sortedHabits)
             setLoading(false)
