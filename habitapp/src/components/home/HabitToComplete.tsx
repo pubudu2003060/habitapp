@@ -1,10 +1,9 @@
-import React, { use, useEffect, useState } from 'react'
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { useHabitStore } from '../../store/HabitsStore'
 import { DayOfWeek, habitType } from '../../types/Types'
 import HabitCard from './HabitCard'
 import useColorStore from '../../store/ColorStore'
-import { set } from 'date-fns'
 import LottieView from 'lottie-react-native'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
@@ -24,27 +23,32 @@ const HabitToComplete = () => {
 
     useEffect(() => {
         setLoading(true)
-
         const today = new Date()
         const date = today.getDay()
-        const dayNames: DayOfWeek[] = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const dayNames: DayOfWeek[] = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const currentDay = dayNames[date]
-
         const timeout = setTimeout(() => {
             const sortedHabits = currentHabits.filter(
                 (habit) => habit.habitStatus === 'current' && timePeriod == 'daily' ? habit.repeat.type === 'daily' && habit.repeat.days.includes(currentDay) : habit.repeat.type === timePeriod
             )
-            setTodayHabits(sortedHabits)
+            const sortedByStatus = sortedHabits.sort((a, b) => {
+                if (a.completeStatus === 'pending' && b.completeStatus === 'completed') {
+                    return -1; 
+                }
+                if (a.completeStatus === 'completed' && b.completeStatus === 'pending') {
+                    return 1; 
+                }
+                return 0; 
+            });
+            setTodayHabits(sortedByStatus)
             setLoading(false)
         }, 500)
-
         return () => clearTimeout(timeout)
     }, [timePeriod, currentHabits])
 
     return (
         <View style={styles.container}>
             <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Habits to Complete</Text>
-
             <View style={styles.tabContainer}>
                 {periodTypes.map((period, i) => (
                     <TouchableOpacity
@@ -147,26 +151,26 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
     },
     emptyStateCard: {
-    padding: 32,
-    borderRadius: 16,
-    alignItems: 'center',
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  emptyStateTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptyStateText: {
-    fontSize: 14,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
+        padding: 32,
+        borderRadius: 16,
+        alignItems: 'center',
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    emptyStateTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        marginTop: 16,
+        marginBottom: 8,
+    },
+    emptyStateText: {
+        fontSize: 14,
+        textAlign: 'center',
+        lineHeight: 20,
+    },
 });
 
 export default HabitToComplete

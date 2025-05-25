@@ -1,5 +1,5 @@
-import React, { createContext, useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { createContext, useState } from 'react'
+import { ScrollView, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ShortStatus from '../components/home/ShortStatus';
 import useColorStore from '../store/ColorStore';
