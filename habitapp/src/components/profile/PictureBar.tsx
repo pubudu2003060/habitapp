@@ -9,18 +9,18 @@ import {
   Platform,
   Alert
 } from 'react-native';
-import { CameraOptions, launchCamera, launchImageLibrary, MediaType } from 'react-native-image-picker';
+import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useColorStore from '../../store/ColorStore';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useUserStore } from '../../store/UserStore';
 
-const PictureBar = ({ totalHabits = 0, completedHabits = 0,name=''}) => {
+const PictureBar = ({ totalHabits = 0, completedHabits = 0, name = '' }) => {
   const [profileImage, setProfileImage] = useState<{ uri: string } | null>(null);
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
-  const user = useUserStore(state=>state.user)
-  const storageKey = user?.id+'profileImage'
+  const user = useUserStore(state => state.user)
+  const storageKey = user?.id + 'profileImage'
 
   useEffect(() => {
     loadProfileImage();
@@ -142,33 +142,29 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0,name=''}) => {
         >
           <View style={styles.imageContainer}>
             {profileImage ? (
-              <Image source={profileImage} style={[styles.profileImage,{borderColor:primaryColors.Info}]} />
+              <Image source={profileImage} style={[styles.profileImage, { borderColor: primaryColors.Info }]} />
             ) : (
               <View style={[styles.placeholderImage, { backgroundColor: currentTheme.Card, borderColor: primaryColors.Primary }]}>
-                <Text style={[styles.placeholderText,{color:currentTheme.SecondoryText}]}>Add Photo</Text>
+                <Text style={[styles.placeholderText, { color: currentTheme.SecondoryText }]}>Add Photo</Text>
               </View>
             )}
-            <View style={[styles.cameraIcon, { backgroundColor: currentTheme.Background,borderColor:primaryColors.Info }]}>
-               <Icon name='camera' size={16} color={primaryColors.Primary} />
+            <View style={[styles.cameraIcon, { backgroundColor: currentTheme.Background, borderColor: primaryColors.Info }]}>
+              <Icon name='camera' size={16} color={primaryColors.Primary} />
             </View>
           </View>
         </TouchableOpacity>
         <Text style={[styles.userName, { color: currentTheme.PrimaryText }]}>{name}</Text>
       </View>
-
       <View style={[styles.statsContainer, { borderTopColor: currentTheme.Border }]}>
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: primaryColors.Accent }]}>{totalHabits}</Text>
           <Text style={[styles.statLabel, { color: currentTheme.SecondoryText }]}>Total Habits</Text>
         </View>
-
         <View style={[styles.statDivider, { backgroundColor: currentTheme.Border }]} />
-
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: primaryColors.Primary }]}>{completedHabits}</Text>
           <Text style={[styles.statLabel, { color: currentTheme.SecondoryText }]}>Completed Today</Text>
         </View>
-
       </View>
     </View>
   );

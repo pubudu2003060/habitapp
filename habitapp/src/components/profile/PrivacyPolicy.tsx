@@ -5,22 +5,22 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Modal, // ✅ NEW
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import useColorStore from '../../store/ColorStore';
 import HeaderBar from '../header/HeaderBar';
 
 
-const PrivacyPolicy = ({ visible, onClose, navigation }:any) => {
+const PrivacyPolicy = ({ visible, onClose, navigation }: any) => {
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
 
   const handleBack = () => {
     if (onClose) {
-      onClose(); // Close the modal
+      onClose();
     } else if (navigation && navigation.goBack) {
-      navigation.goBack(); // Fallback if used as a screen
+      navigation.goBack();
     }
   };
 
@@ -41,118 +41,108 @@ const PrivacyPolicy = ({ visible, onClose, navigation }:any) => {
               <Text style={[styles.lastUpdated, { color: currentTheme.SecondoryText }]}>
                 Last Updated: {policyLastUpdated}
               </Text>
-
-            <View style={styles.section}>
-              <Text style={[styles.heading, { color: currentTheme.PrimaryText }]}>
-                Welcome to HabitTracker
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                Thank you for choosing HabitTracker. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, and share your information when you use our mobile application.
-              </Text>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
-                Information We Collect
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                <Text style={styles.bold}>Personal Information:</Text> When you register, we collect your name, email address, and profile picture if you choose to upload one.
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                <Text style={styles.bold}>Usage Data:</Text> We collect information about how you use the app, including habits you create, completion records, and app interaction patterns.
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                <Text style={styles.bold}>Device Information:</Text> We collect device information such as your mobile device ID, model, and operating system.
-              </Text>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
-                How We Use Your Information
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                We use the information we collect to:
-              </Text>
-              <View style={styles.bulletPoints}>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Provide, maintain, and improve our services</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Personalize your experience</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Send you notifications about your habits and progress</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Generate anonymized, aggregated statistics</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Protect against fraud and abuse</Text>
+              <View style={styles.section}>
+                <Text style={[styles.heading, { color: currentTheme.PrimaryText }]}>
+                  Welcome to HabitTracker
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  Thank you for choosing HabitTracker. We are committed to protecting your personal information and your right to privacy. This Privacy Policy explains how we collect, use, and share your information when you use our mobile application.
+                </Text>
               </View>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
-                Data Storage and Security
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                Your personal data is stored locally on your device and synchronized with our secure servers. We implement appropriate technical and organizational measures to protect your personal information against unauthorized or unlawful processing, accidental loss, destruction, or damage.
-              </Text>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
-                Sharing Your Information
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                We do not sell your personal information to third parties. We may share your information with:
-              </Text>
-              <View style={styles.bulletPoints}>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Service providers who help us deliver our services</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Legal authorities when required by law</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Other parties with your explicit consent</Text>
+              <View style={styles.section}>
+                <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
+                  Information We Collect
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  <Text style={styles.bold}>Personal Information:</Text> When you register, we collect your name, email address, and profile picture if you choose to upload one.
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  <Text style={styles.bold}>Usage Data:</Text> We collect information about how you use the app, including habits you create, completion records, and app interaction patterns.
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  <Text style={styles.bold}>Device Information:</Text> We collect device information such as your mobile device ID, model, and operating system.
+                </Text>
               </View>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
-                Your Rights
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                Depending on your location, you may have the right to:
-              </Text>
-              <View style={styles.bulletPoints}>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Access the personal data we hold about you</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Request correction of your personal data</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Request deletion of your personal data</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Object to our processing of your data</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Request restriction of processing your data</Text>
-                <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Request transfer of your data</Text>
+              <View style={styles.section}>
+                <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
+                  How We Use Your Information
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  We use the information we collect to:
+                </Text>
+                <View style={styles.bulletPoints}>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Provide, maintain, and improve our services</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Personalize your experience</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Send you notifications about your habits and progress</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Generate anonymized, aggregated statistics</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Protect against fraud and abuse</Text>
+                </View>
               </View>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
-                Children's Privacy
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                Our services are not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.
-              </Text>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
-                Changes to This Policy
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.
-              </Text>
-            </View>
-
-            <View style={styles.section}>
-              <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
-                Contact Us
-              </Text>
-              <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
-                If you have any questions about this Privacy Policy or our data practices, please contact us at:
-              </Text>
-              <Text style={[styles.contactEmail, { color: primaryColors.Info }]}>
-                privacy@habittracker.com
-              </Text>
-            </View>
-
-           <TouchableOpacity
+              <View style={styles.section}>
+                <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
+                  Data Storage and Security
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  Your personal data is stored locally on your device and synchronized with our secure servers. We implement appropriate technical and organizational measures to protect your personal information against unauthorized or unlawful processing, accidental loss, destruction, or damage.
+                </Text>
+              </View>
+              <View style={styles.section}>
+                <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
+                  Sharing Your Information
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  We do not sell your personal information to third parties. We may share your information with:
+                </Text>
+                <View style={styles.bulletPoints}>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Service providers who help us deliver our services</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Legal authorities when required by law</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Other parties with your explicit consent</Text>
+                </View>
+              </View>
+              <View style={styles.section}>
+                <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
+                  Your Rights
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  Depending on your location, you may have the right to:
+                </Text>
+                <View style={styles.bulletPoints}>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Access the personal data we hold about you</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Request correction of your personal data</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Request deletion of your personal data</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Object to our processing of your data</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Request restriction of processing your data</Text>
+                  <Text style={[styles.bulletPoint, { color: currentTheme.PrimaryText }]}>• Request transfer of your data</Text>
+                </View>
+              </View>
+              <View style={styles.section}>
+                <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
+                  Children's Privacy
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  Our services are not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.
+                </Text>
+              </View>
+              <View style={styles.section}>
+                <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
+                  Changes to This Policy
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.
+                </Text>
+              </View>
+              <View style={styles.section}>
+                <Text style={[styles.sectionHeading, { color: primaryColors.Primary }]}>
+                  Contact Us
+                </Text>
+                <Text style={[styles.paragraph, { color: currentTheme.PrimaryText }]}>
+                  If you have any questions about this Privacy Policy or our data practices, please contact us at:
+                </Text>
+                <Text style={[styles.contactEmail, { color: primaryColors.Info }]}>
+                  privacy@habittracker.com
+                </Text>
+              </View>
+              <TouchableOpacity
                 style={[styles.backButton, { backgroundColor: primaryColors.Primary }]}
                 onPress={handleBack}
               >
@@ -167,9 +157,9 @@ const PrivacyPolicy = ({ visible, onClose, navigation }:any) => {
 };
 
 const styles = StyleSheet.create({
-     modalOverlay: {
+  modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)', // dark transparent background
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },

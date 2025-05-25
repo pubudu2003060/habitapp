@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { ScrollView } from 'react-native';
 import useColorStore from '../store/ColorStore';
 import { useUserStore } from '../store/UserStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,7 +10,7 @@ import { useHabitStore } from '../store/HabitsStore';
 import ChangeNameModal from '../components/profile/NameChangedModel';
 import PrivacyPolicy from '../components/profile/PrivacyPolicy';
 
-const Profile = ({navigation}:any) => {
+const Profile = () => {
 
   const habits = useHabitStore(state => state.habits)
   const totalHabits = habits.filter(habit => habit.habitStatus === 'current')
@@ -22,19 +22,15 @@ const Profile = ({navigation}:any) => {
   const [nameModalVisible, setNameModalVisible] = useState(false);
 
   const handleSaveName = async (newName: string) => {
-    navigation.navigate('SignUp')
     const { user, editUser } = useUserStore.getState();
-
     if (!user) {
       console.error("No user is currently signed in.");
       return;
     }
-
     const updatedUser = {
       ...user,
       name: newName
     };
-
     try {
       await editUser(updatedUser);
       console.log("Name successfully updated to:", newName);
@@ -58,14 +54,12 @@ const Profile = ({navigation}:any) => {
           onSave={handleSaveName}
         />
         <PrivacyPolicy
-        visible={showPrivacy}
-        onClose={() => setShowPrivacy(false)}
-      />
+          visible={showPrivacy}
+          onClose={() => setShowPrivacy(false)}
+        />
       </ScrollView>
     </SafeAreaView>
   );
 };
-
-
 
 export default Profile;

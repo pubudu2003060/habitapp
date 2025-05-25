@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import useColorStore from '../../store/ColorStore';
 import { useUserStore } from '../../store/UserStore';
 
-const Settings = ({ visible, navigation,privacyVisible }: any) => {
+const Settings = ({ visible, navigation, privacyVisible }: any) => {
 
     const isDark = useColorStore(state => state.isDark);
     const setTheme = useColorStore(state => state.setTheme);
@@ -18,7 +18,6 @@ const Settings = ({ visible, navigation,privacyVisible }: any) => {
     return (
         <View style={styles.settingsContainer}>
             <Text style={[styles.sectionTitle, { color: currentTheme.PrimaryText }]}>Settings</Text>
-
             <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
                 <View style={styles.settingRow}>
                     <View style={styles.settingInfo}>
@@ -37,7 +36,6 @@ const Settings = ({ visible, navigation,privacyVisible }: any) => {
                     </TouchableOpacity>
                 </View>
             </View>
-
             <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
                 <View style={styles.settingRow}>
                     <View style={styles.settingInfo}>
@@ -56,7 +54,6 @@ const Settings = ({ visible, navigation,privacyVisible }: any) => {
                     </TouchableOpacity>
                 </View>
             </View>
-
             <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
                 <View style={styles.settingRow}>
                     <View style={styles.settingInfo}>
@@ -67,7 +64,7 @@ const Settings = ({ visible, navigation,privacyVisible }: any) => {
                     </View>
                     <TouchableOpacity
                         style={[styles.themeButton, { backgroundColor: primaryColors.Primary }]}
-                        onPress={()=>{privacyVisible(true)}}
+                        onPress={() => { privacyVisible(true) }}
                     >
                         <Text style={styles.themeButtonText}>
                             View
@@ -75,7 +72,6 @@ const Settings = ({ visible, navigation,privacyVisible }: any) => {
                     </TouchableOpacity>
                 </View>
             </View>
-
             <View style={[styles.settingCard, { backgroundColor: currentTheme.Card }]}>
                 <View style={styles.settingRow}>
                     <View style={styles.settingInfo}>
