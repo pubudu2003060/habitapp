@@ -145,7 +145,7 @@ export type completedTaskType = {
 }
 
 export type completedTasksStoreType = {
-    completedTasks: completedTaskType[][]; 
+    completedTasks: completedTaskType[][];
     addCompletedTask: (task: completedTaskType) => Promise<void>;
     loadCompletedTasks: (userId: string) => Promise<void>;
     getCompletedTasksByDate: (date: Date) => completedTaskType[];
@@ -157,6 +157,41 @@ export type completedTasksStoreType = {
         dailyAverage: number;
         mostProductiveDay: { date: Date; count: number } | null;
     };
+}
+
+export type statType = {
+    chartData: {
+        date: Date;
+        completed: number;
+    }[];
+    maxChartValue: number;
+    totalHabits: number;
+    completedHabits: number;
+    habitStats: {
+        id: number;
+        name: string;
+        progress: number;
+        status: string;
+        repeat: {
+            type: "daily";
+            days: DayOfWeek[];
+        } | {
+            type: "weekly";
+        } | {
+            type: "monthly";
+        }; completedCount: number;
+        expectedCount: number;
+        description: string;
+    }[];
+    currentPeriodText: string;
+}
+
+export type statBarType = {
+    selectedPeriod: 'Day' | 'Week' | 'Month';
+    setSelectedPeriod: React.Dispatch<React.SetStateAction<'Day' | 'Week' | 'Month'>>;
+    stats: statType;
+    currentDate: Date;
+    setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 
