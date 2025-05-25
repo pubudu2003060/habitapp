@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import React, { useState, useMemo } from 'react'
+import { View, StyleSheet, ScrollView } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import useColorStore from '../store/ColorStore'
 import { useHabitStore } from '../store/HabitsStore'

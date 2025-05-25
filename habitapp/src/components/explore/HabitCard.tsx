@@ -1,14 +1,18 @@
 import React from 'react'
-import { StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import { useHabitStore } from '../../store/HabitsStore'
+import CustomAlert from '../alert/CustomAlert'
+import useCustomAlert from '../alert/UseCustomAlert'
 
 const HabitCard = ({ habit }: { habit: habitType }) => {
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
   const finishHabit = useHabitStore(state => state.finishHabit);
   const deleteHabit = useHabitStore(state => state.deleteHabit);
+
+  const { alertConfig, showAlert, hideAlert } = useCustomAlert();
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -55,7 +59,7 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
   };
 
   const handleFinishHabit = () => {
-    Alert.alert(
+    showAlert(
       "Finish Habit",
       `Are you sure you want to mark "${habit.name}" as finished? This action will end the habit.`,
       [
@@ -70,7 +74,7 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
   };
 
   const handleDeleteHabit = () => {
-    Alert.alert(
+   showAlert(
       "Delete Habit",
       `Are you sure you want to delete "${habit.name}"? This will move it to deleted status and it will be permanently removed on the first day of next month.`,
       [
@@ -208,6 +212,13 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
           </TouchableOpacity>
         )}
       </View>
+      <CustomAlert
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        buttons={alertConfig.buttons}
+        onDismiss={hideAlert}
+      />
     </View>
   );
 };

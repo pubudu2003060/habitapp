@@ -6,14 +6,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   PermissionsAndroid,
-  Platform,
-  Alert
+  Platform
 } from 'react-native';
 import { CameraOptions, launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import useColorStore from '../../store/ColorStore';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useUserStore } from '../../store/UserStore';
+import CustomAlert from '../alert/CustomAlert'
+import useCustomAlert from '../alert/UseCustomAlert'
 
 const PictureBar = ({ totalHabits = 0, completedHabits = 0, name = '' }) => {
   const [profileImage, setProfileImage] = useState<{ uri: string } | null>(null);
@@ -21,6 +22,8 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0, name = '' }) => {
   const primaryColors = useColorStore(state => state.primaryColors);
   const user = useUserStore(state => state.user)
   const storageKey = user?.id + 'profileImage'
+
+   const { alertConfig, showAlert, hideAlert } = useCustomAlert();
 
   useEffect(() => {
     loadProfileImage();
@@ -69,7 +72,7 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0, name = '' }) => {
   };
 
   const handleChoosePhoto = () => {
-    Alert.alert(
+    showAlert(
       'Change Profile Picture',
       'Choose an option',
       [
@@ -86,14 +89,13 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0, name = '' }) => {
           style: 'cancel',
         },
       ],
-      { cancelable: true },
     );
   };
 
   const takePhoto = async () => {
     const hasPermission = await requestCameraPermission();
     if (!hasPermission) {
-      Alert.alert('Permission denied', 'Camera permission is required to take photos');
+     showAlert('Permission denied', 'Camera permission is required to take photos');
       return;
     }
 
@@ -166,6 +168,13 @@ const PictureBar = ({ totalHabits = 0, completedHabits = 0, name = '' }) => {
           <Text style={[styles.statLabel, { color: currentTheme.SecondoryText }]}>Completed Today</Text>
         </View>
       </View>
+      <CustomAlert
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        buttons={alertConfig.buttons}
+        onDismiss={hideAlert}
+      />
     </View>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { habitType } from '../types/Types';
 import NameAndDescription from '../components/add/NameAndDescription';
@@ -11,6 +11,8 @@ import HeaderBar from '../components/header/HeaderBar';
 import useColorStore from '../store/ColorStore';
 import { useUserStore } from '../store/UserStore';
 import { useHabitStore } from '../store/HabitsStore';
+import CustomAlert from '../components/alert/CustomAlert';
+import useCustomAlert from '../components/alert/UseCustomAlert';
 
 const Add = () => {
 
@@ -20,6 +22,8 @@ const Add = () => {
   const currentTheme = useColorStore(state => state.currentTheme);
 
   const addHabit = useHabitStore(state => state.addHabit)
+
+  const { alertConfig, showAlert, hideAlert } = useCustomAlert();
 
   const [habit, setHabit] = useState<habitType>(
     {
@@ -40,13 +44,13 @@ const Add = () => {
 
   const add = () => {
     if (habit.name.trim() == "" || habit.description.trim() == "") {
-      return Alert.alert("Add name and Description!")
+      return showAlert("Add name and Description!")
     }
     if (habit.repeat.type === "daily" && habit.repeat.days.length === 0) {
-      return Alert.alert("Add Days to Repeat!")
+      return showAlert("Add Days to Repeat!")
     }
     addHabit(habit)
-    Alert.alert("Habit added Succesfully!")
+    showAlert("Habit added Succesfully!")
     setHabit({
       id: Date.now(),
       userId: user?.id || "",
@@ -87,6 +91,13 @@ const Add = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <CustomAlert
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        buttons={alertConfig.buttons}
+        onDismiss={hideAlert}
+      />
     </SafeAreaView>
   )
 }

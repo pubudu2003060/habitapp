@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TextInput, View, Text, Animated } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { habitType } from '../../types/Types';
 import useColorStore from '../../store/ColorStore';
 

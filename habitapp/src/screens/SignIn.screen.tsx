@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
-import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { signInInputType, userType } from '../types/Types'
 import { useUserStore } from '../store/UserStore'
 import useColorStore from '../store/ColorStore'
+import CustomAlert from '../components/alert/CustomAlert'
+import useCustomAlert from '../components/alert/UseCustomAlert'
+
 
 const SignIn = ({ navigation }: any) => {
     const currentTheme = useColorStore(state => state.currentTheme);
     const primaryColors = useColorStore(state => state.primaryColors);
+
+    const { alertConfig, showAlert, hideAlert } = useCustomAlert();
 
     const [signInInput, setSignInInput] = useState<signInInputType>({
         email: "",
@@ -21,7 +26,7 @@ const SignIn = ({ navigation }: any) => {
             const { email, password } = signInInput;
 
             if (!email.trim() || !password.trim()) {
-                return Alert.alert(
+                return showAlert(
                     "Missing Fields",
                     "Please enter both email and password."
                 );
@@ -29,16 +34,16 @@ const SignIn = ({ navigation }: any) => {
             await signInwithFirestore(signInInput)
         } catch (error: any) {
             if (error.code === 'auth/user-not-found') {
-                Alert.alert("SignIn Error", 'No user found with this email');
+                showAlert("SignIn Error", 'No user found with this email');
             }
             else if (error.code === 'auth/invalid-email') {
-                Alert.alert("SignIn Error", 'Enter a valid Email');
+                showAlert("SignIn Error", 'Enter a valid Email');
             }
             else if (error.code === 'auth/invalid-credential') {
-                Alert.alert("SignIn Error", 'Enter correct Email and Password');
+                showAlert("SignIn Error", 'Enter correct Email and Password');
             }
             else {
-                Alert.alert("SignUp Error", error.message || "Something went wrong.");
+                showAlert("SignUp Error", error.message || "Something went wrong.");
             }
         }
     };
@@ -91,6 +96,13 @@ const SignIn = ({ navigation }: any) => {
                     </TouchableOpacity>
                 </View>
             </View>
+            <CustomAlert
+                visible={alertConfig.visible}
+                title={alertConfig.title}
+                message={alertConfig.message}
+                buttons={alertConfig.buttons}
+                onDismiss={hideAlert}
+            />
         </SafeAreaView>
     );
 };

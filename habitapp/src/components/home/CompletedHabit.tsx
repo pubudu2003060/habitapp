@@ -1,5 +1,5 @@
 import React, { use, useEffect, useState } from 'react'
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet } from 'react-native'
 import { useCompletedTasksStore } from '../../store/CompletedTaskStore'
 import { completedTaskType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'

@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { Alert, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import {  Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { signUpInputType } from '../types/Types';
 import useColorStore from '../store/ColorStore';
 import { useUserStore } from '../store/UserStore';
+import CustomAlert from '../components/alert/CustomAlert'
+import useCustomAlert from '../components/alert/UseCustomAlert'
 
 const SignUp = ({ navigation }: any) => {
     const currentTheme = useColorStore(state => state.currentTheme);
     const primaryColors = useColorStore(state => state.primaryColors);
+
+     const { alertConfig, showAlert, hideAlert } = useCustomAlert();
 
     const [signUpInput, setSignUpInput] = useState<signUpInputType>({
         name: "",
@@ -21,20 +25,20 @@ const SignUp = ({ navigation }: any) => {
         try {
             const { name, email, password } = signUpInput;
             if (!name.trim() || !email.trim() || !password.trim()) {
-                return Alert.alert("Missing fields", "Please fill in all fields");
+                return showAlert("Missing fields", "Please fill in all fields");
             }
             await signUpwithFireStore(signUpInput)
         } catch (error: any) {
             if (error.code === 'auth/email-already-in-use') {
-                Alert.alert("SignUp Error", "This email is already in use.");
+                showAlert("SignUp Error", "This email is already in use.");
             } else if (error.code === 'auth/weak-password') {
-                Alert.alert("SignUp Error", "Password should be at least 6 characters.");
+                showAlert("SignUp Error", "Password should be at least 6 characters.");
             }
             else if (error.code === 'auth/invalid-email') {
-                Alert.alert("SignUp Error", 'Enter a valid Email');
+               showAlert("SignUp Error", 'Enter a valid Email');
             }
             else {
-                Alert.alert("SignUp Error", error.message || "Something went wrong.");
+               showAlert("SignUp Error", error.message || "Something went wrong.");
             }
         }
     };
@@ -98,6 +102,13 @@ const SignUp = ({ navigation }: any) => {
                     </TouchableOpacity>
                 </View>
             </View>
+             <CustomAlert
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        buttons={alertConfig.buttons}
+        onDismiss={hideAlert}
+      />
         </SafeAreaView>
     );
 };
