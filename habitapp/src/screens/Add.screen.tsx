@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { habitStoreType, habitType } from '../types/Types';
+import { habitType } from '../types/Types';
 import NameAndDescription from '../components/add/NameAndDescription';
 import Repeat from '../components/add/Repeat';
 import EndDate from '../components/add/EndDate';
@@ -30,10 +30,10 @@ const Add = () => {
       repeat: { type: "daily", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] },
       endDate: null,
       goal: null,
-      progress:null,
-      reminder: new Date(0, 0, 0),
-      lastCompletedDate:undefined,
-      completeStatus:"pending",
+      progress: null,
+      reminder: (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+      lastCompletedDate: undefined,
+      completeStatus: "pending",
       habitStatus: "current",
       setDate: new Date()
     })
@@ -48,17 +48,17 @@ const Add = () => {
     addHabit(habit)
     Alert.alert("Habit added Succesfully!")
     setHabit({
-     id: Date.now(),
+      id: Date.now(),
       userId: user?.id || "",
       name: "",
       description: "",
       repeat: { type: "daily", days: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] },
       endDate: null,
       goal: null,
-      progress:null,
-      reminder: new Date(0, 0, 0),
-      lastCompletedDate:undefined,
-      completeStatus:"pending",
+      progress: null,
+      reminder: (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })(),
+      lastCompletedDate: undefined,
+      completeStatus: "pending",
       habitStatus: "current",
       setDate: new Date()
     })
@@ -66,7 +66,7 @@ const Add = () => {
 
   return (
     <SafeAreaView style={{ backgroundColor: currentTheme.Background }}>
-      <ScrollView  showsHorizontalScrollIndicator={false}>
+      <ScrollView showsHorizontalScrollIndicator={false}>
         <HeaderBar title="Create Habit"></HeaderBar>
         <NameAndDescription habit={habit} setHabit={setHabit} />
         <Repeat habit={habit} setHabit={setHabit} />
@@ -81,7 +81,6 @@ const Add = () => {
                 backgroundColor: primaryColors.Primary
               }
             ]}
-
             onPress={() => { add() }}
           >
             <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Add Habit</Text>

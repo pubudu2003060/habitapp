@@ -129,7 +129,7 @@ const Goal = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatch<
                                 keyboardType="numeric"
                                 value={habit.goal?.type === 'timer' ? habit.goal.timePeriod.minutes.toString() : "0"}
                                 onChangeText={(text) => {
-                                    if (Number(text) <= 60)
+                                    if (Number(text) < 60)
                                         setHabit(h => ({
                                             ...h,
                                             goal: {

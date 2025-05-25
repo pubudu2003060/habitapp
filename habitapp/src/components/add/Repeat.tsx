@@ -27,7 +27,6 @@ const Repeat = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatc
     return (
         <View style={[styles.container, { backgroundColor: currentTheme.Card }]}>
             <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Repeat</Text>
-
             <View style={styles.buttonContainer}>
                 {['daily', 'weekly', 'monthly'].map((type, index) => (
                     <TouchableOpacity
@@ -50,7 +49,6 @@ const Repeat = ({ habit, setHabit }: { habit: habitType, setHabit: React.Dispatc
                     </TouchableOpacity>
                 ))}
             </View>
-
             <View style={styles.daysContainer}>
                 {shortDays.map((day, index) => {
                     const disabled = habit.repeat.type !== "daily";

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, TextInput, View, Text, Animated } from 'react-native';
 import { habitType } from '../../types/Types';
 import useColorStore from '../../store/ColorStore';
@@ -27,7 +27,6 @@ const NameAndDescription = ({ habit, setHabit }: { habit: habitType, setHabit: R
                     maxLength={40}
                 />
             </View>
-
             <View style={styles.inputContainer}>
                 <TextInput
                     style={[
