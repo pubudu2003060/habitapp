@@ -17,7 +17,6 @@ export const isFirstTime =async () => {
     }
 }
 
-
 export const isTimeToReset = (period: string, lastReset: Date): boolean => {
   const now = new Date();
   if (period === 'daily') {

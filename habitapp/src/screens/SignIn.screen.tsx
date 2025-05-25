@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Alert, Button, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { signInInputType, userType } from '../types/Types'
 import { useUserStore } from '../store/UserStore'
@@ -40,9 +40,7 @@ const SignIn = ({ navigation }: any) => {
             else {
                 Alert.alert("SignUp Error", error.message || "Something went wrong.");
             }
-
         }
-
     };
 
     return (
@@ -52,7 +50,6 @@ const SignIn = ({ navigation }: any) => {
                     <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Sign In</Text>
                     <Text style={[styles.subtitle, { color: currentTheme.SecondoryText }]}>Welcome back to HabitApp</Text>
                 </View>
-
                 <View style={styles.formContainer}>
                     <TextInput
                         style={[styles.input, {
@@ -79,14 +76,12 @@ const SignIn = ({ navigation }: any) => {
                         onChangeText={(text) => setSignInInput(prev => ({ ...prev, password: text.trim() }))}
                     />
                 </View>
-
                 <View style={styles.signUpTextContainer}>
                     <Text style={{ color: currentTheme.SecondoryText }}>Don't have an account? </Text>
                     <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
                         <Text style={{ color: primaryColors.Primary, fontWeight: '600' }}>Sign up</Text>
                     </TouchableOpacity>
                 </View>
-
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         style={[styles.signInButton, { backgroundColor: primaryColors.Primary }]}

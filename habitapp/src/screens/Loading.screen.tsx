@@ -20,7 +20,6 @@ const Loading = ({ navigation }: any) => {
     }, [])
   );
 
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
       <View style={styles.contentContainer}>
@@ -32,7 +31,6 @@ const Loading = ({ navigation }: any) => {
             loop
           />
         </View>
-
         <View style={styles.textWrapper}>
           <Text style={[styles.loadingText, { color: primaryColors.Primary }]}>
             Habit<Text style={{ color: currentTheme.PrimaryText }}>Tracker</Text>
@@ -41,7 +39,6 @@ const Loading = ({ navigation }: any) => {
             Building better habits, one day at a time
           </Text>
         </View>
-
         <View style={styles.loadingWrapper}>
           <Text style={[styles.loadingIndicator, { color: currentTheme.SecondoryText }]}>
             loading<Text style={styles.dots}>...</Text>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Alert, Button, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Alert, Text, TextInput, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { signUpInputType, userType } from '../types/Types';
+import { signUpInputType } from '../types/Types';
 import useColorStore from '../store/ColorStore';
 import { useUserStore } from '../store/UserStore';
 
@@ -36,7 +36,6 @@ const SignUp = ({ navigation }: any) => {
             else {
                 Alert.alert("SignUp Error", error.message || "Something went wrong.");
             }
-
         }
     };
 

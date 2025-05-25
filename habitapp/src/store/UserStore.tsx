@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useHabitStore } from './HabitsStore';
 import auth from '@react-native-firebase/auth';
 import firestore, { Filter } from '@react-native-firebase/firestore';
+import { useCompletedTasksStore } from './CompletedTaskStore';
 
 export const useUserStore = create<userStoreType>((set, get) => ({
   user: null,
@@ -49,7 +50,9 @@ export const useUserStore = create<userStoreType>((set, get) => ({
     try {
       await auth().signOut();
       const removeHabits = useHabitStore.getState().removeAll
+      const removeHabitsHistory = useCompletedTasksStore.getState().removeAll
       removeHabits()
+      removeHabitsHistory()
       await AsyncStorage.removeItem("@user");
       set({ user: null });
     } catch (error) {

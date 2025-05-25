@@ -156,6 +156,7 @@ export type completedTasksStoreType = {
         dailyAverage: number;
         mostProductiveDay: { date: Date; count: number } | null;
     };
+    removeAll: () => Promise<void>;
 }
 
 export type statType = {
