@@ -219,7 +219,6 @@ export const useHabitStore = create<habitStoreType>((set) => ({
                 if (habit.endDate && habit.habitStatus === 'current') {
                     const endDate = new Date(habit.endDate);
                     endDate.setHours(0, 0, 0, 0);
-
                     if (currentDate >= endDate) {
                         hasUpdates = true;
                         return { ...habit, habitStatus: 'finished' as const };

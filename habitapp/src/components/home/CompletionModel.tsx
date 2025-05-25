@@ -123,7 +123,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
                   const goalMinutes = habit.goal?.type === 'timer' ? habit.goal.timePeriod.minutes : 0;
                   const totalInputMinutes = inputHours * 60 + inputMinutes;
                   const totalGoalMinutes = goalHours * 60 + goalMinutes;
-                  if (totalInputMinutes <= totalGoalMinutes) {
+                  if (totalInputMinutes <= totalGoalMinutes ) {
                     setHours(text);
                   }
                 }}
@@ -148,7 +148,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
                   const goalMinutes = habit.goal?.type === 'timer' ? habit.goal.timePeriod.minutes : 0;
                   const totalInputMinutes = inputHours * 60 + inputMinutes;
                   const totalGoalMinutes = goalHours * 60 + goalMinutes;
-                  if (totalInputMinutes <= totalGoalMinutes) {
+                  if (totalInputMinutes <= totalGoalMinutes && Number(text) < 60) {
                     setMinutes(text);
                   }
                 }}

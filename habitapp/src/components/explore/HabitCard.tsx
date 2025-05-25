@@ -120,7 +120,7 @@ const HabitCard = ({ habit }: { habit: habitType }) => {
       {habit.description && (
         <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]}>{habit.description}</Text>
       )}
-      {habit.goal && (
+      {habit.goal && habit.habitStatus === 'current' && (
         <View style={styles.progressContainer}>
           <View style={[styles.progressBar, { backgroundColor: currentTheme.Border }]}>
             <View
