@@ -29,18 +29,9 @@ const HabitToComplete = () => {
         const currentDay = dayNames[date]
         const timeout = setTimeout(() => {
             const sortedHabits = currentHabits.filter(
-                (habit) => habit.habitStatus === 'current' && timePeriod == 'daily' ? habit.repeat.type === 'daily' && habit.repeat.days.includes(currentDay) : habit.repeat.type === timePeriod
+                (habit) => habit.habitStatus === 'current' && (timePeriod == 'daily' ? habit.repeat.type === 'daily' && habit.repeat.days.includes(currentDay) : habit.repeat.type === timePeriod)
             )
-            const sortedByStatus = sortedHabits.sort((a, b) => {
-                if (a.completeStatus === 'pending' && b.completeStatus === 'completed') {
-                    return -1; 
-                }
-                if (a.completeStatus === 'completed' && b.completeStatus === 'pending') {
-                    return 1; 
-                }
-                return 0; 
-            });
-            setTodayHabits(sortedByStatus)
+            setTodayHabits(sortedHabits)
             setLoading(false)
         }, 500)
         return () => clearTimeout(timeout)
@@ -118,7 +109,7 @@ const styles = StyleSheet.create({
     },
     tabContainer: {
         flexDirection: 'row',
-        marginBottom: 16,
+        marginBottom: 26,
         paddingHorizontal: 4,
     },
     tabButton: {

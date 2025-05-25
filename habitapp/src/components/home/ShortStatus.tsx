@@ -7,7 +7,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import useColorStore from '../../store/ColorStore';
 import { useHabitStore } from '../../store/HabitsStore';
 
-const ShortStatus = ({displayedDay, setDisplayedDay}:any) => {
+const ShortStatus = ({ displayedDay, setDisplayedDay }: any) => {
   const user = useUserStore(state => state.user)
   const [today] = useState(new Date())
   const currentTheme = useColorStore(state => state.currentTheme);
@@ -25,7 +25,6 @@ const ShortStatus = ({displayedDay, setDisplayedDay}:any) => {
     const todayHabits = habits.filter(habit => habit.repeat.type === 'daily' && habit.habitStatus === 'current');
     const completeTodayHabits = todayHabits.filter(habit => habit.completeStatus === 'completed');
     const progressPercent = todayHabits.length === 0 ? 0 : (completeTodayHabits.length / todayHabits.length) * 100;
-
     setProgress(progressPercent);
   }, [habits]);
 
@@ -42,9 +41,7 @@ const ShortStatus = ({displayedDay, setDisplayedDay}:any) => {
       start: cur,
       end: addDays(cur, 6)
     })
-
     acc.push(alldays)
-
     return acc;
   }, [])
 
@@ -60,7 +57,6 @@ const ShortStatus = ({displayedDay, setDisplayedDay}:any) => {
         </Text>
         <Text style={[styles.welcomeText, { color: primaryColors.Info }]}>Hi, {user?.name}</Text>
       </View>
-
       <PagerView style={styles.pagerView} initialPage={3} >
         {
           dates.map((week, i) => {
@@ -101,7 +97,6 @@ const ShortStatus = ({displayedDay, setDisplayedDay}:any) => {
           })
         }
       </PagerView>
-
       <View style={[styles.statsContainer, { backgroundColor: currentTheme.Card }]}>
         <AnimatedCircularProgress
           size={120}
@@ -139,7 +134,6 @@ const ShortStatus = ({displayedDay, setDisplayedDay}:any) => {
           </Text>
         </View>
       </View>
-
     </View>
   )
 }
