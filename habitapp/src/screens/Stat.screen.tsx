@@ -32,7 +32,6 @@ const Stat = () => {
       endDate = new Date(currentDate)
       endDate.setHours(23, 59, 59, 999)
 
-      // Create 24 hours for day view
       chartDays = Array.from({ length: 24 }, (_, i) => {
         const hour = new Date(startDate)
         hour.setHours(i)
@@ -47,7 +46,6 @@ const Stat = () => {
       startDate = startOfMonth(currentDate)
       endDate = endOfMonth(currentDate)
 
-      // Create weeks for month view
       chartDays = []
       let weekStart = startOfWeek(startDate, { weekStartsOn: 1 })
       while (weekStart <= endDate) {
@@ -60,13 +58,12 @@ const Stat = () => {
       let dayCompletedTasks = 0
 
       if (selectedPeriod === 'Day') {
-        // For hour-based chart in day view
+      
         const hourStart = new Date(day)
         hourStart.setMinutes(0, 0, 0)
         const hourEnd = new Date(day)
         hourEnd.setMinutes(59, 59, 999)
 
-        // Find tasks completed in this hour
         completedTasks.forEach(dayTaskArray => {
           if (dayTaskArray.length > 0) {
             const tasksInHour = dayTaskArray.filter(task => {
@@ -77,7 +74,7 @@ const Stat = () => {
           }
         })
       } else if (selectedPeriod === 'Week') {
-        // For daily chart in week view
+      
         const dayStart = new Date(day)
         dayStart.setHours(0, 0, 0, 0)
         const dayEnd = new Date(day)
@@ -93,7 +90,7 @@ const Stat = () => {
           }
         })
       } else {
-        // For weekly chart in month view
+        
         const weekStart = new Date(day)
         const weekEnd = addDays(weekStart, 6)
 
@@ -116,9 +113,8 @@ const Stat = () => {
     const maxChartValue = Math.max(...chartData.map(item => item.completed), 1)
     const totalCompletedInPeriod = chartData.reduce((total, item) => total + item.completed, 0)
 
-    // Individual habit stats using current habits and completed tasks
     const habitStats = currentHabits.map(habit => {
-      // Get completed tasks for this specific habit in the current period
+     
       let habitCompletedTasks = 0
 
       completedTasks.forEach(dayTaskArray => {
@@ -131,26 +127,23 @@ const Stat = () => {
         })
       })
 
-      // Calculate expected completions for this habit in the period
       let expectedCompletions = 0
       if (selectedPeriod === 'Day') {
         expectedCompletions = habit.repeat.type === 'daily' ? 1 : 0
       } else if (selectedPeriod === 'Week') {
         if (habit.repeat.type === 'daily') expectedCompletions = 7
         else if (habit.repeat.type === 'weekly') expectedCompletions = 1
-      } else { // Month
+      } else { 
         const daysInMonth = endOfMonth(currentDate).getDate()
         if (habit.repeat.type === 'daily') expectedCompletions = daysInMonth
         else if (habit.repeat.type === 'weekly') expectedCompletions = Math.floor(daysInMonth / 7)
         else if (habit.repeat.type === 'monthly') expectedCompletions = 1
       }
 
-      // Calculate progress percentage
       const progress = expectedCompletions > 0
         ? Math.min(Math.round((habitCompletedTasks / expectedCompletions) * 100), 100)
         : habitCompletedTasks > 0 ? 100 : 0
 
-      // Determine status
       let status = 'pending'
       if (progress >= 100) {
         status = 'completed'
@@ -190,7 +183,7 @@ const Stat = () => {
         <HeaderBar title="Stats" />
         <StatBar selectedPeriod={selectedPeriod} setSelectedPeriod={setSelectedPeriod} stats={stats} currentDate={currentDate} setCurrentDate={setCurrentDate} />
         <HabitStat {...stats} />
-        <View style={{ height: 100 }} />
+        <View style={{ height: 120 }} />
       </ScrollView>
     </SafeAreaView>
   )
