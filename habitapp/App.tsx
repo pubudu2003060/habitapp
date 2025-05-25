@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isFirstTime, isTimeToReset } from './src/Services/HabitService';
 import useColorStore from './src/store/ColorStore';
 import { set } from 'date-fns';
+import { useCompletedTasksStore } from './src/store/CompletedTaskStore';
+import { useUserStore } from './src/store/UserStore';
 
 const App = () => {
 

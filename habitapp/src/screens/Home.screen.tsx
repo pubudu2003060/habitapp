@@ -6,6 +6,7 @@ import useColorStore from '../store/ColorStore';
 import HabitToComplete from '../components/home/HabitToComplete';
 import CompletionModel from '../components/home/CompletionModel';
 import { habitType, ModelContextType } from '../types/Types';
+import CompletedHabit from '../components/home/CompletedHabit';
 
 export const modelContext = createContext<ModelContextType | undefined>(undefined)
 
@@ -16,12 +17,14 @@ const Home = () => {
 
   const currentTheme = useColorStore(state => state.currentTheme);
 
+  const [displayedDay, setDisplayedDay] = useState(new Date())
+
   return (
     <modelContext.Provider value={{ modalVisible, setModalVisible, modalHabit, setModalHabit }}>
       <SafeAreaView style={{ backgroundColor: currentTheme.Background, flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <ShortStatus />
-          <HabitToComplete />
+          <ShortStatus displayedDay={displayedDay} setDisplayedDay={setDisplayedDay} />
+         { displayedDay.getDate() !== new Date().getDate() ? <CompletedHabit day={displayedDay}/> : <HabitToComplete />}
         </ScrollView>
         {modalHabit && (
           <CompletionModel modalVisible={modalVisible} setModalVisible={setModalVisible} habit={modalHabit} />

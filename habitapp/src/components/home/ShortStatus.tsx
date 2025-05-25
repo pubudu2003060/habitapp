@@ -7,7 +7,7 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import useColorStore from '../../store/ColorStore';
 import { useHabitStore } from '../../store/HabitsStore';
 
-const ShortStatus = () => {
+const ShortStatus = ({displayedDay, setDisplayedDay}:any) => {
   const user = useUserStore(state => state.user)
   const [today] = useState(new Date())
   const currentTheme = useColorStore(state => state.currentTheme);
@@ -48,8 +48,6 @@ const ShortStatus = () => {
     return acc;
   }, [])
 
-  const [displayedDay, setDisplayedDay] = useState(new Date())
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -73,10 +71,6 @@ const ShortStatus = () => {
                   const isToday = day.getDate() === displayedDay.getDate() &&
                     day.getMonth() === displayedDay.getMonth() &&
                     day.getFullYear() === displayedDay.getFullYear();
-
-                  function setDisplayedDay(day: Date) {
-                    throw new Error('Function not implemented.')
-                  }
 
                   return (
                     <TouchableOpacity key={index}

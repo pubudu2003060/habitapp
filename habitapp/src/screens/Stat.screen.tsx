@@ -5,7 +5,7 @@ import useColorStore from '../store/ColorStore'
 import { useHabitStore } from '../store/HabitsStore'
 import { useCompletedTasksStore } from '../store/CompletedTaskStore'
 import Icon from 'react-native-vector-icons/FontAwesome'
-import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, subDays, addDays, isWithinInterval } from 'date-fns'
+import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, subDays, addDays, isWithinInterval, isSameDay, isAfter } from 'date-fns'
 import HeaderBar from '../components/header/HeaderBar'
 import { useUserStore } from '../store/UserStore'
 
@@ -14,15 +14,8 @@ const Stat = () => {
   const primaryColors = useColorStore(state => state.primaryColors)
   const habits = useHabitStore(state => state.habits)
   const completedTasks = useCompletedTasksStore(state => state.completedTasks)
-  const loadCompletedTasks = useCompletedTasksStore(state => state.loadCompletedTasks)
   const getCompletedTasksByDateRange = useCompletedTasksStore(state => state.getCompletedTasksByDateRange)
-  const userId = useUserStore(state => state.user?.id)
 
-  useEffect(() => {
-    if (userId) {
-      loadCompletedTasks(userId)
-    }
-  }, [userId])
 
   const [selectedPeriod, setSelectedPeriod] = useState<'Day' | 'Week' | 'Month'>('Week')
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -43,6 +36,7 @@ const Stat = () => {
       endDate = new Date(currentDate)
       endDate.setHours(23, 59, 59, 999)
 
+      // Create 24 hours for day view
       chartDays = Array.from({ length: 24 }, (_, i) => {
         const hour = new Date(startDate)
         hour.setHours(i)
@@ -57,6 +51,7 @@ const Stat = () => {
       startDate = startOfMonth(currentDate)
       endDate = endOfMonth(currentDate)
 
+      // Create weeks for month view
       chartDays = []
       let weekStart = startOfWeek(startDate, { weekStartsOn: 1 })
       while (weekStart <= endDate) {
@@ -69,25 +64,53 @@ const Stat = () => {
       let dayCompletedTasks = 0
 
       if (selectedPeriod === 'Day') {
+        // For hour-based chart in day view
         const hourStart = new Date(day)
         hourStart.setMinutes(0, 0, 0)
         const hourEnd = new Date(day)
         hourEnd.setMinutes(59, 59, 999)
-        const hourTasks = getCompletedTasksByDateRange(hourStart, hourEnd)
-        dayCompletedTasks = hourTasks.reduce((total, taskArray) => total + taskArray.length, 0)
+
+        // Find tasks completed in this hour
+        completedTasks.forEach(dayTaskArray => {
+          if (dayTaskArray.length > 0) {
+            const tasksInHour = dayTaskArray.filter(task => {
+              const taskDate = new Date(task.completedAt || task.completedDate)
+              return taskDate >= hourStart && taskDate <= hourEnd
+            })
+            dayCompletedTasks += tasksInHour.length
+          }
+        })
       } else if (selectedPeriod === 'Week') {
+        // For daily chart in week view
         const dayStart = new Date(day)
         dayStart.setHours(0, 0, 0, 0)
         const dayEnd = new Date(day)
         dayEnd.setHours(23, 59, 59, 999)
-        const dayTasks = getCompletedTasksByDateRange(dayStart, dayEnd)
-        dayCompletedTasks = dayTasks.reduce((total, dayArray) => total + dayArray.length, 0)
+
+        completedTasks.forEach(dayTaskArray => {
+          if (dayTaskArray.length > 0) {
+            const taskDate = new Date(dayTaskArray[0].completedDate)
+            taskDate.setHours(0, 0, 0, 0)
+            if (taskDate.getTime() === dayStart.getTime()) {
+              dayCompletedTasks += dayTaskArray.length
+            }
+          }
+        })
       } else {
+        // For weekly chart in month view
         const weekStart = new Date(day)
         const weekEnd = addDays(weekStart, 6)
-        const weekTasks = getCompletedTasksByDateRange(weekStart, weekEnd)
-        dayCompletedTasks = weekTasks.reduce((total, dayArray) => total + dayArray.length, 0)
+
+        completedTasks.forEach(dayTaskArray => {
+          if (dayTaskArray.length > 0) {
+            const taskDate = new Date(dayTaskArray[0].completedDate)
+            if (taskDate >= weekStart && taskDate <= weekEnd) {
+              dayCompletedTasks += dayTaskArray.length
+            }
+          }
+        })
       }
+
       return {
         date: day,
         completed: dayCompletedTasks
@@ -95,17 +118,22 @@ const Stat = () => {
     })
 
     const maxChartValue = Math.max(...chartData.map(item => item.completed), 1)
-
-    const periodTasks = getCompletedTasksByDateRange(startDate, endDate)
-    const totalCompletedInPeriod = periodTasks.reduce((total, dayArray) => total + dayArray.length, 0)
+    const totalCompletedInPeriod = chartData.reduce((total, item) => total + item.completed, 0)
 
     // Individual habit stats using current habits and completed tasks
     const habitStats = currentHabits.map(habit => {
       // Get completed tasks for this specific habit in the current period
-      const habitCompletedTasks = periodTasks.reduce((count, dayArray) => {
-        const habitTasks = dayArray.filter(task => task.id === habit.id || task.name === habit.name)
-        return count + habitTasks.length
-      }, 0)
+      let habitCompletedTasks = 0
+
+      completedTasks.forEach(dayTaskArray => {
+        dayTaskArray.forEach(task => {
+          const taskDate = new Date(task.completedDate)
+          if ((task.id === habit.id || task.name === habit.name) &&
+            taskDate >= startDate && taskDate <= endDate) {
+            habitCompletedTasks++
+          }
+        })
+      })
 
       // Calculate expected completions for this habit in the period
       let expectedCompletions = 0
@@ -117,14 +145,14 @@ const Stat = () => {
       } else { // Month
         const daysInMonth = endOfMonth(currentDate).getDate()
         if (habit.repeat.type === 'daily') expectedCompletions = daysInMonth
-        else if (habit.repeat.type === 'weekly') expectedCompletions = 4
+        else if (habit.repeat.type === 'weekly') expectedCompletions = Math.floor(daysInMonth / 7)
         else if (habit.repeat.type === 'monthly') expectedCompletions = 1
       }
 
       // Calculate progress percentage
       const progress = expectedCompletions > 0
         ? Math.min(Math.round((habitCompletedTasks / expectedCompletions) * 100), 100)
-        : 0
+        : habitCompletedTasks > 0 ? 100 : 0
 
       // Determine status
       let status = 'pending'
@@ -153,15 +181,16 @@ const Stat = () => {
       completedHabits: totalCompletedInPeriod,
       habitStats,
       currentPeriodText: selectedPeriod === 'Day'
-        ? format(currentDate, 'MMM dd')
+        ? format(currentDate, 'MMM dd, yyyy')
         : selectedPeriod === 'Week'
-          ? `${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd')}`
+          ? `${format(startDate, 'MMM dd')} - ${format(endDate, 'MMM dd, yyyy')}`
           : format(currentDate, 'MMMM yyyy')
     }
   }, [habits, completedTasks, selectedPeriod, currentDate])
 
   const navigatePeriod = (direction: 'prev' | 'next') => {
     const newDate = new Date(currentDate)
+    const today = new Date()
 
     if (selectedPeriod === 'Day') {
       direction === 'prev' ? newDate.setDate(newDate.getDate() - 1) : newDate.setDate(newDate.getDate() + 1)
@@ -169,6 +198,17 @@ const Stat = () => {
       direction === 'prev' ? newDate.setDate(newDate.getDate() - 7) : newDate.setDate(newDate.getDate() + 7)
     } else {
       direction === 'prev' ? newDate.setMonth(newDate.getMonth() - 1) : newDate.setMonth(newDate.getMonth() + 1)
+    }
+
+    // Don't allow navigation beyond today
+    if (direction === 'next') {
+      if (selectedPeriod === 'Day' && isAfter(newDate, today)) {
+        return // Don't navigate
+      } else if (selectedPeriod === 'Week' && isAfter(startOfWeek(newDate, { weekStartsOn: 1 }), today)) {
+        return // Don't navigate
+      } else if (selectedPeriod === 'Month' && isAfter(startOfMonth(newDate), today)) {
+        return // Don't navigate
+      }
     }
 
     setCurrentDate(newDate)
@@ -196,6 +236,22 @@ const Stat = () => {
     }
   }
 
+  const canNavigateNext = () => {
+    const today = new Date()
+    const testDate = new Date(currentDate)
+
+    if (selectedPeriod === 'Day') {
+      testDate.setDate(testDate.getDate() + 1)
+      return !isAfter(testDate, today)
+    } else if (selectedPeriod === 'Week') {
+      testDate.setDate(testDate.getDate() + 7)
+      return !isAfter(startOfWeek(testDate, { weekStartsOn: 1 }), today)
+    } else {
+      testDate.setMonth(testDate.getMonth() + 1)
+      return !isAfter(startOfMonth(testDate), today)
+    }
+  }
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -217,7 +273,7 @@ const Stat = () => {
               <Text style={[
                 styles.tabText,
                 {
-                  color: selectedPeriod === period ? currentTheme.ButtonText : currentTheme.SecondoryText
+                  color: selectedPeriod === period ? currentTheme.ButtonText : currentTheme.ButtonText
                 }
               ]}>
                 {period}
@@ -233,7 +289,11 @@ const Stat = () => {
           <Text style={[styles.dateText, { color: currentTheme.PrimaryText }]}>
             {stats.currentPeriodText}
           </Text>
-          <TouchableOpacity onPress={() => navigatePeriod('next')}>
+          <TouchableOpacity
+            onPress={() => navigatePeriod('next')}
+            disabled={!canNavigateNext()}
+            style={{ opacity: canNavigateNext() ? 1 : 0.3 }}
+          >
             <Icon name="chevron-right" size={20} color={currentTheme.PrimaryText} />
           </TouchableOpacity>
         </View>
@@ -241,33 +301,40 @@ const Stat = () => {
         {/* Main Stats Card */}
         <View style={[styles.statsCard, { backgroundColor: currentTheme.Card }]}>
           <Text style={[styles.completionRate, { color: currentTheme.PrimaryText }]}>
-            {stats.maxChartValue}
+            {stats.completedHabits}
           </Text>
           <Text style={[styles.completionLabel, { color: currentTheme.SecondoryText }]}>
-            Total completion
+            Total Completions
           </Text>
 
           <View style={styles.chartContainer}>
-            {stats.chartData.map((item, index) => (
-              <View key={index} style={styles.chartBar}>
-                <View style={[
-                  styles.bar,
-                  {
-                    height: (item.completed / stats.maxChartValue) * 100,
-                    backgroundColor: item.completed >= 75 ? primaryColors.Primary :
-                      item.completed >= 50 ? primaryColors.Accent :
-                        item.completed >= 25 ? '#FFC107' : primaryColors.Error
-                  }
-                ]} />
-                <Text style={[styles.chartLabel, { color: currentTheme.SecondoryText }]}>
-                  {selectedPeriod === 'Day'
-                    ? format(item.date, 'HH')[0]
-                    : selectedPeriod === 'Week'
-                      ? format(item.date, 'E')[0]
-                      : format(item.date, 'dd')}
-                </Text>
-              </View>
-            ))}
+            {stats.chartData.map((item, index) => {
+              const maxHeight = 100
+              const barHeight = stats.maxChartValue > 0 ? (item.completed / stats.maxChartValue) * maxHeight : 0
+
+              return (
+                <View key={index} style={styles.chartBar}>
+                  <View style={[
+                    styles.bar,
+                    {
+                      height: Math.max(barHeight, 4), // Minimum height for visibility
+                      backgroundColor: item.completed > 0 ?
+                        (barHeight >= 75 ? primaryColors.Primary :
+                          barHeight >= 50 ? primaryColors.Accent :
+                            barHeight >= 25 ? '#FFC107' : primaryColors.Error) :
+                        currentTheme.SecondoryText + '30'
+                    }
+                  ]} />
+                  <Text style={[styles.chartLabel, { color: currentTheme.SecondoryText }]}>
+                    {selectedPeriod === 'Day'
+                      ? format(item.date, 'HH')
+                      : selectedPeriod === 'Week'
+                        ? format(item.date, 'EEE')[0]
+                        : format(item.date, 'dd')}
+                  </Text>
+                </View>
+              )
+            })}
           </View>
         </View>
 
@@ -301,8 +368,7 @@ const Stat = () => {
                       {habit.name}
                     </Text>
                     <Text style={[styles.habitStatType, { color: currentTheme.SecondoryText }]}>
-                      {habit.repeat.type.charAt(0).toUpperCase() + habit.repeat.type.slice(1)} •
-                      {habit.completedCount}/{habit.expectedCount} completed
+                      {habit.repeat.type.charAt(0).toUpperCase() + habit.repeat.type.slice(1)} • {habit.completedCount} completed
                     </Text>
                   </View>
                 </View>
