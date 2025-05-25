@@ -31,7 +31,6 @@ const CompletedHabit = ({ day }: { day: Date }) => {
     return (
         <View style={styles.container}>
             <Text style={[styles.title, { color: currentTheme.PrimaryText }]}>Completed Tasks</Text>
-
             {loading ?
                 isDark ? <View style={styles.emptyContainer}>
                     <LottieView

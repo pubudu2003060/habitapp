@@ -36,7 +36,6 @@ const Explore = () => {
 
   useEffect(() => {
     setLoading(true);
-
     const timeout = setTimeout(() => {
       setLoading(false);
     }, 500);
@@ -71,7 +70,6 @@ const Explore = () => {
           ))}
         </ScrollView>
       </View>
-
       <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
@@ -100,10 +98,10 @@ const Explore = () => {
               <View style={[styles.emptyStateCard, { backgroundColor: currentTheme.Card }]}>
                 <Icon name="calendar-o" size={48} color={currentTheme.SecondoryText} />
                 <Text style={[styles.emptyStateTitle, { color: currentTheme.PrimaryText }]}>
-                 {filter === 'all' ? 'No habits found' : `No ${filter} habits`}
+                  {filter === 'all' ? 'No habits found' : `No ${filter} habits`}
                 </Text>
                 <Text style={[styles.emptyStateText, { color: currentTheme.SecondoryText }]}>
-                    {filter === 'all'
+                  {filter === 'all'
                     ? 'Create your first habit to get started! Start by adding a new habit and track your progress every day.'
                     : `You don't have any ${filter} habits at the moment. Try creating a new habit or updating your existing ones to see them here.`
                   }
@@ -169,7 +167,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     lineHeight: 24,
-  },emptyStateCard: {
+  }, emptyStateCard: {
     padding: 32,
     borderRadius: 16,
     alignItems: 'center',

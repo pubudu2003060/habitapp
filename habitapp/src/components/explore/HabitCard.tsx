@@ -4,14 +4,11 @@ import { habitType } from '../../types/Types'
 import useColorStore from '../../store/ColorStore'
 import { useHabitStore } from '../../store/HabitsStore'
 
-interface HabitCardProps {
-  habit: habitType;
-}
-
-const HabitCard = ({ habit }: HabitCardProps) => {
+const HabitCard = ({ habit }: { habit: habitType }) => {
   const currentTheme = useColorStore(state => state.currentTheme);
   const primaryColors = useColorStore(state => state.primaryColors);
-  const { removeHabit, finishHabit, deleteHabit } = useHabitStore();
+  const finishHabit = useHabitStore(state => state.finishHabit);
+  const deleteHabit = useHabitStore(state => state.deleteHabit);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -100,7 +97,6 @@ const HabitCard = ({ habit }: HabitCardProps) => {
         opacity: habit.habitStatus === 'deleted' ? 0.6 : 1
       }
     ]}>
-
       <View style={styles.headerContainer}>
         <View style={styles.titleContainer}>
           <Text style={[styles.habitName, { color: currentTheme.PrimaryText }]}>{habit.name}</Text>
@@ -114,19 +110,16 @@ const HabitCard = ({ habit }: HabitCardProps) => {
           </View>
         </View>
       </View>
-
       {isExpired && habit.habitStatus === 'current' && (
         <View style={[styles.warningContainer, { backgroundColor: primaryColors.Error + '20', borderColor: primaryColors.Error }]}>
-            <Text style={[styles.warningText, { color: primaryColors.Error }]}>
+          <Text style={[styles.warningText, { color: primaryColors.Error }]}>
             ⚠️ This habit is past its end date and will be automatically finished.
-            </Text>
+          </Text>
         </View>
       )}
-
       {habit.description && (
         <Text style={[styles.habitDescription, { color: currentTheme.SecondoryText }]}>{habit.description}</Text>
       )}
-
       {habit.goal && (
         <View style={styles.progressContainer}>
           <View style={[styles.progressBar, { backgroundColor: currentTheme.Border }]}>
@@ -145,7 +138,6 @@ const HabitCard = ({ habit }: HabitCardProps) => {
           </Text>
         </View>
       )}
-
       <View style={styles.infoGrid}>
         <View style={styles.infoItem}>
           <Text style={[styles.infoLabel, { color: currentTheme.SecondoryText }]}>Repeat</Text>
@@ -153,7 +145,6 @@ const HabitCard = ({ habit }: HabitCardProps) => {
             {habit.repeat.type === 'daily' ? formatDays(habit.repeat.days) : habit.repeat.type}
           </Text>
         </View>
-
         {habit.goal && (
           <View style={styles.infoItem}>
             <Text style={[styles.infoLabel, { color: currentTheme.SecondoryText }]}>Goal</Text>
@@ -164,7 +155,6 @@ const HabitCard = ({ habit }: HabitCardProps) => {
             </Text>
           </View>
         )}
-
         {habit.progress && (
           <View style={styles.infoItem}>
             <Text style={[styles.infoLabel, { color: currentTheme.SecondoryText }]}>Progress</Text>
@@ -175,14 +165,12 @@ const HabitCard = ({ habit }: HabitCardProps) => {
             </Text>
           </View>
         )}
-
         <View style={styles.infoItem}>
           <Text style={[styles.infoLabel, { color: currentTheme.SecondoryText }]}>Created</Text>
           <Text style={[styles.infoValue, { color: currentTheme.PrimaryText }]}>
             {new Date(habit.setDate).toLocaleDateString()}
           </Text>
         </View>
-
         {habit.lastCompletedDate && (
           <View style={styles.infoItem}>
             <Text style={[styles.infoLabel, { color: currentTheme.SecondoryText }]}>Last Done</Text>
@@ -191,7 +179,6 @@ const HabitCard = ({ habit }: HabitCardProps) => {
             </Text>
           </View>
         )}
-
         {habit.endDate && (
           <View style={styles.infoItem}>
             <Text style={[styles.infoLabel, { color: currentTheme.SecondoryText }]}>End Date</Text>
@@ -203,7 +190,6 @@ const HabitCard = ({ habit }: HabitCardProps) => {
           </View>
         )}
       </View>
-
       <View style={styles.buttonContainer}>
         {habit.habitStatus === 'current' && (
           <TouchableOpacity
@@ -213,7 +199,6 @@ const HabitCard = ({ habit }: HabitCardProps) => {
             <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Finish</Text>
           </TouchableOpacity>
         )}
-
         {habit.habitStatus !== 'deleted' && (
           <TouchableOpacity
             onPress={handleDeleteHabit}
@@ -222,7 +207,6 @@ const HabitCard = ({ habit }: HabitCardProps) => {
             <Text style={[styles.buttonText, { color: currentTheme.ButtonText }]}>Delete</Text>
           </TouchableOpacity>
         )}
-
       </View>
     </View>
   );

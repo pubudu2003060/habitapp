@@ -46,7 +46,6 @@ const CompletedHabitCard = ({ habit }: { habit: completedTaskType }) => {
                 <View style={styles.progressContainer}>
                     <Icon name='image' size={26} color={currentTheme.PrimaryText} />
                 </View>
-
                 <View style={styles.habitInfo}>
                     <Text style={[styles.habitName, { color: currentTheme.PrimaryText }]}>
                         {habit?.name}
@@ -59,10 +58,7 @@ const CompletedHabitCard = ({ habit }: { habit: completedTaskType }) => {
                     </Text>
                 </View>
             </View>
-
             <View style={styles.actionsContainer}>
-                
-
                 {habit?.goal?.type === 'units' && (
                     <View style={styles.unitContainer}>
                         <Text style={[styles.unitText, { color: currentTheme.PrimaryText }]}>
@@ -70,7 +66,6 @@ const CompletedHabitCard = ({ habit }: { habit: completedTaskType }) => {
                         </Text>
                     </View>
                 )}
-
                 {habit?.goal?.type === 'timer' && (
                     <View style={styles.timerContainer}>
                         <Text style={[styles.timerText, { color: currentTheme.PrimaryText }]}>
@@ -81,81 +76,79 @@ const CompletedHabitCard = ({ habit }: { habit: completedTaskType }) => {
                     </View>
                 )}
             </View>
-
-
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-        card: {
-            borderRadius: 16,
-            padding: 16,
-            marginBottom: 22,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.1,
-            shadowRadius: 6,
-            elevation: 3,
-        },
-        cardContent: {
-            flexDirection: 'row',
-            marginBottom: 12,
-        },
-        progressContainer: {
-            marginRight: 16,
-            justifyContent: 'center',
-        },
-        progressText: {
-            fontSize: 12,
-            fontWeight: 'bold',
-        },
-        habitInfo: {
-            flex: 1,
-        },
-        habitName: {
-            fontSize: 18,
-            fontWeight: '600',
-            marginBottom: 4,
-        },
-        habitDescription: {
-            fontSize: 14,
-            marginBottom: 6,
-        },
-        repeatInfo: {
-            fontSize: 14,
-            fontWeight: '500',
-        },
-        actionsContainer: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: 8,
-        },
-        actionButton: {
-            paddingVertical: 8,
-            paddingHorizontal: 16,
-            borderRadius: 999,
-            alignItems: 'center',
-        },
-        actionText: {
-            fontWeight: '600',
-            fontSize: 14,
-        },
-        unitContainer: {
-            alignItems: 'center',
-        },
-        unitText: {
-            fontSize: 16,
-            fontWeight: '700',
-        },
-        timerContainer: {
-            alignItems: 'center',
-        },
-        timerText: {
-            fontSize: 14,
-            fontWeight: '600',
-        }
-    });
+    card: {
+        borderRadius: 16,
+        padding: 16,
+        marginBottom: 22,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 6,
+        elevation: 3,
+    },
+    cardContent: {
+        flexDirection: 'row',
+        marginBottom: 12,
+    },
+    progressContainer: {
+        marginRight: 16,
+        justifyContent: 'center',
+    },
+    progressText: {
+        fontSize: 12,
+        fontWeight: 'bold',
+    },
+    habitInfo: {
+        flex: 1,
+    },
+    habitName: {
+        fontSize: 18,
+        fontWeight: '600',
+        marginBottom: 4,
+    },
+    habitDescription: {
+        fontSize: 14,
+        marginBottom: 6,
+    },
+    repeatInfo: {
+        fontSize: 14,
+        fontWeight: '500',
+    },
+    actionsContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: 8,
+    },
+    actionButton: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 999,
+        alignItems: 'center',
+    },
+    actionText: {
+        fontWeight: '600',
+        fontSize: 14,
+    },
+    unitContainer: {
+        alignItems: 'center',
+    },
+    unitText: {
+        fontSize: 16,
+        fontWeight: '700',
+    },
+    timerContainer: {
+        alignItems: 'center',
+    },
+    timerText: {
+        fontSize: 14,
+        fontWeight: '600',
+    }
+});
 
-    export default CompletedHabitCard
+export default CompletedHabitCard

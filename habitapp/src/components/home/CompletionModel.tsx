@@ -37,7 +37,6 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
     try {
       let newProgress: habitType['progress'] = null;
       let iscompleted = false;
-
       if (habit.goal?.type === 'units') {
         const completedAmount = parseInt(unitsCompleted) || 0;
         newProgress = {
@@ -71,11 +70,9 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
           setCompleted(false);
           setModalVisible(false);
         }, 4000);
-      }else{
+      } else {
         setModalVisible(false);
       }
-
-
     } catch (error) {
       console.error('Error completing habit:', error);
     }
@@ -135,9 +132,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
               />
               <Text style={[styles.timeLabel, { color: currentTheme.SecondoryText }]}>hours</Text>
             </View>
-
             <Text style={{ color: currentTheme.PrimaryText, fontSize: 18 }}>:</Text>
-
             <View style={styles.timeInputWrapper}>
               <TextInput
                 style={[styles.timeInput, {
@@ -206,9 +201,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
                 {habit.description}
               </Text>
             )}
-
             {renderProgressInput()}
-
             <View style={styles.modalActions}>
               <TouchableOpacity
                 onPress={() => setModalVisible(false)}
