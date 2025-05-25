@@ -9,7 +9,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
 
   const currentTheme = useColorStore(state => state.currentTheme)
   const primaryColors = useColorStore(state => state.primaryColors)
-    const isDark = useColorStore(state => state.isDark)
+  const isDark = useColorStore(state => state.isDark)
 
   const [completed, setCompleted] = useState(false)
 
@@ -36,6 +36,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
   const handleComplete = async () => {
     try {
       let newProgress: habitType['progress'] = null;
+      let iscompleted = false;
 
       if (habit.goal?.type === 'units') {
         const completedAmount = parseInt(unitsCompleted) || 0;
@@ -43,6 +44,7 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
           type: 'units',
           completedAmount
         };
+        iscompleted = completedAmount === habit.goal.amount;
       } else if (habit.goal?.type === 'timer') {
         const hoursVal = parseInt(hours) || 0;
         const minutesVal = parseInt(minutes) || 0;
@@ -53,19 +55,26 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
             minutes: minutesVal
           }
         };
+        iscompleted = (hoursVal * 60 + minutesVal) === (habit.goal.timePeriod.hours * 60 + habit.goal.timePeriod.minutes);
       }
+
       if (newProgress) {
         updateProgress(habit.id, newProgress);
       } else {
+        iscompleted = true
         updateProgress(habit.id, null);
       }
 
-      setCompleted(true);
-
-      setTimeout(() => {
-        setCompleted(false);
+      if (iscompleted) {
+        setCompleted(iscompleted);
+        setTimeout(() => {
+          setCompleted(false);
+          setModalVisible(false);
+        }, 4000);
+      }else{
         setModalVisible(false);
-      }, 4000);
+      }
+
 
     } catch (error) {
       console.error('Error completing habit:', error);
@@ -176,12 +185,12 @@ const CompletionModel = ({ modalVisible, setModalVisible, habit }: { modalVisibl
         {completed ?
           isDark ?
             <LottieView
-              source={require('../../assets/animations/darkhabitcomplete.json')} // Add your success Lottie file
+              source={require('../../assets/animations/darkhabitcomplete.json')}
               autoPlay
               loop={false}
               style={{ width: 300, height: 300 }}
             /> : <LottieView
-              source={require('../../assets/animations/habitComplete.json')} // Add your success Lottie file
+              source={require('../../assets/animations/habitComplete.json')}
               autoPlay
               loop={false}
               style={{ width: 300, height: 300 }}

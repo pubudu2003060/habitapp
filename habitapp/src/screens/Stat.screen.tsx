@@ -7,13 +7,22 @@ import { useCompletedTasksStore } from '../store/CompletedTaskStore'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { format, startOfWeek, endOfWeek, startOfMonth, endOfMonth, eachDayOfInterval, subDays, addDays, isWithinInterval } from 'date-fns'
 import HeaderBar from '../components/header/HeaderBar'
+import { useUserStore } from '../store/UserStore'
 
 const Stat = () => {
   const currentTheme = useColorStore(state => state.currentTheme)
   const primaryColors = useColorStore(state => state.primaryColors)
   const habits = useHabitStore(state => state.habits)
   const completedTasks = useCompletedTasksStore(state => state.completedTasks)
+  const loadCompletedTasks = useCompletedTasksStore(state => state.loadCompletedTasks)
   const getCompletedTasksByDateRange = useCompletedTasksStore(state => state.getCompletedTasksByDateRange)
+  const userId = useUserStore(state => state.user?.id)
+
+  useEffect(() => {
+    if (userId) {
+      loadCompletedTasks(userId)
+    }
+  }, [userId])
 
   const [selectedPeriod, setSelectedPeriod] = useState<'Day' | 'Week' | 'Month'>('Week')
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -30,16 +39,17 @@ const Stat = () => {
     if (selectedPeriod === 'Day') {
       startDate = new Date(currentDate)
       startDate.setHours(0, 0, 0, 0)
+
       endDate = new Date(currentDate)
       endDate.setHours(23, 59, 59, 999)
 
-      // Last 7 days for chart
-      chartDays = Array.from({ length: 7 }, (_, i) => {
-        const day = new Date(currentDate)
-        day.setDate(day.getDate() - (6 - i))
-        return day
+      chartDays = Array.from({ length: 24 }, (_, i) => {
+        const hour = new Date(startDate)
+        hour.setHours(i)
+        return hour
       })
-    } else if (selectedPeriod === 'Week') {
+    }
+    else if (selectedPeriod === 'Week') {
       startDate = startOfWeek(currentDate, { weekStartsOn: 1 })
       endDate = endOfWeek(currentDate, { weekStartsOn: 1 })
       chartDays = eachDayOfInterval({ start: startDate, end: endDate })
@@ -47,7 +57,6 @@ const Stat = () => {
       startDate = startOfMonth(currentDate)
       endDate = endOfMonth(currentDate)
 
-      // Get weeks of the month for chart
       chartDays = []
       let weekStart = startOfWeek(startDate, { weekStartsOn: 1 })
       while (weekStart <= endDate) {
@@ -56,81 +65,39 @@ const Stat = () => {
       }
     }
 
-    // Calculate completion rates for chart
     const chartData = chartDays.map(day => {
       let dayCompletedTasks = 0
-      let totalExpectedTasks = 0
 
       if (selectedPeriod === 'Day') {
-        // Get completed tasks for this specific day
-        const dayStart = new Date(day)
-        dayStart.setHours(0, 0, 0, 0)
-        const dayEnd = new Date(day)
-        dayEnd.setHours(23, 59, 59, 999)
-
-        const dayTasks = getCompletedTasksByDateRange(dayStart, dayEnd)
-        dayCompletedTasks = dayTasks.reduce((total, dayArray) => total + dayArray.length, 0)
-
-        // For daily view, use current habits count
-        totalExpectedTasks = currentHabits.filter(h => h.repeat.type === 'daily').length || 1
+        const hourStart = new Date(day)
+        hourStart.setMinutes(0, 0, 0)
+        const hourEnd = new Date(day)
+        hourEnd.setMinutes(59, 59, 999)
+        const hourTasks = getCompletedTasksByDateRange(hourStart, hourEnd)
+        dayCompletedTasks = hourTasks.reduce((total, taskArray) => total + taskArray.length, 0)
       } else if (selectedPeriod === 'Week') {
-        // Get completed tasks for this specific day within the week
         const dayStart = new Date(day)
         dayStart.setHours(0, 0, 0, 0)
         const dayEnd = new Date(day)
         dayEnd.setHours(23, 59, 59, 999)
-
         const dayTasks = getCompletedTasksByDateRange(dayStart, dayEnd)
         dayCompletedTasks = dayTasks.reduce((total, dayArray) => total + dayArray.length, 0)
-        totalExpectedTasks = currentHabits.filter(h => h.repeat.type === 'daily').length || 1
       } else {
-        // For monthly view, calculate weekly completion rates
         const weekStart = new Date(day)
         const weekEnd = addDays(weekStart, 6)
-
         const weekTasks = getCompletedTasksByDateRange(weekStart, weekEnd)
         dayCompletedTasks = weekTasks.reduce((total, dayArray) => total + dayArray.length, 0)
-        totalExpectedTasks = (currentHabits.filter(h => h.repeat.type === 'daily').length * 7) +
-          currentHabits.filter(h => h.repeat.type === 'weekly').length || 1
       }
-
-      const rate = totalExpectedTasks > 0 ? (dayCompletedTasks / totalExpectedTasks) * 100 : 0
       return {
         date: day,
-        rate: Math.min(Math.round(rate), 100), // Cap at 100%
-        total: totalExpectedTasks,
         completed: dayCompletedTasks
       }
     })
 
-    // Overall stats for current period
+    const maxChartValue = Math.max(...chartData.map(item => item.completed), 1)
+
     const periodTasks = getCompletedTasksByDateRange(startDate, endDate)
     const totalCompletedInPeriod = periodTasks.reduce((total, dayArray) => total + dayArray.length, 0)
-
-    // Calculate expected tasks based on period and current habits
-    let expectedTasksInPeriod = 0
-    if (selectedPeriod === 'Day') {
-      expectedTasksInPeriod = currentHabits.filter(h => h.repeat.type === 'daily').length || 1
-    } else if (selectedPeriod === 'Week') {
-      const dailyHabits = currentHabits.filter(h => h.repeat.type === 'daily').length
-      const weeklyHabits = currentHabits.filter(h => h.repeat.type === 'weekly').length
-      expectedTasksInPeriod = (dailyHabits * 7) + weeklyHabits || 1
-    } else {
-      // Monthly - calculate based on days in month
-      const daysInMonth = endOfMonth(currentDate).getDate()
-      const dailyHabits = currentHabits.filter(h => h.repeat.type === 'daily').length
-      const weeklyHabits = currentHabits.filter(h => h.repeat.type === 'weekly').length
-      const monthlyHabits = currentHabits.filter(h => h.repeat.type === 'monthly').length
-      expectedTasksInPeriod = (dailyHabits * daysInMonth) + (weeklyHabits * 4) + monthlyHabits || 1
-    }
-
-    const avgCompletionRate = expectedTasksInPeriod > 0
-      ? Math.min(Math.round((totalCompletedInPeriod / expectedTasksInPeriod) * 100), 100)
-      : 0
-
-    // Calculate habit progress and challenge progress
-    const habitProgressRate = avgCompletionRate
-    const challengeProgressRate = Math.min(avgCompletionRate + 5, 100)
 
     // Individual habit stats using current habits and completed tasks
     const habitStats = currentHabits.map(habit => {
@@ -181,9 +148,7 @@ const Stat = () => {
 
     return {
       chartData,
-      avgCompletionRate,
-      habitProgressRate,
-      challengeProgressRate,
+      maxChartValue,
       totalHabits: currentHabits.length,
       completedHabits: totalCompletedInPeriod,
       habitStats,
@@ -208,8 +173,6 @@ const Stat = () => {
 
     setCurrentDate(newDate)
   }
-
-  const maxChartValue = Math.max(...stats.chartData.map(d => d.rate), 10)
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -236,10 +199,9 @@ const Stat = () => {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: currentTheme.Background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
+
         <HeaderBar title="Stats" />
 
-        {/* Period Selector */}
         <View style={styles.tabContainer}>
           {periodTypes.map((period) => (
             <TouchableOpacity
@@ -264,7 +226,6 @@ const Stat = () => {
           ))}
         </View>
 
-        {/* Date Navigation */}
         <View style={styles.dateNavigation}>
           <TouchableOpacity onPress={() => navigatePeriod('prev')}>
             <Icon name="chevron-left" size={20} color={currentTheme.PrimaryText} />
@@ -280,79 +241,33 @@ const Stat = () => {
         {/* Main Stats Card */}
         <View style={[styles.statsCard, { backgroundColor: currentTheme.Card }]}>
           <Text style={[styles.completionRate, { color: currentTheme.PrimaryText }]}>
-            {stats.avgCompletionRate}%
+            {stats.maxChartValue}
           </Text>
           <Text style={[styles.completionLabel, { color: currentTheme.SecondoryText }]}>
-            Avg. completion rate
+            Total completion
           </Text>
 
-          {/* Chart */}
           <View style={styles.chartContainer}>
             {stats.chartData.map((item, index) => (
               <View key={index} style={styles.chartBar}>
                 <View style={[
                   styles.bar,
                   {
-                    height: (item.rate / maxChartValue) * 100,
-                    backgroundColor: item.rate >= 75 ? primaryColors.Primary :
-                      item.rate >= 50 ? primaryColors.Accent :
-                        item.rate >= 25 ? '#FFC107' : primaryColors.Error
+                    height: (item.completed / stats.maxChartValue) * 100,
+                    backgroundColor: item.completed >= 75 ? primaryColors.Primary :
+                      item.completed >= 50 ? primaryColors.Accent :
+                        item.completed >= 25 ? '#FFC107' : primaryColors.Error
                   }
                 ]} />
                 <Text style={[styles.chartLabel, { color: currentTheme.SecondoryText }]}>
                   {selectedPeriod === 'Day'
-                    ? format(item.date, 'E')[0]
+                    ? format(item.date, 'HH')[0]
                     : selectedPeriod === 'Week'
                       ? format(item.date, 'E')[0]
                       : format(item.date, 'dd')}
                 </Text>
               </View>
             ))}
-          </View>
-        </View>
-
-        {/* Summary Cards */}
-        <View style={styles.summaryContainer}>
-          <View style={[styles.summaryCard, { backgroundColor: currentTheme.Card }]}>
-            <Text style={[styles.summaryTitle, { color: currentTheme.SecondoryText }]}>
-              Habit Progress
-            </Text>
-            <Text style={[styles.summaryValue, { color: currentTheme.PrimaryText }]}>
-              {stats.habitProgressRate}%
-            </Text>
-            <Icon name="chevron-right" size={16} color={currentTheme.SecondoryText} />
-          </View>
-
-          <View style={[styles.summaryCard, { backgroundColor: currentTheme.Card }]}>
-            <Text style={[styles.summaryTitle, { color: currentTheme.SecondoryText }]}>
-              Challenge Progress
-            </Text>
-            <Text style={[styles.summaryValue, { color: currentTheme.PrimaryText }]}>
-              {stats.challengeProgressRate}%
-            </Text>
-            <Icon name="chevron-right" size={16} color={currentTheme.SecondoryText} />
-          </View>
-        </View>
-
-        <View style={styles.summaryContainer}>
-          <View style={[styles.summaryCard, { backgroundColor: currentTheme.Card }]}>
-            <Text style={[styles.summaryTitle, { color: currentTheme.SecondoryText }]}>
-              Leaderboard
-            </Text>
-            <Text style={[styles.summaryValue, { color: currentTheme.PrimaryText }]}>
-              #{Math.max(1, 10 - Math.floor(stats.avgCompletionRate / 10))}
-            </Text>
-            <Icon name="chevron-right" size={16} color={currentTheme.SecondoryText} />
-          </View>
-
-          <View style={[styles.summaryCard, { backgroundColor: currentTheme.Card }]}>
-            <Text style={[styles.summaryTitle, { color: currentTheme.SecondoryText }]}>
-              Points Earned
-            </Text>
-            <Text style={[styles.summaryValue, { color: currentTheme.PrimaryText }]}>
-              {stats.completedHabits * 10}
-            </Text>
-            <Icon name="chevron-right" size={16} color={currentTheme.SecondoryText} />
           </View>
         </View>
 
