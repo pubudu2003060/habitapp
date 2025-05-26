@@ -8,7 +8,7 @@ const useCustomAlert = () => {
     message: '',
     buttons: [],
   });
-
+  
   const showAlert = useCallback((title?: string, message?: string, buttons?: AlertButton[]) => {
     setAlertConfig({
       visible: true,

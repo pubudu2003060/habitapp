@@ -187,6 +187,7 @@ const Stat = () => {
       </ScrollView>
     </SafeAreaView>
   )
+  
 }
 
 const styles = StyleSheet.create({
