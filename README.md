@@ -107,7 +107,3 @@ npx react-native run-android
 # For iOS (macOS only)
 npx react-native run-ios
 ```
-
-🎥 Demo
-📹 [Attach or link to your demo video here]
-📸 [Optional: Add screenshots in a screenshots/ folder]
