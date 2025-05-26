@@ -16,7 +16,7 @@ A beautifully designed and practical mobile app built with **React Native** and 
   - Add new habits with:
     - Name  
     - Description  
-    - Goal duration (e.g., 30 days)  
+    - Goal duration   
     - Repeat type: Daily, Weekly, Monthly  
     - Reminder (via Date Picker)
   - Edit, delete, and manually mark habits as finished
@@ -47,10 +47,9 @@ A beautifully designed and practical mobile app built with **React Native** and 
   - Smooth animations for:
     - Loading screens
     - Completion check-ins
-    - Transitions and button interactions
 
 - **Dark Mode Support**
-  - Toggle based on user preference or system settings
+  - Toggle based on user preference 
 
 - **User Profile**
   - Update profile info and upload a profile picture
@@ -101,9 +100,6 @@ npm install
 cd ios
 pod install
 cd ..
-
-# 4. Set up Firebase config
-# Add your Firebase Web config inside a separate firebaseConfig.ts or .env
 
 # For Android
 npx react-native run-android
